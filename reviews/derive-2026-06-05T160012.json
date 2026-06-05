@@ -1,0 +1,225 @@
+{
+  "timestamp": "2026-06-05T16:00:12",
+  "status": "partial",
+  "model": "claude",
+  "timeout": 300,
+  "exhaust": true,
+  "filters": {
+    "domain": null,
+    "topic": null,
+    "min_depth": null,
+    "max_depth": null,
+    "premises": false,
+    "has_dependents": false,
+    "budget": 300,
+    "sample": true,
+    "cluster": false,
+    "intra_cluster": false,
+    "embedding_model": null,
+    "n_clusters": null,
+    "prompt_file": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "network_stats": {
+        "total_in": 199,
+        "total_derived": 0,
+        "max_depth": 0,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 25,
+      "valid": 25,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "soft-delete-prevents-distributed-resurrection",
+          "truth_value": "IN"
+        },
+        {
+          "id": "append-only-versioning-makes-restore-non-destructive",
+          "truth_value": "IN"
+        },
+        {
+          "id": "time-injection-enables-deterministic-testing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "bounded-collections-trade-completeness-for-memory",
+          "truth_value": "IN"
+        },
+        {
+          "id": "lazy-read-time-evaluation-trades-write-simplicity-for-read-cost",
+          "truth_value": "IN"
+        },
+        {
+          "id": "heap-sign-negation-repurposes-min-heap",
+          "truth_value": "IN"
+        },
+        {
+          "id": "fan-out-write-pushes-references-not-data",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetric-social-graphs-simplify-visibility",
+          "truth_value": "IN"
+        },
+        {
+          "id": "multi-structure-sync-invariant",
+          "truth_value": "IN"
+        },
+        {
+          "id": "immutable-values-prevent-aliasing-bugs",
+          "truth_value": "IN"
+        },
+        {
+          "id": "kv-read-path-is-self-healing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "kv-quorum-consistency-assumed-not-enforced",
+          "truth_value": "IN"
+        },
+        {
+          "id": "chat-monotonic-read-progress",
+          "truth_value": "IN"
+        },
+        {
+          "id": "wallet-deadlock-free-concurrent-transfers",
+          "truth_value": "IN"
+        },
+        {
+          "id": "payment-toctou-double-jeopardy",
+          "truth_value": "IN"
+        },
+        {
+          "id": "watermark-finalization-is-irreversible",
+          "truth_value": "IN"
+        },
+        {
+          "id": "dedup-outlives-aggregation-window",
+          "truth_value": "IN"
+        },
+        {
+          "id": "crawler-three-layer-dedup",
+          "truth_value": "IN"
+        },
+        {
+          "id": "stock-exchange-price-time-priority",
+          "truth_value": "IN"
+        },
+        {
+          "id": "video-pipeline-maximizes-useful-work-on-failure",
+          "truth_value": "IN"
+        },
+        {
+          "id": "notification-defensive-double-rate-check",
+          "truth_value": "IN"
+        },
+        {
+          "id": "sdi-modules-are-standalone-learning-artifacts",
+          "truth_value": "IN"
+        },
+        {
+          "id": "kv-reads-eventually-converge",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "payment-double-entry-guarantees-balance-integrity",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "hotel-occ-prevents-overbooking",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 25
+    },
+    {
+      "round": 2,
+      "network_stats": {
+        "total_in": 221,
+        "total_derived": 25,
+        "max_depth": 1,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 16,
+      "valid": 16,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "deletion-is-metadata-in-replicated-systems",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-path-absorbs-consistency-and-computation-cost",
+          "truth_value": "IN"
+        },
+        {
+          "id": "structural-discipline-prevents-consistency-bugs",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-ratchets-prevent-regression-across-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deterministic-testability-by-design",
+          "truth_value": "IN"
+        },
+        {
+          "id": "kv-anti-entropy-covers-writes-and-deletes",
+          "truth_value": "IN"
+        },
+        {
+          "id": "idempotency-keys-ignore-payload-content",
+          "truth_value": "IN"
+        },
+        {
+          "id": "normalize-once-at-system-boundary",
+          "truth_value": "IN"
+        },
+        {
+          "id": "eager-rebuild-trades-write-cost-for-derived-consistency",
+          "truth_value": "IN"
+        },
+        {
+          "id": "soft-delete-preserves-structural-invariants",
+          "truth_value": "IN"
+        },
+        {
+          "id": "none-return-collapses-distinct-failure-modes",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-time-routing-is-irrevocable",
+          "truth_value": "IN"
+        },
+        {
+          "id": "stock-exchange-matching-produces-valid-trades",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "autocomplete-overfetch-compensates-for-filtering",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "wallet-transfers-are-safe-under-concurrency",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "hotel-pricing-is-deterministic",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 16
+    }
+  ],
+  "total_added": 41
+}

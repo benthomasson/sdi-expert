@@ -1,0 +1,686 @@
+{
+  "timestamp": "2026-06-05T16:17:30",
+  "status": "complete",
+  "model": "claude",
+  "timeout": 600,
+  "exhaust": true,
+  "filters": {
+    "domain": null,
+    "topic": null,
+    "min_depth": null,
+    "max_depth": null,
+    "premises": false,
+    "has_dependents": false,
+    "budget": 300,
+    "sample": true,
+    "cluster": false,
+    "intra_cluster": false,
+    "embedding_model": null,
+    "n_clusters": null,
+    "prompt_file": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "network_stats": {
+        "total_in": 233,
+        "total_derived": 41,
+        "max_depth": 2,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 13,
+      "valid": 13,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "reads-bear-full-correctness-burden",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-by-construction-not-validation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-read-cost-allocation-is-per-use-case",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-time-decisions-are-lightweight-but-binding",
+          "truth_value": "IN"
+        },
+        {
+          "id": "temporal-check-gaps-are-systematic-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "pipeline-processing-maximizes-forward-progress",
+          "truth_value": "IN"
+        },
+        {
+          "id": "dedup-and-finalization-are-coordinated",
+          "truth_value": "IN"
+        },
+        {
+          "id": "soft-delete-is-dual-purpose",
+          "truth_value": "IN"
+        },
+        {
+          "id": "assumed-invariants-are-unenforced",
+          "truth_value": "IN"
+        },
+        {
+          "id": "callers-trusted-at-internal-boundaries",
+          "truth_value": "IN"
+        },
+        {
+          "id": "special-cases-reuse-existing-abstractions",
+          "truth_value": "IN"
+        },
+        {
+          "id": "autocomplete-search-is-robust",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "nearby-friends-visibility-scales",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 13
+    },
+    {
+      "round": 2,
+      "network_stats": {
+        "total_in": 244,
+        "total_derived": 54,
+        "max_depth": 3,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 13,
+      "valid": 12,
+      "skipped": [
+        {
+          "id": "error-handling-is-safe-for-callers",
+          "reason": "missing nodes: ['error-signaling-lacks-codebase-convention']"
+        }
+      ],
+      "applied": [
+        {
+          "id": "writes-are-cheap-reads-pay",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-design-prevents-regression-and-maximizes-progress",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-gaps-cluster-at-temporal-boundaries",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-strategy-scales-with-distribution",
+          "truth_value": "IN"
+        },
+        {
+          "id": "structural-correctness-and-testability-are-co-designed",
+          "truth_value": "IN"
+        },
+        {
+          "id": "documented-gaps-manifest-as-implementation-risks",
+          "truth_value": "IN"
+        },
+        {
+          "id": "brute-force-acceptable-at-pedagogical-scale",
+          "truth_value": "IN"
+        },
+        {
+          "id": "access-control-defaults-favor-availability-over-security",
+          "truth_value": "IN"
+        },
+        {
+          "id": "error-signaling-lacks-codebase-convention",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetry-simplifies-across-graph-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "structural-correctness-is-universally-applied",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "modules-are-independently-runnable",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    },
+    {
+      "round": 3,
+      "network_stats": {
+        "total_in": 254,
+        "total_derived": 66,
+        "max_depth": 4,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "conflict-detection-varies-by-consistency-model",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deterministic-ids-eliminate-coordination",
+          "truth_value": "IN"
+        },
+        {
+          "id": "error-boundaries-are-module-local",
+          "truth_value": "IN"
+        },
+        {
+          "id": "adaptation-over-invention",
+          "truth_value": "IN"
+        },
+        {
+          "id": "default-to-permissive-across-security-dimensions",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-cost-allocation-matches-access-pattern",
+          "truth_value": "IN"
+        },
+        {
+          "id": "writes-commit-irrevocably-reads-reconcile",
+          "truth_value": "IN"
+        },
+        {
+          "id": "temporal-correctness-gaps-are-known-and-accepted",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-cost-scales-with-system-complexity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "perimeter-defense-ensures-data-quality",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "pedagogical-tradeoffs-are-safe-within-module-boundaries",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 11
+    },
+    {
+      "round": 4,
+      "network_stats": {
+        "total_in": 263,
+        "total_derived": 77,
+        "max_depth": 4,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 14,
+      "valid": 14,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "read-path-is-architectures-critical-surface",
+          "truth_value": "IN"
+        },
+        {
+          "id": "quality-and-performance-strategies-are-aligned",
+          "truth_value": "IN"
+        },
+        {
+          "id": "temporal-gaps-are-contained-by-forward-only-design",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "stream-processing-correctness-is-doubly-forward-only",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-stream-processing-is-exactly-once",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "safety-is-local-and-permissive",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-through-structural-reuse",
+          "truth_value": "IN"
+        },
+        {
+          "id": "identity-derivation-trades-validation-for-simplicity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "social-systems-combine-symmetric-graphs-and-lightweight-fanout",
+          "truth_value": "IN"
+        },
+        {
+          "id": "append-only-semantics-span-storage-and-streaming",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-is-guarded-by-preconditions",
+          "truth_value": "IN"
+        },
+        {
+          "id": "multiple-algorithms-behind-unified-interface",
+          "truth_value": "IN"
+        },
+        {
+          "id": "retry-escalates-to-permanent-failure",
+          "truth_value": "IN"
+        },
+        {
+          "id": "message-delivery-guarantees-are-consumer-side",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 14
+    },
+    {
+      "round": 5,
+      "network_stats": {
+        "total_in": 275,
+        "total_derived": 91,
+        "max_depth": 5,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "correctness-profile-is-structurally-split",
+          "truth_value": "IN"
+        },
+        {
+          "id": "cost-model-adapts-to-access-frequency",
+          "truth_value": "IN"
+        },
+        {
+          "id": "codebase-architecture-is-write-available-read-correct",
+          "truth_value": "IN"
+        },
+        {
+          "id": "safety-and-correctness-gaps-compound",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-is-append-only-across-all-contexts",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-unifies-reuse-and-construction",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-read-asymmetry-is-end-to-end-correct",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "state-reversal-is-uniformly-guarded",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "id-generators-preserve-monotonic-order",
+          "truth_value": "IN"
+        },
+        {
+          "id": "eviction-timing-has-no-codebase-convention",
+          "truth_value": "IN"
+        },
+        {
+          "id": "queue-abstraction-is-logical-not-physical",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 11
+    },
+    {
+      "round": 6,
+      "network_stats": {
+        "total_in": 284,
+        "total_derived": 102,
+        "max_depth": 6,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 10,
+      "valid": 10,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "read-correctness-is-structural-not-temporal",
+          "truth_value": "IN"
+        },
+        {
+          "id": "design-coherence-bounded-by-enforceability",
+          "truth_value": "IN"
+        },
+        {
+          "id": "complexity-increases-both-read-cost-and-read-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-is-monotonically-accumulative",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "tested-properties-are-already-safe-by-construction",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-extends-to-failure-handling",
+          "truth_value": "IN"
+        },
+        {
+          "id": "derivation-over-creation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetric-graphs-enable-complete-lightweight-routing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "operational-conventions-are-module-scoped",
+          "truth_value": "IN"
+        },
+        {
+          "id": "multiple-algorithms-serve-pedagogical-breadth",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 10
+    },
+    {
+      "round": 7,
+      "network_stats": {
+        "total_in": 293,
+        "total_derived": 112,
+        "max_depth": 7,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 12,
+      "valid": 12,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "monotonicity-is-the-universal-ordering-primitive",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-path-is-self-consistent-by-design",
+          "truth_value": "IN"
+        },
+        {
+          "id": "conflict-resolution-depth-scales-with-distribution",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-is-cautious-at-every-level",
+          "truth_value": "IN"
+        },
+        {
+          "id": "logical-abstraction-decouples-semantics-from-storage",
+          "truth_value": "IN"
+        },
+        {
+          "id": "module-isolation-is-pedagogical-and-architectural",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-and-simplicity-share-the-same-mechanism",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-burden-is-managed-through-selective-write-shifting",
+          "truth_value": "IN"
+        },
+        {
+          "id": "testing-and-construction-form-a-closed-correctness-loop",
+          "truth_value": "IN"
+        },
+        {
+          "id": "architectural-coherence-is-bounded-at-the-write-read-split",
+          "truth_value": "IN"
+        },
+        {
+          "id": "plan-to-implementation-correspondence-is-verifiable",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "monotonicity-and-caution-prevent-state-loss",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    },
+    {
+      "round": 8,
+      "network_stats": {
+        "total_in": 303,
+        "total_derived": 124,
+        "max_depth": 7,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 12,
+      "valid": 12,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "architecture-is-correctly-self-limiting",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-available-architecture-is-self-verifying",
+          "truth_value": "IN"
+        },
+        {
+          "id": "enforceability-boundary-adapts-through-write-shifting",
+          "truth_value": "IN"
+        },
+        {
+          "id": "compounding-gaps-are-in-the-testing-blind-spot",
+          "truth_value": "IN"
+        },
+        {
+          "id": "no-operation-is-truly-reversible",
+          "truth_value": "IN"
+        },
+        {
+          "id": "growing-read-complexity-outpaces-test-coverage",
+          "truth_value": "IN"
+        },
+        {
+          "id": "routing-heuristics-prioritize-correctness-over-tightness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "data-isolation-gaps-parallel-access-control-gaps",
+          "truth_value": "IN"
+        },
+        {
+          "id": "consumer-model-prioritizes-simplicity-over-flexibility",
+          "truth_value": "IN"
+        },
+        {
+          "id": "reads-are-not-pure-across-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-loop-covers-all-critical-properties",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "gap-containment-requires-module-independence",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    },
+    {
+      "round": 9,
+      "network_stats": {
+        "total_in": 313,
+        "total_derived": 136,
+        "max_depth": 8,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 12,
+      "valid": 12,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "enforcement-boundary-and-testing-blind-spot-converge",
+          "truth_value": "IN"
+        },
+        {
+          "id": "critical-path-is-least-verified",
+          "truth_value": "IN"
+        },
+        {
+          "id": "irreversibility-is-the-simplicity-mechanism",
+          "truth_value": "IN"
+        },
+        {
+          "id": "consistency-strategy-scales-uniformly-with-distribution",
+          "truth_value": "IN"
+        },
+        {
+          "id": "module-autonomy-spans-conventions-and-safety",
+          "truth_value": "IN"
+        },
+        {
+          "id": "abstractions-minimize-new-concepts",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-and-monotonicity-are-a-single-constraint",
+          "truth_value": "IN"
+        },
+        {
+          "id": "one-directional-state-machines-span-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "probabilistic-structures-trade-accuracy-for-space",
+          "truth_value": "IN"
+        },
+        {
+          "id": "consistent-hashing-is-a-stateless-topology-abstraction",
+          "truth_value": "IN"
+        },
+        {
+          "id": "time-injection-is-a-complete-testing-strategy",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "payment-ledger-is-fully-auditable",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    },
+    {
+      "round": 10,
+      "network_stats": {
+        "total_in": 323,
+        "total_derived": 148,
+        "max_depth": 9,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 12,
+      "valid": 12,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "verification-gap-is-precisely-at-the-write-read-boundary",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-shifting-extends-the-irreversibility-boundary",
+          "truth_value": "IN"
+        },
+        {
+          "id": "irreversibility-produces-both-availability-and-simplicity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "irreversibility-unifies-simplicity-ordering-and-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "module-autonomy-enables-per-use-case-cost-optimization",
+          "truth_value": "IN"
+        },
+        {
+          "id": "reads-are-active-convergence-engines",
+          "truth_value": "IN"
+        },
+        {
+          "id": "logical-physical-separation-spans-topology-storage-and-deletion",
+          "truth_value": "IN"
+        },
+        {
+          "id": "security-permissiveness-spans-policy-and-data-boundaries",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-path-is-complete-and-consistent-in-symmetric-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "memory-is-bounded-at-the-cost-of-silent-information-loss",
+          "truth_value": "IN"
+        },
+        {
+          "id": "algorithmic-simplicity-is-preferred-over-optimal-performance",
+          "truth_value": "IN"
+        },
+        {
+          "id": "writes-always-produce-valid-forward-progress",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    }
+  ],
+  "total_added": 119
+}
