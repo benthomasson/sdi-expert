@@ -1,0 +1,1110 @@
+{
+  "timestamp": "2026-06-05T17:54:06",
+  "status": "complete",
+  "model": "claude",
+  "timeout": 300,
+  "dry_run": false,
+  "filters": {
+    "belief_ids": null,
+    "min_depth": null,
+    "depends_on": null,
+    "namespace": null,
+    "sample": null,
+    "visible_to": null
+  },
+  "reviewed": 135,
+  "total_derived": 135,
+  "summary": {
+    "invalid": 20,
+    "insufficient": 24,
+    "unnecessary": 3
+  },
+  "results": [
+    {
+      "id": "abstractions-minimize-new-concepts",
+      "valid": true,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The two strategies are correctly identified and synthesized, but the quantitative claim that concept count is 'far below the feature count' is unsupported by antecedents that describe patterns without measuring ratios."
+    },
+    {
+      "id": "access-control-defaults-favor-availability-over-security",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents do show permissive defaults, though the GDrive owner-bypass is a weaker example since owner full-access is expected behavior rather than a security trade-off."
+    },
+    {
+      "id": "adaptation-over-invention",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent covers a distinct level of reuse (stdlib data structures vs. domain abstractions), and the conclusion correctly synthesizes them as a single principle."
+    },
+    {
+      "id": "algorithmic-simplicity-is-preferred-over-optimal-performance",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The antecedents describe two distinct axes (correctness-preserving heuristics and clarity-preserving brute force) that the conclusion correctly unifies under 'sacrificing performance,' though the underlying trade-offs differ."
+    },
+    {
+      "id": "append-only-semantics-span-storage-and-streaming",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The common thread is no-retraction semantics; calling watermark finalization 'append-only' is slightly imprecise (it is emit-once-no-retract rather than append-only in the storage sense), but the conclusion's framing as 'preventing historical revision' correctly identifies the shared property."
+    },
+    {
+      "id": "append-only-versioning-makes-restore-non-destructive",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents directly establish their respective system's append-only version semantics, and the conclusion follows as a straightforward generalization."
+    },
+    {
+      "id": "architectural-coherence-is-bounded-at-the-write-read-split",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent provides the write-read architecture and the second bounds coherence at structural enforceability; identifying their intersection at the write-read split is a sound synthesis."
+    },
+    {
+      "id": "architecture-is-correctly-self-limiting",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The antecedents establish that correctness boundaries exist at the structural-temporal and write-read splits, but 'maximum achievable correctness' is an optimality claim requiring proof that no better architecture is possible \u2014 the antecedents describe limits, not that those limits are optimal."
+    },
+    {
+      "id": "assumed-invariants-are-unenforced",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents independently demonstrate the same pattern (correctness depending on caller cooperation rather than structural enforcement) in different domains, soundly supporting the cross-cutting claim."
+    },
+    {
+      "id": "bounded-collections-trade-completeness-for-memory",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "All four antecedents are necessary because the claim specifically quantifies 'four systems' and each provides a distinct example of the silent-eviction pattern."
+    },
+    {
+      "id": "brute-force-acceptable-at-pedagogical-scale",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "All four examples are needed for the 'four systems' claim, and the 'deliberate pedagogical convention' interpretation is supported by explicit mentions in the antecedents ('deliberate simplification,' 'acceptable for interview scope')."
+    },
+    {
+      "id": "callers-trusted-at-internal-boundaries",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents describe missing internal validation in different modules; the conclusion correctly identifies this as a systematic convention, though 'convention' implies intentionality that two examples suggest but do not conclusively prove."
+    },
+    {
+      "id": "chat-monotonic-read-progress",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent provides the per-conversation sequence numbering that the monotonic cursor (second antecedent) operates over; both are needed, though the Lamport timestamp aspect of the first antecedent is unused by the conclusion."
+    },
+    {
+      "id": "codebase-architecture-is-write-available-read-correct",
+      "valid": true,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The core write-read characterization follows from the antecedents, but 'selective pre-computation' and 'lazy computation' are introduced without support \u2014 'per-use-case cost allocation' in the first antecedent is broader and does not specifically entail pre-computation."
+    },
+    {
+      "id": "complexity-increases-both-read-cost-and-read-risk",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The correlation claim (most burdened reads are least protected) follows soundly from one antecedent scaling cost with distribution and the other concentrating risk at temporal boundaries that worsen with distribution."
+    },
+    {
+      "id": "compounding-gaps-are-in-the-testing-blind-spot",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The conclusion follows directly: if gaps cluster at temporal properties (antecedent 1) and tests are co-designed to verify structural properties (antecedent 2), then the gap surface is exactly what tests cannot reach."
+    },
+    {
+      "id": "conflict-detection-varies-by-consistency-model",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent provides one of the three claimed strategies, and the conclusion correctly identifies the correlation between data model and detection approach."
+    },
+    {
+      "id": "conflict-resolution-depth-scales-with-distribution",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent provides the range of strategies across topologies, and the second adds the anti-entropy layer for fully distributed systems, together supporting the scaling claim."
+    },
+    {
+      "id": "consistency-strategy-scales-uniformly-with-distribution",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents independently describe the same escalation pattern (simple single-node \u2192 complex distributed) for different concerns, and the conclusion correctly identifies this parallelism as a uniform architectural response."
+    },
+    {
+      "id": "consistent-hashing-is-a-stateless-topology-abstraction",
+      "valid": true,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The core claim that the ring is a stateless data-plane abstraction follows from the antecedents, but 'safe to use concurrently and compose freely' is an additional claim not established by antecedents that describe idempotency and optional tracking without addressing thread safety or composability."
+    },
+    {
+      "id": "consumer-model-prioritizes-simplicity-over-flexibility",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents describe mechanisms that are demonstrably simpler than their production counterparts (single-topic vs multi-topic, modular vs sticky assignment), so the simplicity-over-flexibility characterization follows directly."
+    },
+    {
+      "id": "correctness-and-simplicity-share-the-same-mechanism",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes correctness via structural reuse and the second establishes a design philosophy of derivation over creation; their intersection \u2014 that the same reuse mechanism serves both correctness and parsimony \u2014 is a sound synthesis."
+    },
+    {
+      "id": "correctness-by-construction-not-validation",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The core reasoning is sound but the claim overstates by saying 'compile-time' when the antecedents say 'by construction' \u2014 in a Python codebase these are design-time guarantees, not compile-time checks, making the specific wording an unsupported escalation."
+    },
+    {
+      "id": "correctness-gaps-cluster-at-temporal-boundaries",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The unifying root cause ('verified at a single point') mischaracterizes the first antecedent: unenforced invariants like quorum overlap are never checked at all, not checked at one point \u2014 conflating 'never verified' with 'point-verified' produces a false unification."
+    },
+    {
+      "id": "correctness-profile-is-structurally-split",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "One antecedent establishes that structural correctness is enforced and testable, the other that temporal correctness gaps are documented and accepted \u2014 the bifurcation claim follows directly from their juxtaposition."
+    },
+    {
+      "id": "correctness-through-structural-reuse",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Structural invariants (first antecedent) and abstraction reuse (second antecedent) are complementary facets of constraining existing structures; the synthesis that correctness emerges from disciplined use of known building blocks is sound."
+    },
+    {
+      "id": "correctness-unifies-reuse-and-construction",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 'spatial reuse' and 'temporal ratchets' framing is a reasonable relabeling of the two antecedents' domains, and the claim that they cover complementary correctness dimensions follows from their non-overlapping scopes."
+    },
+    {
+      "id": "cost-model-adapts-to-access-frequency",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes the read-heavy default and the second establishes selective overrides for high-frequency paths; together they support the 'adaptive, not dogmatic' characterization."
+    },
+    {
+      "id": "crawler-three-layer-dedup",
+      "valid": true,
+      "sufficient": true,
+      "necessary": false,
+      "unnecessary_antecedents": [
+        "bloom-filter-prevents-frontier-duplicates"
+      ],
+      "comment": "The Bloom filter's role is already covered by crawler-layered-dedup-bloom-then-simhash; the frontier-specific detail in bloom-filter-prevents-frontier-duplicates adds implementation specifics not referenced in the claim."
+    },
+    {
+      "id": "critical-path-is-least-verified",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "If the read path is the critical surface (first antecedent) and its primary risk class falls in the testing blind spot (second antecedent), the conclusion that the most critical surface is least verified follows directly."
+    },
+    {
+      "id": "data-isolation-gaps-parallel-access-control-gaps",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The claim that these are 'data-plane analogs of authorization-plane default-allow patterns already documented elsewhere' requires an unstated antecedent about those access control patterns \u2014 the listed antecedents only establish that BCC and shared-secret issues exist, not that they parallel an authorization-plane pattern."
+    },
+    {
+      "id": "dedup-and-finalization-are-coordinated",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The causal reasoning is sound: irreversible finalization (second antecedent) creates a hard requirement that duplicates be caught beforehand, which explains why dedup retention exceeds the window (first antecedent) \u2014 the coordination is a necessary consequence, not a coincidence."
+    },
+    {
+      "id": "dedup-outlives-aggregation-window",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 2\u00d7 retention period (first antecedent) exceeds the finalization boundary driven by watermark advance (second antecedent), so the conclusion that dedup coverage extends beyond the processing horizon is well-supported."
+    },
+    {
+      "id": "default-to-permissive-across-security-dimensions",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent covers an independent security dimension (authorization vs input validation) with concrete examples of permissive defaults, and the cross-dimension consistency is the substantive contribution of the synthesis."
+    },
+    {
+      "id": "deletion-is-append-only-across-all-contexts",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent covers deletion strategies across distribution levels and the second covers append-only semantics across storage and streaming; together they support the universal append-only mutation claim, though the title's focus on 'deletion' understates the body's broader scope."
+    },
+    {
+      "id": "deletion-is-cautious-at-every-level",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Preconditions guard single-node deletion (first antecedent) while metadata models guard distributed deletion (second antecedent), and the claim that no unguarded path exists follows from coverage of both levels."
+    },
+    {
+      "id": "deletion-is-guarded-by-preconditions",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents provide concrete examples of multi-step deletion (empty-bucket requirement, trash-before-delete), directly supporting the 'two-mistake problem' generalization."
+    },
+    {
+      "id": "deletion-is-metadata-in-replicated-systems",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent provides the anti-resurrection rationale for deletion-as-metadata and the second provides the non-destructive-restore rationale; both are needed for the claim's dual justification."
+    },
+    {
+      "id": "deletion-strategy-scales-with-distribution",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes soft delete's dual purpose across distribution levels and the second provides the KV store as a concrete example of both layers coexisting, supporting the scaling-with-distribution claim."
+    },
+    {
+      "id": "derivation-over-creation",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent covers data-level derivation (identifiers from existing pairs) and the second covers infrastructure-level adaptation (repurposed heaps and topics); both levels are needed for the 'derivation at both data and infrastructure levels' claim."
+    },
+    {
+      "id": "design-coherence-bounded-by-enforceability",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The claim introduces 'selective write-time caching' as part of the self-reinforcing system, but neither antecedent mentions write-time caching \u2014 'per-use-case cost allocation' from ant-1 is broader and doesn't entail this specific mechanism."
+    },
+    {
+      "id": "deterministic-ids-eliminate-coordination",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents demonstrate deterministic ID derivation from existing data, and the coordination-elimination and idempotency conclusions follow directly from the deterministic property."
+    },
+    {
+      "id": "deterministic-testability-by-design",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 states only three systems inject time (not all 25 modules) and explicitly notes 'inconsistent defaults across systems undermine the pattern's reliability' \u2014 the claim's universalized 'every module' ignores these caveats."
+    },
+    {
+      "id": "documented-gaps-manifest-as-implementation-risks",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The antecedents establish that documented gaps appear in implementations, but the conclusion that this represents 'intentional pedagogy rather than oversight' is an interpretive leap \u2014 the gaps could simply be accepted limitations too costly to fix."
+    },
+    {
+      "id": "eager-rebuild-trades-write-cost-for-derived-consistency",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Autocomplete rebuilds derived caches on mutation and leaderboard rebuilds sorted rankings via remove-reinsert \u2014 both ensure derived state consistency at write-time cost, supporting the generalization."
+    },
+    {
+      "id": "enforceability-boundary-adapts-through-write-shifting",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Write-shifting (ant-2) is a performance optimization that moves computation from read to write path \u2014 it does not extend the correctness enforcement boundary, which concerns structural vs temporal guarantees, not when computation occurs."
+    },
+    {
+      "id": "enforcement-boundary-and-testing-blind-spot-converge",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 establishes the structural enforcement boundary and ant-2 establishes the testing blind spot at temporal properties \u2014 the convergence on the same structural/temporal dividing line follows directly."
+    },
+    {
+      "id": "error-boundaries-are-module-local",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 provides the absence of cross-cutting convention across four modules and ant-2 adds the None-collapse pattern \u2014 together they support the conclusion that each module boundary is an independent error translation boundary."
+    },
+    {
+      "id": "error-signaling-lacks-codebase-convention",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Four antecedents demonstrate four incompatible error signaling strategies (exceptions, return codes, booleans, unconditional propagation), directly supporting the 'no cross-cutting convention' claim."
+    },
+    {
+      "id": "eviction-timing-has-no-codebase-convention",
+      "valid": true,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The four antecedents sufficiently demonstrate no eviction convention, but the claim's comparative assertion ('unlike other cross-cutting patterns where conventions exist') references soft-delete and time-injection conventions not present in any antecedent."
+    },
+    {
+      "id": "fan-out-write-pushes-references-not-data",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 says chat delivers 'messages' to inbox/offline_queue \u2014 full message objects, not lightweight references \u2014 contradicting the claim that both systems push references rather than data."
+    },
+    {
+      "id": "forward-only-and-monotonicity-are-a-single-constraint",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents describe unidirectional state progression (temporal pipelines and ordinal sequences), and the unification as 'state moves in one direction' is a sound abstraction over both patterns."
+    },
+    {
+      "id": "forward-only-design-prevents-regression-and-maximizes-progress",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 provides no-regression ratchets and ant-2 provides forward-progress pipelines \u2014 the synthesis that these are complementary mechanisms within a unified forward-only philosophy follows directly."
+    },
+    {
+      "id": "forward-only-extends-to-failure-handling",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 establishes the forward-only principle for normal state progression and ant-2 shows retry logic escalating to permanent (irrevocable) outcomes \u2014 the extension of the no-rollback principle to failure handling is a sound inference."
+    },
+    {
+      "id": "growing-read-complexity-outpaces-test-coverage",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 shows read-path correctness burden growing with distribution complexity (repair, conflict resolution) and ant-2 shows tests scoped to structural invariants \u2014 the widening gap between temporal read risk and structural test coverage follows."
+    },
+    {
+      "id": "heap-sign-negation-repurposes-min-heap",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-1 states the leaderboard uses SortedList (not a min-heap) with negated scores \u2014 the claim incorrectly attributes both systems to 'Python's min-heap' when only the URL frontier (ant-2) uses heapq."
+    },
+    {
+      "id": "id-generators-preserve-monotonic-order",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Three antecedents provide distinct monotonicity mechanisms (bounded sequence, random-increment, global counter) and the fourth establishes shared thread-safety via locks \u2014 the synthesis accurately reflects all four."
+    },
+    {
+      "id": "idempotency-keys-ignore-payload-content",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "All three antecedents demonstrate key-only identity matching without payload verification \u2014 hotel ignores guest/dates/room, payment maps key to payment ID, ad-click dedup keys on event_id alone."
+    },
+    {
+      "id": "identity-derivation-trades-validation-for-simplicity",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Deterministic IDs (ant-1) derive identity FROM semantically meaningful data (user pairs, message IDs) with no mismatch risk, while idempotency keys (ant-2) use opaque keys ignoring payloads \u2014 the claim conflates these as the same 'validation-for-simplicity' tradeoff when the risk profiles are fundamentally different."
+    },
+    {
+      "id": "immutable-values-prevent-aliasing-bugs",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Ant-2 explicitly states the leaderboard's remove-reinsert motivation is sort-order correctness ('in-place mutation would violate sort order'), not aliasing prevention \u2014 the claim imposes an anti-aliasing rationale that the antecedent does not support."
+    },
+    {
+      "id": "irreversibility-is-the-simplicity-mechanism",
+      "valid": false,
+      "sufficient": false,
+      "necessary": false,
+      "unnecessary_antecedents": [
+        "correctness-and-simplicity-share-the-same-mechanism"
+      ],
+      "comment": "Antecedent 2 identifies structural reuse as the mechanism producing both correctness and simplicity, but the conclusion substitutes irreversibility as that mechanism \u2014 a non-sequitur; irreversibility existing (ant 1) and some mechanism unifying correctness+simplicity (ant 2) does not entail that irreversibility IS that mechanism."
+    },
+    {
+      "id": "irreversibility-produces-both-availability-and-simplicity",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Antecedent 1 explicitly links irrevocable writes to availability and antecedent 2 links irreversibility to simplicity; the synthesis that irreversibility is the shared root follows directly, though soundness is conditional on accepting antecedent 2 at face value."
+    },
+    {
+      "id": "irreversibility-unifies-simplicity-ordering-and-correctness",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The claim that irreversibility is 'the single deepest architectural primitive' is a superlative requiring evidence that no other primitive is deeper, which neither antecedent provides; the three-property unification is plausible but the 'single deepest' and 'most economical' framing is unsupported synthesis."
+    },
+    {
+      "id": "kv-anti-entropy-covers-writes-and-deletes",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Clean derivation: antecedent 1 covers write divergence via read repair, antecedent 2 covers delete resurrection via tombstones, and the claim correctly synthesizes these as complete coverage of both operation types."
+    },
+    {
+      "id": "kv-quorum-consistency-assumed-not-enforced",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Two independent gaps \u2014 unvalidated quorum overlap and quorum-excluded handoff writes \u2014 each independently undermine the consistency guarantee, and the 'compound' framing correctly requires both antecedents."
+    },
+    {
+      "id": "kv-read-path-is-self-healing",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Sibling versions provide divergence detection and read repair provides correction; both are independently necessary for the read path to be self-healing."
+    },
+    {
+      "id": "lazy-read-time-evaluation-trades-write-simplicity-for-read-cost",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Three independent examples each demonstrate the same lazy-evaluation pattern; all are necessary since the claim names all three systems explicitly."
+    },
+    {
+      "id": "logical-abstraction-decouples-semantics-from-storage",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent provides one instance of logical-physical decoupling (message queue semantics and deletion metadata), and the generalization follows directly."
+    },
+    {
+      "id": "logical-physical-separation-spans-topology-storage-and-deletion",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Valid synthesis of three dimensions, though 'cross-cutting architectural principle' is slightly stronger than 'recurring pattern observed in three systems' \u2014 the antecedents demonstrate recurrence but not intentional cross-cutting design."
+    },
+    {
+      "id": "memory-is-bounded-at-the-cost-of-silent-information-loss",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Deterministic truncation (ant 1) and probabilistic approximation (ant 2) are correctly identified as complementary mechanisms for the same bounded-memory preference."
+    },
+    {
+      "id": "message-delivery-guarantees-are-consumer-side",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Antecedent 1 locates semantics in poll/commit (consumer layer) and antecedent 2 explains the offset mechanism enabling it; the claim that the broker is stateless w.r.t. delivery semantics is a reasonable inference from semantics being entirely in the consumer path."
+    },
+    {
+      "id": "module-autonomy-enables-per-use-case-cost-optimization",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The causal claim follows: absence of cross-cutting constraints (ant 1) is a necessary precondition for modules to independently select cost allocation (ant 2), so autonomy does enable per-use-case optimization."
+    },
+    {
+      "id": "module-autonomy-spans-conventions-and-safety",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Direct synthesis: antecedent 1 covers operational conventions, antecedent 2 covers safety enforcement, and the claim correctly unifies both under module autonomy."
+    },
+    {
+      "id": "module-isolation-is-pedagogical-and-architectural",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 'pedagogical' half of the claim \u2014 that modules are 'standalone learning artifacts' \u2014 is not present in either antecedent; ant 1 covers module-scoped conventions and ant 2 covers deterministic testability (test fixtures, not learning artifacts), so the pedagogical purpose is an unstated assumption smuggled into the conclusion."
+    },
+    {
+      "id": "monotonicity-is-the-universal-ordering-primitive",
+      "valid": true,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The specific unification of ID generators, cursors, and windows under monotonic progression is sound, but 'universal' requires showing no other ordering mechanisms exist in the codebase, which the antecedents do not establish."
+    },
+    {
+      "id": "multi-structure-sync-invariant",
+      "valid": false,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The claim says desyncs produce 'silent correctness bugs rather than visible failures,' but antecedent 2 explicitly states leaderboard desyncs surface as ValueError on the next operation \u2014 a visible failure, directly contradicting the 'silent' characterization."
+    },
+    {
+      "id": "multiple-algorithms-behind-unified-interface",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Three independent examples of interchangeable algorithm variants behind unified interfaces; all are necessary since the claim references all three systems by name."
+    },
+    {
+      "id": "multiple-algorithms-serve-pedagogical-breadth",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Sound inference: interchangeable algorithms (ant 1) within self-contained learning artifacts (ant 2) supports the conclusion that algorithm variety serves educational coverage rather than production flexibility."
+    },
+    {
+      "id": "no-operation-is-truly-reversible",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Clean derivation: antecedent 1 covers the two semantically reversal-like operations \u2014 intentional deletion (append-only metadata) and failure recovery (forward escalation) \u2014 establishing that neither is a genuine undo."
+    },
+    {
+      "id": "none-return-collapses-distinct-failure-modes",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents demonstrate None-return patterns that collapse failure modes; the 'failure diagnosis impossible' characterization follows from the sentinel collapse, though ant 1 only mentions missing objects while the claim generalizes to 'all failure conditions' for S3 \u2014 a minor overclaim."
+    },
+    {
+      "id": "normalize-once-at-system-boundary",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents independently establish normalize-once-at-boundary for their respective domains; the cross-cutting pattern claim follows directly."
+    },
+    {
+      "id": "notification-defensive-double-rate-check",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes why two checks are needed (budget shifts between enqueue and dequeue) and the second establishes why the double-check is practical (failed attempts don't waste budget)."
+    },
+    {
+      "id": "one-directional-state-machines-span-domains",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The alert state machine antecedent explicitly states PENDING resets to OK when the condition clears early, which is a state regression \u2014 directly contradicting the claim of 'irreversible state progression' across both domains."
+    },
+    {
+      "id": "operational-conventions-are-module-scoped",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Two independent operational dimensions (error contracts, eviction timing) both lacking cross-cutting conventions is sufficient to support the generalization that operational concerns are module-scoped."
+    },
+    {
+      "id": "payment-toctou-double-jeopardy",
+      "valid": false,
+      "sufficient": false,
+      "necessary": false,
+      "unnecessary_antecedents": [
+        "payment-overdraft-not-atomic"
+      ],
+      "comment": "Both antecedents describe the same non-atomic balance check in process_payment from slightly different angles \u2014 'checks balance before processing' and 'overdraft check reads balance and then processes' are the same vulnerability, not two independent TOCTOU windows."
+    },
+    {
+      "id": "pipeline-processing-maximizes-forward-progress",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Video pipeline's partial-failure continuation and stream processing's irreversible finalization are genuinely distinct facets of forward-only processing, and both are needed for the claim."
+    },
+    {
+      "id": "probabilistic-structures-trade-accuracy-for-space",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "All three antecedents are necessary to support the 'three systems' claim, and each describes a genuinely distinct probabilistic structure with a tunable accuracy-space parameter."
+    },
+    {
+      "id": "quality-and-performance-strategies-are-aligned",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes that structural invariants reduce the state space for *testing*, not for *runtime validation* \u2014 the claim silently substitutes test-time benefits for runtime cost reduction, requiring an unstated assumption to bridge the gap."
+    },
+    {
+      "id": "queue-abstraction-is-logical-not-physical",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Three antecedents cover three distinct dimensions of logical abstraction (consumer-side guarantees, logical offsets, DLQ-as-topic), each necessary for the comprehensive claim."
+    },
+    {
+      "id": "read-burden-is-managed-through-selective-write-shifting",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes the growing read burden, the second establishes the selective write-shifting response \u2014 together they form a clean problem-solution pair."
+    },
+    {
+      "id": "read-correctness-is-structural-not-temporal",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The architectural claim (reads are where correctness is enforced) is cleanly qualified by the structural/temporal split, producing a well-supported refinement."
+    },
+    {
+      "id": "read-cost-scales-with-system-complexity",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Deletion complexity scaling with distribution (antecedent 2) directly increases what the read path must handle (antecedent 1), making the scaling claim a sound composition."
+    },
+    {
+      "id": "read-path-absorbs-consistency-and-computation-cost",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "One antecedent covers computation deferral, the other covers convergence deferral \u2014 both are needed for the 'both computation and convergence' claim."
+    },
+    {
+      "id": "read-path-is-architectures-critical-surface",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The second antecedent says temporal gaps cluster at check-act boundaries generally, not specifically on the read path \u2014 payment TOCTOU is a write-path vulnerability, so the claim that gaps concentrate 'precisely where reads must reconcile' is unsupported."
+    },
+    {
+      "id": "reads-are-active-convergence-engines",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Side-effect-producing reads (antecedent 1) plus computation/convergence-bearing reads (antecedent 2) together justify the 'active convergence engine' characterization."
+    },
+    {
+      "id": "reads-are-not-pure-across-domains",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Two examples from genuinely unrelated domains (distributed KV, email) are both necessary to support the 'cross-cutting pattern' rather than 'domain-specific quirk' framing."
+    },
+    {
+      "id": "reads-bear-full-correctness-burden",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Computation/convergence burden (antecedent 1) and deletion-metadata interpretation (antecedent 2) cover distinct dimensions of read-path complexity, both needed for the 'full burden' claim."
+    },
+    {
+      "id": "retry-escalates-to-permanent-failure",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Backoff-with-jitter (antecedent 1) and finite-retry-to-failure escalation (antecedent 2) are complementary mechanisms that together establish the full retry-to-resolution pattern."
+    },
+    {
+      "id": "routing-heuristics-prioritize-correctness-over-tightness",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes admissibility (correctness guarantee), and the second establishes that the time heuristic is specifically weak on heterogeneous networks (the tightness cost) \u2014 both needed for the tradeoff framing."
+    },
+    {
+      "id": "safety-and-correctness-gaps-compound",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The absence of any cross-cutting safety convention (antecedent 1) means temporal boundaries (antecedent 2) receive no special protection, validating the compounding claim."
+    },
+    {
+      "id": "safety-is-local-and-permissive",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The conjunction holds \u2014 local error boundaries provide no cross-cutting net, and permissive security defaults make each module lenient \u2014 though 'individually lenient' slightly conflates error-handling inconsistency with security permissiveness."
+    },
+    {
+      "id": "sdi-modules-are-standalone-learning-artifacts",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "All three antecedents are strictly required: independence gives isolation, stdlib-only gives zero-dependency runnability, and in-process simulation removes infrastructure prerequisites."
+    },
+    {
+      "id": "security-permissiveness-spans-policy-and-data-boundaries",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 'compounding' claim goes slightly beyond the 'parallel' relationship established in the antecedents, but is a logically sound inference \u2014 co-present permissive policy and weak data isolation do compound along request paths."
+    },
+    {
+      "id": "social-systems-combine-symmetric-graphs-and-lightweight-fanout",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Straightforward conjunction: one antecedent supplies simplified visibility from symmetry, the other supplies minimal write amplification from reference-based fan-out."
+    },
+    {
+      "id": "soft-delete-is-dual-purpose",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The two antecedents directly establish two independent motivations (structural invariants vs. resurrection prevention), and the 'transcends distribution model' generalization follows from one being single-system and the other distributed."
+    },
+    {
+      "id": "soft-delete-preserves-structural-invariants",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents provide concrete single-system examples of soft delete preserving structural properties, and the 'independently of distributed-resurrection' qualifier is supported by neither example involving replication."
+    },
+    {
+      "id": "soft-delete-prevents-distributed-resurrection",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents independently demonstrate the write-over-delete pattern in distributed/versioned contexts, and the general resurrection-prevention principle follows directly from the KV anti-entropy mechanism."
+    },
+    {
+      "id": "special-cases-reuse-existing-abstractions",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents are needed to establish this as a cross-cutting pattern rather than a one-off; each shows a special concept (DLQ, thread ID) modeled as an instance of its domain's general concept."
+    },
+    {
+      "id": "state-ratchets-prevent-regression-across-domains",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents demonstrate structurally irreversible state progressions in their respective domains, and the 'eliminates entire classes of regression bugs' conclusion follows from the structural impossibility of backwards movement."
+    },
+    {
+      "id": "stock-exchange-price-time-priority",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The three antecedents map precisely to the three components of canonical price-time priority: aggressor/resting model, FIFO within price level, and maker-price execution."
+    },
+    {
+      "id": "stream-processing-correctness-is-doubly-forward-only",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent supplies dedup-finalization coordination (no double-counting), the second supplies forward-only ratchets (no revision) \u2014 together they cover both halves of the 'doubly forward-only' claim."
+    },
+    {
+      "id": "structural-correctness-and-testability-are-co-designed",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The mutual reinforcement claim follows logically: structural invariants narrow the state space (antecedent 1), and hermetic modules make that narrowed space exhaustively testable (antecedent 2)."
+    },
+    {
+      "id": "structural-discipline-prevents-consistency-bugs",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents contribute distinct structural disciplines (immutability prevents aliasing, synchronized structures prevent divergence), and the 'over runtime validation' framing follows from the by-construction nature of both techniques."
+    },
+    {
+      "id": "symmetric-graphs-enable-complete-lightweight-routing",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The enabling/causal claim is supported \u2014 the first antecedent's 'simplified visibility rules' establishes that symmetry guarantees routing completeness, and the second's 'binding' write-time decisions guarantee finality \u2014 though the counterfactual about asymmetric graphs requiring read-time correction is an unstated (but reasonable) assumption."
+    },
+    {
+      "id": "symmetric-social-graphs-simplify-visibility",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Both antecedents provide concrete examples of enforced bidirectionality (chat contacts, nearby-friends), and the visibility simplification ('if A sees B, B always sees A') follows directly from symmetry."
+    },
+    {
+      "id": "symmetry-simplifies-across-graph-domains",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 'cross-domain preference' generalization requires both the social graph (antecedent 1) and spatial graph (antecedent 2) examples to establish that symmetry is chosen across fundamentally different graph types."
+    },
+    {
+      "id": "temporal-check-gaps-are-systematic-risk",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The two antecedents are complementary \u2014 payment demonstrates the unmitigated bug, notification demonstrates the defensive fix \u2014 together establishing temporal gaps as a design concern requiring explicit mitigation."
+    },
+    {
+      "id": "temporal-correctness-gaps-are-known-and-accepted",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The first antecedent establishes the documented-to-implementation gap loop suggesting pedagogical intent, while the second adds the temporal-boundary clustering characterization that the claim explicitly references."
+    },
+    {
+      "id": "tested-properties-are-already-safe-by-construction",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The inverse-relationship insight is well-supported: antecedent 1 identifies what IS covered (structural properties via hermetic tests), antecedent 2 identifies what ISN'T (temporal boundaries under permissive safety) \u2014 together revealing that test coverage and residual risk are anti-correlated."
+    },
+    {
+      "id": "testing-and-construction-form-a-closed-correctness-loop",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The 'closed loop' synthesis is valid, though the specific claim that 'performance strategy ensures constructions remain testable' slightly overreads the second antecedent, which establishes alignment rather than enablement between performance and testability."
+    },
+    {
+      "id": "time-injection-enables-deterministic-testing",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Three time-injection antecedents establish the pattern count and the fourth establishes the inconsistency; all four are load-bearing for the two-part claim."
+    },
+    {
+      "id": "verification-gap-is-precisely-at-the-write-read-boundary",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "One antecedent covers self-verifying writes, the other covers least-verified reads; the inverse-correlation synthesis follows directly from the binary split."
+    },
+    {
+      "id": "video-pipeline-maximizes-useful-work-on-failure",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Generic DAG cascade behavior combined with the specific 3-parallel-branch topology directly entails that sibling failures don't block independent branches."
+    },
+    {
+      "id": "wallet-deadlock-free-concurrent-transfers",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent contributes exactly one of the three named disciplines (ordering, two-tier, frozen-inside-lock); removing any leaves one property unsubstantiated."
+    },
+    {
+      "id": "watermark-finalization-is-irreversible",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The three antecedents cover trigger mechanism, lifecycle direction, and post-emission immutability \u2014 all three are independently required for the hard-irreversibility conclusion."
+    },
+    {
+      "id": "write-available-architecture-is-self-verifying",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Antecedent 2's explicit statement that tests validate 'exactly the properties that structural construction already guarantees' directly supports the self-verifying loop claim when combined with antecedent 1's architectural characterization."
+    },
+    {
+      "id": "write-cost-allocation-matches-access-pattern",
+      "valid": false,
+      "sufficient": false,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The antecedents establish that both eager and lazy strategies exist per-use-case, but the specific causal claim that read frequency is the determining criterion is an interpretive leap requiring domain knowledge not present in the antecedent texts."
+    },
+    {
+      "id": "write-path-is-complete-and-consistent-in-symmetric-domains",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Antecedent 1 contributes routing completeness via graph symmetry while antecedent 2 contributes state validity via structural discipline; both are needed for the 'valid in state and complete in dispatch' conjunction."
+    },
+    {
+      "id": "write-path-is-self-consistent-by-design",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The claim is a faithful conjunction of data-level structural discipline (antecedent 1) and control-level routing simplicity (antecedent 2), with the 'reinforcing' characterization reasonably following from their complementary scopes."
+    },
+    {
+      "id": "write-read-cost-allocation-is-per-use-case",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The existence of both eager-rebuild and lazy-defer examples in the antecedents directly supports the conclusion that cost allocation varies per use case rather than following a single pattern."
+    },
+    {
+      "id": "write-shifting-extends-the-irreversibility-boundary",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The causal synthesis \u2014 write-shifting works because it moves computation into the irrevocable domain \u2014 follows from combining the mechanism (antecedent 1: write-shifting adjusts the boundary) with the property of the destination (antecedent 2: irreversibility eliminates undo/rollback complexity)."
+    },
+    {
+      "id": "write-time-decisions-are-lightweight-but-binding",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "One antecedent establishes 'lightweight' (reference-only fan-out), the other establishes 'binding' (irrevocable routing); the conjunction follows directly."
+    },
+    {
+      "id": "write-time-routing-is-irrevocable",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "Each antecedent provides one system's irrevocable write-time routing (news feed strategy selection, chat presence-based dispatch); both are needed to support the 'both systems' claim."
+    },
+    {
+      "id": "writes-are-cheap-reads-pay",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The two antecedents cleanly partition the asymmetry: one covers the write side (lightweight but binding), the other the read side (absorbs computation and consistency costs)."
+    },
+    {
+      "id": "writes-commit-irrevocably-reads-reconcile",
+      "valid": true,
+      "sufficient": true,
+      "necessary": true,
+      "unnecessary_antecedents": [],
+      "comment": "The forward-only antecedent explains WHY the reads-pay asymmetry is permanent \u2014 no undo mechanism exists \u2014 making both antecedents necessary for the 'mutually reinforcing' synthesis."
+    }
+  ]
+}
