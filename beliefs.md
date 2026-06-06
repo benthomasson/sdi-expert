@@ -1,7 +1,7 @@
 ---
 schema_version: "1.0"
 project_name: "reasons"
-updated_at: "2026-06-06T09:26:10+00:00"
+updated_at: "2026-06-06T12:21:58+00:00"
 node_count: 477
 generator: ftl-reasons/0.43.0
 ---
@@ -35,7 +35,7 @@ Ad click aggregation windows follow a one-directional lifecycle: OPEN → CLOSED
 - Source: entries/2026/06/05/topic-consistency-models.md
 
 ### adaptation-is-bidimensional-across-frequency-and-risk [IN] DERIVED
-The architecture adapts along two independent dimensions without cross-module coordination: cost allocation adapts to access frequency (celebrity threshold converts follower count into write-vs-read cost placement, eager-vs-lazy rebuild adapts to mutation-vs-query ratio), while safety mechanisms adapt to domain risk (pessimistic locking for financial domains, coordination-free structural discipline for social domains) — both adaptations are structurally encoded in module design, not runtime decisions.
+The architecture adapts along two largely independent dimensions: cost allocation adapts to access frequency (the celebrity threshold converts follower count into a write-vs-read cost placement decision, partitioning authors between eager push and read-time pull), while safety mechanisms adapt to domain risk (explicit locking for financial domains, coordination-free structural discipline for social domains). Both adaptations appear structurally encoded in module design rather than being purely runtime decisions, though the celebrity threshold itself operates as a runtime decision boundary.
 - Depends on: hybrid-fanout-instantiates-adaptive-cost-model, architecture-adapts-mechanisms-to-domain-risk
 
 ### adaptation-over-invention [IN] DERIVED
@@ -51,7 +51,7 @@ The codebase consistently favors algorithmic correctness and simplicity over per
 - Depends on: routing-heuristics-prioritize-correctness-over-tightness, brute-force-acceptable-at-pedagogical-scale
 
 ### algorithmic-simplicity-reinforces-structural-correctness [IN] DERIVED
-The preference for simpler algorithms (loose but admissible heuristics, brute-force at pedagogical scale) and the strategy of constraining existing structures for correctness (immutable values, synchronized collections) are mutually reinforcing: simpler algorithms have fewer edge cases that structural constraints must cover, and constraining existing structures is easier when the algorithms operating on them are straightforward — complexity in either dimension would stress the other.
+The codebase exhibits two complementary simplicity strategies — preferring simpler algorithms (loose but admissible heuristics, brute-force at pedagogical scale) and constraining existing structures for correctness (immutable values, synchronized collections) — that appear mutually compatible: simpler algorithms tend to have fewer edge cases that structural constraints must handle, and constraining existing structures is more tractable when the algorithms operating on them are straightforward.
 - Depends on: algorithmic-simplicity-is-preferred-over-optimal-performance, correctness-through-structural-reuse
 
 ### all-stateful-generators-thread-safe [IN] OBSERVATION
@@ -339,7 +339,7 @@ Daily spending is computed from `withdrawal` and `transfer_out` transactions onl
 - Source: entries/2026/06/05/digital-wallet-wallet.md
 
 ### data-isolation-gaps-parallel-access-control-gaps [IN] DERIVED
-Two data-plane isolation gaps parallel common authorization-plane permissiveness: BCC recipients stored alongside to/cc in email records could leak BCC information to other recipients, and a presigned URL signing secret generated once at class level rather than per instance means all ObjectStorage instances in the same process share a single HMAC key — creating a broader blast radius if that key is compromised.
+Two data-plane isolation gaps exist in the implementations: BCC recipients are stored alongside to/cc in the email record, which could leak BCC information to other recipients in a real system, and the presigned URL signing secret is generated once at class level rather than per instance, so all ObjectStorage instances in the same process share a single HMAC key — widening the blast radius if that key is compromised.
 - Depends on: email-service-bcc-stored-in-record, s3-presigned-secret-is-class-level
 
 ### dedup-and-finalization-are-coordinated [IN] DERIVED
@@ -359,7 +359,7 @@ The dedup registry evicts entries older than `2 * allowed_lateness` on watermark
 - Source: entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
 
 ### defense-in-depth-correctness [IN] DERIVED
-The architecture achieves defense-in-depth correctness through two independent layers: perimeter normalization guarantees clean inputs at system boundaries, and structural construction (immutability, synchronized structures, state ratchets) guarantees correct state transitions internally — neither alone covers the full input-to-state lifecycle, but together they eliminate an entire class of corruption bugs.
+The architecture pursues defense-in-depth correctness through two complementary layers: perimeter normalization establishes clean inputs at system boundaries (serving both security and feature correctness), while structural construction (immutability, synchronized structures, state ratchets) enforces correct state transitions internally — though this structural discipline is not universally applied, with critical invariants like quorum overlap and payment atomicity remaining assumed but unenforced. Where both layers are present, they reduce an important class of corruption bugs, but gaps in structural enforcement mean full lifecycle coverage is not yet achieved.
 - Depends on: boundary-normalization-serves-defense-and-correctness, structural-correctness-is-universally-applied
 
 ### deletion-is-append-only-across-all-contexts [IN] DERIVED
@@ -440,7 +440,7 @@ Retention is enforced per-publish: every `publish()` call trims the target parti
 - Source: entries/2026/06/05/distributed-message-queue-solution.md
 
 ### domain-excellence-composes-with-universal-invariant-enforcement [IN] DERIVED
-Domain-adapted specialization (achieving excellence through financial risk-adaptation and symmetric-domain quality optimization) and scale-independent invariant enforcement (quality guarantees holding regardless of scale or layer, with redundant prevention of state reversal) compose cleanly: adding new domain specializations customizes coordination mechanisms but cannot compromise the universal invariants that the redundant enforcement guarantees — specialization operates below the invariant ceiling.
+Domain-adapted specialization (achieving excellence through financial risk-adaptation and symmetric-domain quality optimization) and scale-independent invariant enforcement (quality guarantees holding regardless of scale or layer, with redundant prevention of state reversal) appear compositionally compatible: the antecedents establish that specialization operates within domain-specific coordination strategies while invariants hold independently of implementation complexity — suggesting that adding new domain specializations would customize coordination mechanisms without necessarily compromising universal invariants, since the redundant enforcement operates at a different architectural level than domain adaptation.
 - Depends on: domain-specialization-achieves-dual-excellence, architectural-invariants-are-scale-independent-and-redundantly-enforced
 
 ### domain-specialization-achieves-dual-excellence [IN] DERIVED
@@ -504,19 +504,19 @@ Data eviction timing varies across modules with no consistent strategy: message 
 - Depends on: dmq-retention-trimmed-on-publish, fixed-window-single-key-gc, url-shortener-expiration-lazy, dedup-pruning-uses-2x-lateness
 
 ### fan-out-write-pushes-references-not-data [IN] DERIVED
-Both chat (inbox routing) and news feed (post ID distribution) push lightweight references at write time, deferring full data hydration to the read path — this pattern decouples write-time fanout cost from payload size in these two systems.
+Both chat (inbox routing) and news feed (post ID distribution) push lightweight references at write time, deferring full data hydration to the read path — this shared pattern helps decouple write-time fanout cost from payload size in these two systems.
 - Depends on: chat-fanout-on-write, news-feed-fan-out-write-pushes-ids
 
 ### financial-auditability-is-emergent-from-accumulation [IN] DERIVED
-Payment ledger auditability is an emergent consequence of the architecture's irreversible accumulation: because double-entry pairs are append-only and balances are derived from complete ledger scans, the full financial history is structurally unlosable — auditability requires no separate bookkeeping because the state-growth property already guarantees complete traceability.
+Payment ledger auditability is supported by the architecture's irreversible accumulation: because double-entry pairs are append-only and balances are derived from complete ledger scans, the full financial history is structurally difficult to lose — though the audit mechanism may have blind spots (such as the integrity verification function's exclusion of transfer transactions), meaning auditability largely follows from the state-growth property but may not guarantee complete traceability without additional verification.
 - Depends on: payment-ledger-is-fully-auditable, state-is-irreversibly-accumulative
 
 ### financial-correctness-combines-locking-with-structural-asymmetry [IN] DERIVED
-Financial systems achieve end-to-end correctness through the intersection of domain-appropriate concurrency control (pessimistic locking for wallets, optimistic locking for hotels) and the architectural write-read asymmetry (irrevocable ledger entries, reconciling balance derivation): concurrency control prevents write-time corruption while structural asymmetry ensures read-time consistency — each mechanism covering the gap the other leaves open.
+Financial systems combine domain-appropriate concurrency control (pessimistic locking for wallets, optimistic locking for hotels) with write-read asymmetry (irrevocable ledger entries, reconciling balance derivation) to support end-to-end correctness: concurrency control prevents write-time corruption while structural asymmetry supports read-time consistency — provided the read path does not depend on assumed invariants that are never enforced in code, which would undermine the reconciliation that reads are supposed to perform.
 - Depends on: concurrency-safety-strategy-varies-by-financial-risk, write-read-asymmetry-is-end-to-end-correct
 
 ### financial-domains-are-most-completely-realized [IN] DERIVED
-Financial domains are the codebase's most completely realized instantiation of the full architecture: domain-adapted coordination strategies provide write-path safety, structural write-read asymmetry provides lifecycle correctness, and irreversible accumulation provides emergent auditability — the only domains that simultaneously achieve safety, correctness, and accountability across all three dimensions.
+Financial domains illustrate how multiple architectural properties converge to address safety, correctness, and accountability simultaneously: domain-adapted coordination strategies (explicit locking scaled to correctness cost) provide write-path safety, structural write-read asymmetry with forward-only guarantees supports lifecycle correctness, and irreversible accumulation yields emergent auditability — making these domains a notably complete instantiation of the architecture's multi-dimensional risk management.
 - Depends on: architecture-adapts-mechanisms-to-domain-risk, financial-auditability-is-emergent-from-accumulation
 
 ### fixed-window-single-key-gc [IN] OBSERVATION
@@ -623,11 +623,6 @@ GeohashIndex.nearby iterates all keys in `_index` to match prefixes, making it O
 ### growing-read-complexity-outpaces-test-coverage [IN] DERIVED
 As distribution complexity increases, the read path absorbs more correctness burden (deferred consistency, lazy computation, active repair), but the co-designed test infrastructure validates structural rather than temporal properties — the expanding read-path risk surface grows into exactly the domain that deterministic structural tests cannot cover.
 - Depends on: read-cost-scales-with-system-complexity, structural-correctness-and-testability-are-co-designed
-
-### growth-does-not-increase-maintenance-burden [IN] DERIVED
-The architecture's monotonically expanding verified state does not create a growing maintenance burden: self-reinforcing correctness means new state inherits verification from structural construction rather than requiring runtime checks, coordination-free scaling means adding state requires no coordination overhead, and robust cost allocation means read/write cost ratios remain stable as state grows — all structural properties of the architectural trinity.
-- Depends on: architectural-trinity-of-correctness-scaling-and-cost, monotonically-expanding-verified-state
-- Unless: assumed-invariants-are-unenforced
 
 ### heap-sign-negation-repurposes-min-heap [IN] DERIVED
 Both leaderboard (negated scores in SortedList) and URL frontier (sign-flipped sequence numbers in heapq) repurpose ascending-order data structures for alternative orderings by negating sort keys, rather than using custom comparators or different data structures.
@@ -861,7 +856,7 @@ Metrics is a concrete instantiation of the codebase's per-use-case write-read co
 - Depends on: metrics-indexing-separates-write-key-from-read-matching, metrics-sorted-invariant-survives-downsampling, write-read-cost-allocation-is-per-use-case
 
 ### metrics-is-complete-write-read-exemplar [IN] DERIVED
-Metrics is the codebase's most complete single-module instantiation of the write-read architecture, achieving both structural separation (frozen tags for write identity, subset matching for read flexibility) and per-use-case cost optimization (eager sorted insertion on writes, deferred matching on reads) — demonstrating that structural and economic separation are two facets of the same design.
+Metrics combines both structural write-read separation (frozen tags for write identity, subset matching for read flexibility) and per-use-case cost optimization (eager sorted insertion on writes, deferred matching on reads) within a single module — suggesting that structural and economic separation can be two facets of the same design.
 - Depends on: metrics-instantiates-write-read-cost-pattern, metrics-write-read-separation-is-structurally-complete
 
 ### metrics-series-keyed-by-frozen-tags [IN] OBSERVATION
@@ -897,7 +892,7 @@ Each module independently achieves the convergence of correctness, simplicity, a
 - Depends on: modules-are-independently-correct, correctness-simplicity-and-performance-converge
 
 ### modules-are-independently-correct [IN] DERIVED
-Each module achieves correctness independently: module isolation ensures no shared mutable state or cross-cutting dependencies, and universally applied structural correctness (immutability, state ratchets) holds within each module's boundary — together, each module's correctness can be verified and reasoned about in isolation.
+Module isolation and structural correctness support independent reasoning about each module's behavior: hermetic, standalone modules with no shared infrastructure avoid convention coupling across boundaries, while structural construction techniques (immutability, state ratchets) enforce many correctness properties within each module. However, this per-module correctness reasoning has limits — structural discipline is not universally applied, leaving critical invariants assumed but unenforced, and operational conventions that are locally reasonable may produce collectively unpredictable behavior across modules.
 - Depends on: module-isolation-is-pedagogical-and-architectural, structural-correctness-is-universally-applied
 - Unless: dmq-reused-by-stock-exchange
 
@@ -910,17 +905,13 @@ Each SDI module is independently runnable with only stdlib dependencies, in-proc
 The architecture resolves the tension between unconditionally growing state (forward-only, append-only) and finite physical resources through fidelity reduction rather than state reversal: bounded collections truncate old entries and probabilistic structures approximate counts, but no mechanism reverses or rolls back accumulated state — old data is forgotten, never undone.
 - Depends on: state-growth-is-unconditionally-monotonic, resource-bounding-uses-dual-fidelity-strategies
 
-### monotonically-expanding-verified-state [IN] DERIVED
-The architecture achieves permanently accumulating verified state: per-module self-reinforcing correctness composes with coordination-free scaling, and unconditional state monotonicity ensures no operation can reduce accumulated correctness guarantees — each module's verified properties persist and grow as the system scales, never regressing.
-- Depends on: self-reinforcing-correctness-composes-with-coordination-free-scaling, state-growth-is-unconditionally-monotonic
-
 ### monotonicity-and-caution-prevent-state-loss [IN] DERIVED
 Monotonic state ratchets (cursors only advance, windows never reopen) and cautious deletion (preconditions before permanent removal, two-phase trash workflows) together ensure that committed state can never be silently lost or regressed — unless wallet creation silently overwrites existing state, demonstrating that creation operations bypass both guards because the codebase protects against destructive deletion and regression but not destructive creation.
 - Depends on: state-ratchets-prevent-regression-across-domains, deletion-is-guarded-by-preconditions
 - Unless: wallet-creation-silently-overwrites
 
 ### monotonicity-is-the-universal-ordering-primitive [IN] DERIVED
-Monotonic progression is the codebase's universal mechanism for establishing order and preventing regression: ID generators ensure global sequencing, read cursors prevent consumption regression, and window lifecycles enforce irreversible finalization — all encoding progress as a single non-decreasing value.
+Monotonic progression is a primary mechanism in the codebase for establishing order and preventing regression: ID generators maintain monotonic ordering within their time granularity through distinct sub-millisecond strategies, while read cursors and window lifecycles use one-directional state progressions to prevent consumption regression and enforce irreversible finalization — all encoding progress as a non-decreasing value.
 - Depends on: id-generators-preserve-monotonic-order, state-ratchets-prevent-regression-across-domains
 
 ### morris-counter-32-estimators [IN] OBSERVATION
@@ -958,11 +949,6 @@ Per-user location history uses `deque(maxlen=100)`, silently dropping oldest ent
 ### nearby-friends-staleness-enforced-on-both-paths [IN] OBSERVATION
 Both notification (`update_location`) and query (`get_nearby_friends`) paths reject friend locations older than `location_ttl_seconds`
 - Source: entries/2026/06/05/nearby-friends-nearby_friends.md
-
-### nearby-friends-visibility-scales [IN] DERIVED
-Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses — meaning notification throughput degrades linearly with social graph density while query performance does not.
-- Depends on: nearby-friends-bidirectional-visibility, nearby-friends-staleness-enforced-on-both-paths
-- Unless: nearby-friends-update-location-skips-grid-filtering
 
 ### news-feed-cache-is-bounded-deque [IN] OBSERVATION
 Feed caches use `deque(maxlen=cache_size)` which silently drops the oldest post IDs when full, providing implicit eviction without explicit cache management
@@ -1242,7 +1228,7 @@ Representation decoupling operates at two architectural scales through the same 
 - Depends on: input-and-storage-representations-are-decoupled, logical-physical-separation-spans-topology-storage-and-deletion
 
 ### reservation-strategies-prevent-over-commitment [IN] DERIVED
-Two systems prevent over-commitment of shared resources through complementary reservation strategies: Google Drive reserves full quota at upload initiation (capacity locked upfront), while hotel reservations use optimistic version checks on per-date inventory (conflicts detected at commit) — both ensure capacity is not exceeded despite concurrent access.
+Two systems illustrate complementary approaches to preventing over-commitment of shared resources: Google Drive reserves full quota at upload initiation (capacity locked upfront via chunked upload protocol), while the hotel reservation system uses an optimistic read-then-verify-version pattern on per-date inventory — though the hotel implementation executes both phases synchronously, making its concurrency check demonstrative rather than functionally necessary under real interleaving.
 - Depends on: gdrive-quota-reservation, hotel-occ-two-phase-reserve
 
 ### resource-bounding-uses-dual-fidelity-strategies [IN] DERIVED
@@ -1362,7 +1348,7 @@ SnowflakeGenerator allows at most 4096 IDs per millisecond per worker (12-bit se
 - Source: entries/2026/06/05/unique-id-generator-unique_id_generator.md
 
 ### social-domains-fully-realize-ideal-write-path [IN] DERIVED
-Social domains are the purest instantiation of the architecture's write-path ideal: graph symmetry simultaneously provides routing completeness (all recipients reachable without lookup) and coordination freedom (no distributed agreement needed), achieving all three write-path virtues — cheapness, correctness, and coordination-free operation — from a single structural property.
+Social domains exemplify the write-path ideal described in the codebase: graph symmetry provides both routing completeness (all recipients reachable without lookup) and coordination freedom (no distributed ID generation needed), achieving the write-path triad of cheapness, correctness, and coordination-free operation through properties that emerge from non-interfering mechanisms rather than from a single structural property alone.
 - Depends on: social-writes-are-complete-and-coordination-free, write-path-is-cheap-correct-and-coordination-free
 
 ### social-systems-combine-symmetric-graphs-and-lightweight-fanout [IN] DERIVED
@@ -1394,7 +1380,7 @@ Special-case concepts are implemented as instances of existing abstractions rath
 - Depends on: dmq-dlq-is-regular-topic, email-service-thread-id-is-first-msg
 
 ### state-bounding-and-quality-scaling-are-orthogonal [IN] DERIVED
-The architecture bounds state evolution and preserves quality at scale through orthogonal mechanisms: state is bounded temporally (forward-only prevents regression) and spatially (fidelity reduction limits resource consumption), while quality scaling is achieved through adaptive coordination that preserves per-module triple convergence — bounding constrains physical resources without degrading logical correctness guarantees.
+The architecture bounds state evolution and supports quality preservation at scale through complementary mechanisms: state is bounded temporally (forward-only progression prevents regression) and spatially (fidelity reduction limits resource consumption), while quality-preserving scaling is supported by adaptive coordination that selects correctness mechanisms based on domain risk — together these constrain physical resources while maintaining logical correctness guarantees in the domains where targeted coordination is applied.
 - Depends on: state-is-temporally-and-spatially-bounded, adaptive-coordination-enables-quality-preserving-scaling
 
 ### state-growth-is-unconditionally-monotonic [IN] DERIVED
@@ -1423,7 +1409,7 @@ One-directional state machines are the concrete enforcement mechanism for tempor
 - Depends on: state-machines-instantiate-forward-only-monotonicity, temporal-gaps-are-contained-by-forward-only-design
 
 ### state-machines-instantiate-forward-only-monotonicity [IN] DERIVED
-One-directional state machines across domains (window lifecycles, alert evaluators) are concrete instantiations of the codebase's unified forward-only/monotonicity constraint: the architectural primitive that prevents regression and ensures progress manifests at the domain level as irreversible state progressions.
+One-directional state machines across domains (window lifecycles, alert evaluators) are concrete instantiations of the codebase's forward-only/monotonicity constraint: the architectural primitive that discourages regression and supports progress manifests at the domain level as largely irreversible state progressions, though partial regressions (e.g., PENDING→OK in alerting) show the constraint is applied with domain-specific flexibility rather than as a strict universal rule.
 - Depends on: one-directional-state-machines-span-domains, forward-only-and-monotonicity-are-a-single-constraint
 
 ### state-ratchets-prevent-regression-across-domains [IN] DERIVED
@@ -1485,7 +1471,7 @@ The codebase's preference for structural correctness (immutable values, synchron
 - Depends on: correctness-by-construction-not-validation, deterministic-testability-by-design
 
 ### structural-correctness-enables-safe-cost-shifting [IN] DERIVED
-Shifting computation between write and read paths is safe precisely because structural correctness (immutability, synchronized structures, state ratchets) is universally applied — cost reallocation cannot introduce consistency bugs because the structural discipline that prevents them holds on both paths, making the choice of where to compute a pure performance decision rather than a correctness risk.
+Where structural correctness disciplines (immutability, synchronized structures, state ratchets) are applied, shifting computation between write and read paths is primarily a performance decision rather than a correctness risk — the structural construction approach reduces (though does not eliminate) the chance that cost reallocation introduces consistency bugs. However, this safety does not extend to invariants that remain assumed but unenforced (such as quorum overlap and payment atomicity), where shifting computation could expose unguarded correctness gaps.
 - Depends on: structural-correctness-is-universally-applied, cost-model-adapts-to-access-frequency
 
 ### structural-correctness-is-universally-applied [IN] DERIVED
@@ -1497,13 +1483,8 @@ The codebase enforces correctness through structural construction (immutability,
 The codebase favors structural invariants — immutable value objects and synchronized parallel data structures — over runtime validation to prevent consistency bugs, eliminating aliasing and index-divergence defects by construction rather than by checking.
 - Depends on: immutable-values-prevent-aliasing-bugs, multi-structure-sync-invariant
 
-### sustainable-architecture-quality-under-enforcement [IN] DERIVED
-The architecture achieves sustainable quality: domain-adapted excellence composes with universal invariant enforcement to produce quality that never degrades across modules, and monotonically expanding verified state ensures new modules add to the system's knowledge without increasing maintenance burden — quality improves monotonically as the system grows, as long as structural invariants remain enforced.
-- Depends on: domain-excellence-composes-with-universal-invariant-enforcement, growth-does-not-increase-maintenance-burden
-- Unless: assumed-invariants-are-unenforced
-
 ### symmetric-domains-achieve-strongest-lifecycle-correctness [IN] DERIVED
-Symmetric domains achieve the codebase's strongest end-to-end correctness: the complete write-read lifecycle is structurally correct (bidirectional symmetry ensures complete routing, active reads converge state), and temporal gaps are independently contained by forward-only design — yielding domains where neither structural nor temporal invariants have gaps.
+Symmetric domains combine two independent correctness properties: the write-read lifecycle is structurally correct (bidirectional symmetry supports complete routing, active reads converge state), and temporal gaps are contained by forward-only design that prevents gap-induced regression — together these close both structural and temporal correctness concerns in these domains.
 - Depends on: write-read-lifecycle-is-correct-in-symmetric-domains, forward-only-preserves-correctness-despite-accepted-gaps
 
 ### symmetric-domains-are-quality-optimal [IN] DERIVED
@@ -1549,7 +1530,7 @@ Time injection enables fully deterministic testing by making wall-clock time an 
 - Unless: current-time-fallback-inconsistent
 
 ### two-tier-state-preserves-authority-under-monotonicity [IN] DERIVED
-The architecture maintains a two-tier state model: authoritative state (ledgers, version histories, tombstones) accumulates monotonically and irreversibly, while derived state (feed caches, click histories, aggregation views) is bounded and lossy — resource bounding applies only to the derived tier, preserving full audit trail at the authoritative tier.
+The codebase exhibits a pattern where state accumulates irreversibly (append-only, monotonically growing) while resource bounding is achieved through fidelity-reduction strategies — deterministic truncation (bounded deques, version pruning, history caps) and probabilistic approximation (Bloom filters, SimHash, HyperLogLog, Morris counters). This suggests a two-tier model where authoritative state grows without bound while derived or cached state is bounded and lossy, though the antecedents do not explicitly classify which specific structures (e.g., ledgers vs. feed caches) belong to which tier.
 - Depends on: state-is-irreversibly-accumulative, resource-bounding-uses-dual-fidelity-strategies
 - Unless: wallet-creation-silently-overwrites
 
@@ -1639,7 +1620,7 @@ Window state follows a one-way ratchet: OPEN → CLOSED → FINALIZED. Windows n
 - Source: entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
 
 ### write-coordination-freedom-is-safe-under-module-isolation [IN] DERIVED
-Write-path coordination-free correctness (deterministic identity, lightweight routing, structural discipline) is safe because module isolation prevents cross-module state corruption — unless assumed-but-unenforced invariants (quorum overlap, non-atomic checks) mean that scaling beyond in-process simulation would expose coordination gaps invisible at pedagogical scale.
+Write-path coordination-free correctness (deterministic identity, lightweight routing, structural discipline) is reinforced by module isolation, which prevents cross-module state corruption by ensuring no shared mutable state or cross-cutting dependencies — together, the coordination-free write path and independent module correctness support end-to-end write-path safety within each module's boundary.
 - Depends on: write-correctness-is-both-structural-and-coordination-free, modules-are-independently-correct
 - Unless: assumed-invariants-are-unenforced
 
@@ -1648,11 +1629,11 @@ The write-read architecture achieves end-to-end correctness with a coordination-
 - Depends on: write-path-is-coordination-free-and-correct, write-read-asymmetry-is-end-to-end-correct
 
 ### write-correctness-scales-from-routing-to-matching [IN] DERIVED
-Write-path structural correctness scales from simple fan-out routing to complex multi-step matching without adding distributed coordination: social domains achieve complete, coordination-free routing via graph symmetry, while the stock exchange achieves correct price-time priority matching with partial fills via structural reuse — both are coordination-free, differing only in mutation complexity.
+Write-path structural correctness spans a range of mutation complexity without requiring distributed coordination: social domains achieve complete, coordination-free routing through graph symmetry and deterministic identity derivation, while the stock exchange achieves correct price-time priority matching with partial fills through structural discipline (FIFO deques, sorted price levels) — both rely on local structural properties rather than distributed coordination, differing primarily in the compositional complexity of their write operations.
 - Depends on: social-writes-are-complete-and-coordination-free, stock-exchange-validates-complex-write-correctness
 
 ### write-cost-allocation-matches-access-pattern [IN] DERIVED
-The codebase's default cost model pushes deferred costs to reads, but this is selectively overridden based on access patterns: eagerly rebuilt derived state (such as autocomplete caches and leaderboard indexes) and lazily deferred computation (such as time decay, expiration, and balance derivation) coexist, suggesting that access-pattern frequency influences where the cost boundary is placed for a given use case.
+The codebase's default cost model pushes deferred costs to reads, but this default is selectively overridden: eagerly rebuilt derived state (such as autocomplete caches and leaderboard indexes) and lazily deferred computation (such as time decay, expiration, and balance derivation) coexist as deliberate per-use-case design choices, suggesting that access-pattern considerations influence where the cost boundary is placed.
 - Depends on: write-read-cost-allocation-is-per-use-case, writes-are-cheap-reads-pay
 
 ### write-path-eliminates-coordination-across-identity-and-routing [IN] DERIVED
@@ -1676,7 +1657,7 @@ Write-path consistency is achieved through two reinforcing mechanisms: structura
 - Depends on: structural-discipline-prevents-consistency-bugs, write-time-decisions-are-lightweight-but-binding
 
 ### write-path-validity-spans-the-full-complexity-spectrum [IN] DERIVED
-The write path guarantees valid forward progress across the full complexity spectrum: structural correctness scales from simple fan-out routing (social domains) to complex multi-step matching (stock exchange) without adding distributed coordination, and forward-only design ensures every write regardless of complexity produces irreversible state advancement — together establishing that no write can produce invalid or reversible state.
+The write path supports valid forward progress across a range of complexity: structural correctness scales from simple fan-out routing (social domains) to complex multi-step matching (stock exchange) without adding distributed coordination, and forward-only design — the architecture's most load-bearing constraint — acts as a primary correctness mechanism that contains temporal gaps and prevents regression. Together these properties provide strong architectural support for writes producing irreversible state advancement, though the absolute guarantee of no invalid or reversible state is an architectural intent rather than a formally proven invariant.
 - Depends on: write-correctness-scales-from-routing-to-matching, forward-only-is-the-architectures-load-bearing-constraint
 
 ### write-read-asymmetry-is-end-to-end-correct [IN] DERIVED
@@ -1831,6 +1812,11 @@ Module isolation limits the blast radius of compounding safety and correctness g
 - Depends on: module-isolation-is-pedagogical-and-architectural, safety-and-correctness-gaps-compound
 - Unless: dmq-reused-by-stock-exchange
 
+### growth-does-not-increase-maintenance-burden [OUT] DERIVED
+The architecture's monotonically expanding verified state does not create a growing maintenance burden: self-reinforcing correctness means new state inherits verification from structural construction rather than requiring runtime checks, coordination-free scaling means adding state requires no coordination overhead, and robust cost allocation means read/write cost ratios remain stable as state grows — all structural properties of the architectural trinity.
+- Depends on: architectural-trinity-of-correctness-scaling-and-cost, monotonically-expanding-verified-state
+- Unless: assumed-invariants-are-unenforced
+
 ### hotel-cancel-no-underflow-guard [OUT] OBSERVATION
 `cancel()` decrements `booked` without checking for `booked >= 0`, so a double-cancel bug (if the status check were bypassed) could produce negative inventory counts.
 - Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
@@ -1873,9 +1859,20 @@ Module autonomy is the structural precondition for per-use-case cost optimizatio
 Module autonomy extends beyond implementation to encompass both operational conventions (error signaling varies by module, eviction timing has no codebase standard) and safety enforcement (error boundaries are module-local, access control defaults favor permissiveness), meaning there are no cross-cutting architectural constraints — each module is entirely self-governing in how it handles errors, manages resources, and enforces security.
 - Depends on: operational-conventions-are-module-scoped, safety-is-local-and-permissive
 
+### monotonically-expanding-verified-state [STALE] DERIVED
+The architecture achieves permanently accumulating verified state: per-module self-reinforcing correctness composes with coordination-free scaling, and unconditional state monotonicity ensures no operation can reduce accumulated correctness guarantees — each module's verified properties persist and grow as the system scales, never regressing.
+- Depends on: self-reinforcing-correctness-composes-with-coordination-free-scaling, state-growth-is-unconditionally-monotonic
+- Stale reason: research: abandoned — Category error is structural, not a matter of degree: 'state lattice only grows' is a property of the data domain, while 'correctness never regresses' is a property of the semantic/verification domain. No softening of wording bridges this gap — you can monotonically append state that violates every invariant. A bridge premise like 'all state transitions preserve correctness' would need to exist, but that would be an extremely strong claim about the system that is unlikely to be justified in the network, and even if found, the depth-10 chain would still be making an unsupported universal ('no operation can reduce correctness'). The insight is too far removed from what the antecedents actually establish.
+
 ### nearby-friends-update-location-skips-grid-filtering [OUT] OBSERVATION
 `update_location` iterates all friends and computes haversine for each (O(friends)), while `get_nearby_friends` uses the grid index to narrow candidates before distance checks
 - Source: entries/2026/06/05/nearby-friends-nearby_friends.md
+
+### nearby-friends-visibility-scales [STALE] DERIVED
+Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses — meaning notification throughput degrades linearly with social graph density while query performance does not.
+- Depends on: nearby-friends-bidirectional-visibility, nearby-friends-staleness-enforced-on-both-paths
+- Unless: nearby-friends-update-location-skips-grid-filtering
+- Stale reason: research: abandoned — The belief has a fundamental structural contradiction: its unless clause requires the grid-skipping fact to be OUT (disbelieved), but the claim text asserts that exact grid-skipping behavior as true. This means the belief is only IN when its own core claim is unsupported, and is OUT when its claim is actually true. This isn't a missing antecedent or overstated wording — it's an inverted logical structure that cannot be fixed by linking or softening. The belief needs to be reconstructed from scratch with correct dependency direction.
 
 ### no-divergence-annotations [OUT] OBSERVATION
 The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.
@@ -1926,6 +1923,11 @@ Security permissiveness is systematic across two independent dimensions: policy 
 ### stock-exchange-no-input-validation [OUT] OBSERVATION
 The matching engine performs no validation on order fields (quantity, price, side); callers are trusted to provide valid inputs.
 - Source: entries/2026/06/05/stock-exchange-solution.md
+
+### sustainable-architecture-quality-under-enforcement [OUT] DERIVED
+The architecture supports sustainable quality through two composing properties: domain-adapted specialization operates below universal invariant enforcement, so adding new specializations cannot compromise structural guarantees; and monotonically expanding verified state inherits verification from construction rather than requiring runtime checks, so growth does not proportionally increase maintenance burden. Together these properties suggest quality can be maintained — and potentially improved — as the system grows, provided structural invariants remain enforced.
+- Depends on: domain-excellence-composes-with-universal-invariant-enforcement, growth-does-not-increase-maintenance-burden
+- Unless: assumed-invariants-are-unenforced
 
 ### temporal-check-gaps-are-systematic-risk [OUT] DERIVED
 The gap between checking a condition and acting on it is a recurring design concern: the payment system has two independent TOCTOU windows in the same code path, while the notification system defensively re-checks rate limits at both send and process time — demonstrating that temporal check gaps require explicit architectural mitigation rather than assuming atomicity.
