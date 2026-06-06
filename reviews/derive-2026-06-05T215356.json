@@ -1,0 +1,677 @@
+{
+  "timestamp": "2026-06-05T21:53:56",
+  "status": "complete",
+  "model": "claude",
+  "timeout": 600,
+  "exhaust": true,
+  "filters": {
+    "domain": null,
+    "topic": null,
+    "min_depth": null,
+    "max_depth": null,
+    "premises": false,
+    "has_dependents": false,
+    "budget": 300,
+    "sample": true,
+    "cluster": false,
+    "intra_cluster": false,
+    "embedding_model": null,
+    "n_clusters": null,
+    "prompt_file": null
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "network_stats": {
+        "total_in": 308,
+        "total_derived": 160,
+        "max_depth": 9,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "state-is-irreversibly-accumulative",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-preserves-correctness-despite-accepted-gaps",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-simplicity-and-performance-converge",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-path-responsibility-exceeds-verification",
+          "truth_value": "IN"
+        },
+        {
+          "id": "structural-correctness-enables-safe-cost-shifting",
+          "truth_value": "IN"
+        },
+        {
+          "id": "scaling-uses-logically-uniform-indirection",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-is-doubly-preserved",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-path-eliminates-coordination-across-identity-and-routing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "algorithmic-simplicity-reinforces-structural-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-read-lifecycle-is-correct-in-symmetric-domains",
+          "truth_value": "IN"
+        },
+        {
+          "id": "modules-are-independently-correct",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 11
+    },
+    {
+      "round": 2,
+      "network_stats": {
+        "total_in": 319,
+        "total_derived": 171,
+        "max_depth": 9,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "write-path-is-coordination-free-and-correct",
+          "truth_value": "IN"
+        },
+        {
+          "id": "simplicity-is-dual-minimization",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-machines-instantiate-forward-only-monotonicity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "perimeter-defense-enables-cheap-writes",
+          "truth_value": "IN"
+        },
+        {
+          "id": "deletion-reinforces-monotonic-state",
+          "truth_value": "IN"
+        },
+        {
+          "id": "accumulative-state-scales-without-coordination",
+          "truth_value": "IN"
+        },
+        {
+          "id": "module-level-triple-convergence",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-enables-robust-cost-allocation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetric-domains-achieve-strongest-lifecycle-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-is-self-reinforcing-per-module",
+          "truth_value": "IN"
+        },
+        {
+          "id": "cost-shifting-is-fully-verifiable",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 11
+    },
+    {
+      "round": 3,
+      "network_stats": {
+        "total_in": 329,
+        "total_derived": 182,
+        "max_depth": 9,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 17,
+      "valid": 17,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "metrics-indexing-separates-write-key-from-read-matching",
+          "truth_value": "IN"
+        },
+        {
+          "id": "video-pipeline-separates-control-from-data-flow",
+          "truth_value": "IN"
+        },
+        {
+          "id": "hybrid-fanout-bounds-both-write-and-read-cost",
+          "truth_value": "IN"
+        },
+        {
+          "id": "metrics-sorted-invariant-survives-downsampling",
+          "truth_value": "IN"
+        },
+        {
+          "id": "kv-write-path-separates-coordinator-from-replication",
+          "truth_value": "IN"
+        },
+        {
+          "id": "concurrency-safety-strategy-varies-by-financial-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "pedagogical-breadth-is-safely-contained",
+          "truth_value": "IN"
+        },
+        {
+          "id": "probabilistic-dedup-trades-memory-for-coverage",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetry-is-both-simplifier-and-routing-enabler",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-correctness-is-both-structural-and-coordination-free",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-machines-enforce-temporal-gap-containment",
+          "truth_value": "IN"
+        },
+        {
+          "id": "simplicity-mechanisms-independently-produce-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-compensates-for-read-path-verification-gap",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-growth-is-unconditionally-monotonic",
+          "truth_value": "IN"
+        },
+        {
+          "id": "coordination-free-scaling-preserves-triple-convergence",
+          "truth_value": "IN"
+        },
+        {
+          "id": "self-reinforcing-correctness-composes-with-coordination-free-scaling",
+          "truth_value": "IN"
+        },
+        {
+          "id": "all-monetary-operations-maintain-double-entry-invariant",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 17
+    },
+    {
+      "round": 4,
+      "network_stats": {
+        "total_in": 345,
+        "total_derived": 199,
+        "max_depth": 9,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 13,
+      "valid": 13,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "architectural-trinity-of-correctness-scaling-and-cost",
+          "truth_value": "IN"
+        },
+        {
+          "id": "monotonically-expanding-verified-state",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-and-monotonicity-jointly-bound-read-path-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "symmetric-domains-are-quality-optimal",
+          "truth_value": "IN"
+        },
+        {
+          "id": "temporal-regression-is-structurally-impossible",
+          "truth_value": "IN"
+        },
+        {
+          "id": "financial-auditability-is-emergent-from-accumulation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "hybrid-fanout-instantiates-adaptive-cost-model",
+          "truth_value": "IN"
+        },
+        {
+          "id": "financial-correctness-combines-locking-with-structural-asymmetry",
+          "truth_value": "IN"
+        },
+        {
+          "id": "design-to-verification-traceability",
+          "truth_value": "IN"
+        },
+        {
+          "id": "control-data-separation-enables-forward-progress",
+          "truth_value": "IN"
+        },
+        {
+          "id": "resource-bounding-uses-dual-fidelity-strategies",
+          "truth_value": "IN"
+        },
+        {
+          "id": "boundary-normalization-serves-defense-and-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "financial-concurrency-is-comprehensively-safe",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 13
+    },
+    {
+      "round": 5,
+      "network_stats": {
+        "total_in": 357,
+        "total_derived": 212,
+        "max_depth": 10,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 10,
+      "valid": 10,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "notification-delivery-is-bounded",
+          "truth_value": "IN"
+        },
+        {
+          "id": "metrics-write-read-separation-is-structurally-complete",
+          "truth_value": "IN"
+        },
+        {
+          "id": "metrics-instantiates-write-read-cost-pattern",
+          "truth_value": "IN"
+        },
+        {
+          "id": "event-and-task-processing-share-forward-only-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "per-module-design-to-verification-is-hermetic",
+          "truth_value": "IN"
+        },
+        {
+          "id": "coordination-strategy-adapts-to-correctness-cost",
+          "truth_value": "IN"
+        },
+        {
+          "id": "two-tier-state-preserves-authority-under-monotonicity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-spans-data-domain-and-execution-layers",
+          "truth_value": "IN"
+        },
+        {
+          "id": "quality-convergence-is-scale-independent",
+          "truth_value": "IN"
+        },
+        {
+          "id": "architecture-adapts-mechanisms-to-domain-risk",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 10
+    },
+    {
+      "round": 6,
+      "network_stats": {
+        "total_in": 367,
+        "total_derived": 222,
+        "max_depth": 10,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 12,
+      "valid": 12,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "notification-instantiates-forward-only-delivery",
+          "truth_value": "IN"
+        },
+        {
+          "id": "metrics-is-complete-write-read-exemplar",
+          "truth_value": "IN"
+        },
+        {
+          "id": "defense-in-depth-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "social-writes-are-complete-and-coordination-free",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-is-temporally-and-spatially-bounded",
+          "truth_value": "IN"
+        },
+        {
+          "id": "financial-domains-are-most-completely-realized",
+          "truth_value": "IN"
+        },
+        {
+          "id": "stock-exchange-validates-complex-write-correctness",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-reversal-is-redundantly-prevented",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-path-is-cheap-correct-and-coordination-free",
+          "truth_value": "IN"
+        },
+        {
+          "id": "perimeter-and-forward-only-jointly-bound-state-space",
+          "truth_value": "IN"
+        },
+        {
+          "id": "quality-guarantees-are-scale-and-layer-independent",
+          "truth_value": "IN"
+        },
+        {
+          "id": "financial-correctness-is-end-to-end",
+          "truth_value": "OUT"
+        }
+      ],
+      "added": 12
+    },
+    {
+      "round": 7,
+      "network_stats": {
+        "total_in": 378,
+        "total_derived": 234,
+        "max_depth": 10,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "forward-only-is-universal-processing-primitive",
+          "truth_value": "IN"
+        },
+        {
+          "id": "domain-specialization-achieves-dual-excellence",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-correctness-scales-from-routing-to-matching",
+          "truth_value": "IN"
+        },
+        {
+          "id": "correctness-is-layered-and-self-reinforcing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-is-bounded-and-authority-preserving",
+          "truth_value": "IN"
+        },
+        {
+          "id": "verified-simplicity-is-hermetically-contained",
+          "truth_value": "IN"
+        },
+        {
+          "id": "adaptive-coordination-enables-quality-preserving-scaling",
+          "truth_value": "IN"
+        },
+        {
+          "id": "social-domains-fully-realize-ideal-write-path",
+          "truth_value": "IN"
+        },
+        {
+          "id": "scaling-is-safe-for-both-quality-and-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "architectural-invariants-are-scale-independent-and-redundantly-enforced",
+          "truth_value": "IN"
+        },
+        {
+          "id": "growth-does-not-increase-maintenance-burden",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 11
+    },
+    {
+      "round": 8,
+      "network_stats": {
+        "total_in": 389,
+        "total_derived": 245,
+        "max_depth": 11,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 6,
+      "valid": 6,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "monotonic-state-is-bounded-by-fidelity-not-reversal",
+          "truth_value": "IN"
+        },
+        {
+          "id": "idempotency-extends-forward-only-to-client-boundary",
+          "truth_value": "IN"
+        },
+        {
+          "id": "delivery-guarantees-follow-write-read-cost-asymmetry",
+          "truth_value": "IN"
+        },
+        {
+          "id": "conflict-resolution-is-forward-only-at-all-distribution-levels",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-is-the-architectures-load-bearing-constraint",
+          "truth_value": "IN"
+        },
+        {
+          "id": "dedup-is-stratified-across-boundaries-and-accuracy-levels",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 6
+    },
+    {
+      "round": 9,
+      "network_stats": {
+        "total_in": 395,
+        "total_derived": 251,
+        "max_depth": 11,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 16,
+      "valid": 16,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "cascade-effects-propagate-through-graph-traversal",
+          "truth_value": "IN"
+        },
+        {
+          "id": "spatial-queries-combine-adaptive-resolution-with-exact-filtering",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-paths-filter-by-entity-state",
+          "truth_value": "IN"
+        },
+        {
+          "id": "input-and-storage-representations-are-decoupled",
+          "truth_value": "IN"
+        },
+        {
+          "id": "ledger-supports-asymmetric-read-interpretation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "reservation-strategies-prevent-over-commitment",
+          "truth_value": "IN"
+        },
+        {
+          "id": "approximation-spans-counting-windowing-and-similarity",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-extends-to-time-generation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "complete-dependency-injection-enables-hermetic-testing",
+          "truth_value": "IN"
+        },
+        {
+          "id": "notification-system-is-delivery-complete",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "read-responsibility-spans-convergence-and-filtering",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-coordination-freedom-is-safe-under-module-isolation",
+          "truth_value": "IN"
+        },
+        {
+          "id": "ledger-interpretation-is-consistently-safe",
+          "truth_value": "OUT"
+        },
+        {
+          "id": "correctness-scales-through-adaptation-and-self-reinforcement",
+          "truth_value": "IN"
+        },
+        {
+          "id": "state-bounding-and-quality-scaling-are-orthogonal",
+          "truth_value": "IN"
+        },
+        {
+          "id": "domain-excellence-composes-with-universal-invariant-enforcement",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 16
+    },
+    {
+      "round": 10,
+      "network_stats": {
+        "total_in": 409,
+        "total_derived": 267,
+        "max_depth": 11,
+        "agents": 0,
+        "agent_names": [],
+        "budget": 300,
+        "sample": true
+      },
+      "proposals_found": 11,
+      "valid": 11,
+      "skipped": [],
+      "applied": [
+        {
+          "id": "correctness-has-universal-floor-and-adaptive-ceiling",
+          "truth_value": "IN"
+        },
+        {
+          "id": "sustainable-architecture-quality-under-enforcement",
+          "truth_value": "IN"
+        },
+        {
+          "id": "adaptation-is-bidimensional-across-frequency-and-risk",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-unifies-processing-and-conflict-resolution",
+          "truth_value": "IN"
+        },
+        {
+          "id": "forward-only-is-universally-load-bearing-across-all-layers",
+          "truth_value": "IN"
+        },
+        {
+          "id": "information-preservation-is-doubly-guaranteed",
+          "truth_value": "IN"
+        },
+        {
+          "id": "module-boundary-is-universal-containment-mechanism",
+          "truth_value": "IN"
+        },
+        {
+          "id": "write-path-validity-spans-the-full-complexity-spectrum",
+          "truth_value": "IN"
+        },
+        {
+          "id": "duplicate-prevention-is-complete-from-api-to-storage",
+          "truth_value": "IN"
+        },
+        {
+          "id": "read-path-is-universal-site-of-deferred-work",
+          "truth_value": "IN"
+        },
+        {
+          "id": "representation-decoupling-spans-module-and-architecture-scales",
+          "truth_value": "IN"
+        }
+      ],
+      "added": 11
+    }
+  ],
+  "total_added": 118
+}

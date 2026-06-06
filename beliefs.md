@@ -1,7 +1,7 @@
 ---
 schema_version: "1.0"
 project_name: "reasons"
-updated_at: "2026-06-06T12:21:58+00:00"
+updated_at: "2026-06-06T19:54:59+00:00"
 node_count: 477
 generator: ftl-reasons/0.43.0
 ---
@@ -53,6 +53,11 @@ The codebase consistently favors algorithmic correctness and simplicity over per
 ### algorithmic-simplicity-reinforces-structural-correctness [IN] DERIVED
 The codebase exhibits two complementary simplicity strategies — preferring simpler algorithms (loose but admissible heuristics, brute-force at pedagogical scale) and constraining existing structures for correctness (immutable values, synchronized collections) — that appear mutually compatible: simpler algorithms tend to have fewer edge cases that structural constraints must handle, and constraining existing structures is more tractable when the algorithms operating on them are straightforward.
 - Depends on: algorithmic-simplicity-is-preferred-over-optimal-performance, correctness-through-structural-reuse
+
+### all-monetary-operations-maintain-double-entry-invariant [IN] DERIVED
+All monetary operations maintain the double-entry invariant under concurrency: payment ledgers create balanced debit-credit pairs for every movement, and wallet transfers are deadlock-free with frozen-check inside the lock — unless the non-atomic balance check allows concurrent payments to create valid double-entry pairs for overdrafted amounts, producing an internally consistent but financially incorrect ledger.
+- Depends on: payment-double-entry-guarantees-balance-integrity, wallet-transfers-are-safe-under-concurrency
+- Unless: payment-balance-check-not-atomic
 
 ### all-stateful-generators-thread-safe [IN] OBSERVATION
 Every generator with mutable state (Snowflake, Ticket, Flake, ULID, Coordinator) protects it with a `threading.Lock`.
@@ -511,9 +516,19 @@ Both chat (inbox routing) and news feed (post ID distribution) push lightweight 
 Payment ledger auditability is supported by the architecture's irreversible accumulation: because double-entry pairs are append-only and balances are derived from complete ledger scans, the full financial history is structurally difficult to lose — though the audit mechanism may have blind spots (such as the integrity verification function's exclusion of transfer transactions), meaning auditability largely follows from the state-growth property but may not guarantee complete traceability without additional verification.
 - Depends on: payment-ledger-is-fully-auditable, state-is-irreversibly-accumulative
 
+### financial-concurrency-is-comprehensively-safe [IN] DERIVED
+Financial systems achieve comprehensive monetary safety when domain-appropriate concurrency strategies (pessimistic locking, optimistic version checks) and monotonic state ratchets (cursors that only advance, preconditions before removal) jointly prevent both concurrent corruption and state regression across all money-movement operations.
+- Depends on: concurrency-safety-strategy-varies-by-financial-risk, monotonicity-and-caution-prevent-state-loss
+- Unless: payment-balance-check-not-atomic
+
 ### financial-correctness-combines-locking-with-structural-asymmetry [IN] DERIVED
 Financial systems combine domain-appropriate concurrency control (pessimistic locking for wallets, optimistic locking for hotels) with write-read asymmetry (irrevocable ledger entries, reconciling balance derivation) to support end-to-end correctness: concurrency control prevents write-time corruption while structural asymmetry supports read-time consistency — provided the read path does not depend on assumed invariants that are never enforced in code, which would undermine the reconciliation that reads are supposed to perform.
 - Depends on: concurrency-safety-strategy-varies-by-financial-risk, write-read-asymmetry-is-end-to-end-correct
+
+### financial-correctness-is-end-to-end [IN] DERIVED
+Financial domains achieve end-to-end correctness when domain-adapted coordination (pessimistic locking for wallets, optimistic control for hotels, combined with structural write-read asymmetry) combines with emergent auditability from irreversible accumulation — producing the architecture's only domains with simultaneous safety, lifecycle correctness, and full traceability.
+- Depends on: financial-correctness-combines-locking-with-structural-asymmetry, financial-auditability-is-emergent-from-accumulation
+- Unless: payment-balance-check-not-atomic
 
 ### financial-domains-are-most-completely-realized [IN] DERIVED
 Financial domains illustrate how multiple architectural properties converge to address safety, correctness, and accountability simultaneously: domain-adapted coordination strategies (explicit locking scaled to correctness cost) provide write-path safety, structural write-read asymmetry with forward-only guarantees supports lifecycle correctness, and irreversible accumulation yields emergent auditability — making these domains a notably complete instantiation of the architecture's multi-dimensional risk management.
@@ -787,6 +802,11 @@ All public-facing rank values are 1-based; internal `SortedList.index()` returns
 `update_score` removes the old entry from the sorted list and inserts a new one rather than mutating in place, which is the correct approach since in-place mutation would violate sort order
 - Source: entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
 
+### ledger-interpretation-is-consistently-safe [IN] DERIVED
+The financial ledger's dual interpretation (full balance from complete scan, spending limits from outflows only) provides both audit completeness and focused business metrics from a single data source — unless the non-atomic balance check allows concurrent mutations between balance reads and spending limit enforcement, enabling over-spending that neither interpretation would detect in isolation.
+- Depends on: payment-ledger-is-fully-auditable, daily-limit-only-counts-outflows
+- Unless: payment-balance-check-not-atomic
+
 ### ledger-supports-asymmetric-read-interpretation [IN] DERIVED
 The financial ledger supports multiple asymmetric interpretations from a single data source: full-scan balance derivation counts all transactions, while daily spending limits count only outflows (withdrawals, transfers out) — the ledger is the sole source of truth but different read paths apply different projection filters.
 - Depends on: balance-derived-from-ledger, daily-limit-only-counts-outflows
@@ -1006,10 +1026,6 @@ Autocomplete and web crawler both normalize inputs (query strings, URLs) exactly
 Delivery retry uses exponential backoff (`2^(retry-1)`) multiplied by a random jitter factor in [0.5, 1.5] to prevent thundering herd on provider recovery
 - Source: entries/2026/06/05/notification-system-notification_system.md
 
-### notif-group-key-unused [IN] OBSERVATION
-`_pending_groups` dict and `_group_window` field are initialized in `NotificationService.__init__` but never used — appears to be a planned notification batching/digest feature that was never implemented
-- Source: entries/2026/06/05/notification-system-notification_system.md
-
 ### notif-priority-heap-stable [IN] OBSERVATION
 The priority queue uses a three-element key `(priority, timestamp, seq)` where `seq` is a monotonic counter, ensuring stable FIFO ordering within the same priority level
 - Source: entries/2026/06/05/notification-system-notification_system.md
@@ -1042,6 +1058,11 @@ The notification delivery pipeline is bounded: double rate checks at send and pr
 Notification delivery is a concrete instantiation of forward-only failure handling: double rate checks bound over-delivery, exponential backoff spaces retries, and escalation to permanent failure ensures the delivery pipeline terminates in finite time — the forward-only principle applied to the entire attempt-retry-escalate lifecycle.
 - Depends on: notification-delivery-is-bounded, forward-only-extends-to-failure-handling
 
+### notification-system-is-delivery-complete [IN] DERIVED
+The notification system achieves delivery completeness when bounded delivery (double rate checks, retry escalation), strict rendering (fail-fast on missing templates/variables), and stable ordering (deterministic priority queue) all function correctly — unless the unused group-key infrastructure signals an incomplete aggregation feature needed for batch delivery scenarios.
+- Depends on: notification-delivery-is-bounded, notif-template-rendering-strict, notif-priority-heap-stable
+- Unless: notif-group-key-unused
+
 ### one-directional-state-machines-span-domains [IN] DERIVED
 One-directional state machines appear across unrelated domains: stream processing windows (OPEN→CLOSED→FINALIZED) use irreversible state progression to control event acceptance at each stage, and metrics alerting (OK→PENDING→ALERTING→RESOLVED) uses ordered states to gate alert firing through a duration threshold. Both employ forward-progressing state to reduce complexity, though the alerting machine allows a partial regression (PENDING→OK) when conditions clear early, making it not strictly one-directional.
 - Depends on: window-lifecycle-one-directional, metrics-alert-state-machine-four-states
@@ -1049,10 +1070,6 @@ One-directional state machines appear across unrelated domains: stream processin
 ### operational-conventions-are-module-scoped [IN] DERIVED
 Operational concerns — error signaling strategies (exceptions vs return codes vs None), eviction timing (eager vs lazy vs deferred), and failure reporting — are designed per-module with no cross-cutting conventions, meaning each module makes locally reasonable choices that collectively produce an unpredictable system-wide operational surface for callers.
 - Depends on: error-boundaries-are-module-local, eviction-timing-has-no-codebase-convention
-
-### payment-balance-check-not-atomic [IN] OBSERVATION
-`process_payment` checks balance before processing but the check and ledger write are not atomic — a race condition under concurrency that real systems solve with optimistic locking or serializable transactions
-- Source: entries/2026/06/05/payment-system-payment_system.md
 
 ### payment-balance-never-cached [IN] OBSERVATION
 `PaymentSystem.get_balance()` derives balance by scanning the full ledger on every call; no running total or balance cache is maintained.
@@ -1706,11 +1723,6 @@ The video processing pipeline wires a 5-stage DAG: validate → (transcode | thu
 `get_feed` blends recommendation strategies using reciprocal rank fusion: each strategy contributes `weight * 1/(rank+1)` to a video's score, with default weights favoring collaborative (0.5) over popular (0.3) over content-based (0.2).
 - Source: entries/2026/06/05/design-youtube-design_youtube.md
 
-### all-monetary-operations-maintain-double-entry-invariant [OUT] DERIVED
-All monetary operations maintain the double-entry invariant under concurrency: payment ledgers create balanced debit-credit pairs for every movement, and wallet transfers are deadlock-free with frozen-check inside the lock — unless the non-atomic balance check allows concurrent payments to create valid double-entry pairs for overdrafted amounts, producing an internally consistent but financially incorrect ledger.
-- Depends on: payment-double-entry-guarantees-balance-integrity, wallet-transfers-are-safe-under-concurrency
-- Unless: payment-balance-check-not-atomic
-
 ### architectural-coherence-is-bounded-at-the-write-read-split [OUT] DERIVED
 The write-available, read-correct architecture is coherent exactly at the structural boundary: everything within the structural safety net (immutability, construction-based guarantees, deterministic testing) reinforces itself in a self-consistent system, but coherence cannot extend past what structural enforcement reaches — the write-read split is simultaneously the source of the architecture's strength and the edge where its guarantees end.
 - Depends on: codebase-architecture-is-write-available-read-correct, design-coherence-bounded-by-enforceability
@@ -1797,16 +1809,6 @@ The design's enforceability boundary is not static: where the self-reinforcing s
 The architecture's structural enforcement boundary (where self-limiting correctness holds) and the testing strategy's blind spot (where temporal gaps compound) converge on the same dividing line — structural properties are both enforced by construction and verified by deterministic tests, while temporal properties are neither enforced nor testable, revealing a single coherent design boundary rather than two independent gaps.
 - Depends on: architecture-is-correctly-self-limiting, compounding-gaps-are-in-the-testing-blind-spot
 
-### financial-concurrency-is-comprehensively-safe [OUT] DERIVED
-Financial systems achieve comprehensive monetary safety when domain-appropriate concurrency strategies (pessimistic locking, optimistic version checks) and monotonic state ratchets (cursors that only advance, preconditions before removal) jointly prevent both concurrent corruption and state regression across all money-movement operations.
-- Depends on: concurrency-safety-strategy-varies-by-financial-risk, monotonicity-and-caution-prevent-state-loss
-- Unless: payment-balance-check-not-atomic
-
-### financial-correctness-is-end-to-end [OUT] DERIVED
-Financial domains achieve end-to-end correctness when domain-adapted coordination (pessimistic locking for wallets, optimistic control for hotels, combined with structural write-read asymmetry) combines with emergent auditability from irreversible accumulation — producing the architecture's only domains with simultaneous safety, lifecycle correctness, and full traceability.
-- Depends on: financial-correctness-combines-locking-with-structural-asymmetry, financial-auditability-is-emergent-from-accumulation
-- Unless: payment-balance-check-not-atomic
-
 ### gap-containment-requires-module-independence [OUT] DERIVED
 Module isolation limits the blast radius of compounding safety and correctness gaps: because modules are standalone artifacts with module-local error boundaries, temporal-boundary risks (TOCTOU, atomicity) compound within a module but cannot cascade across modules — but only if module boundaries are truly independent with no cross-module dependencies.
 - Depends on: module-isolation-is-pedagogical-and-architectural, safety-and-correctness-gaps-compound
@@ -1846,11 +1848,6 @@ The KV store's consistency model depends on W+R>N quorum overlap but never valid
 The key-value store's W+R>N read-write overlap guarantee is assumed by callers but never validated in code.
 - Source: entries/2026/06/05/topic-consistency-models.md
 
-### ledger-interpretation-is-consistently-safe [OUT] DERIVED
-The financial ledger's dual interpretation (full balance from complete scan, spending limits from outflows only) provides both audit completeness and focused business metrics from a single data source — unless the non-atomic balance check allows concurrent mutations between balance reads and spending limit enforcement, enabling over-spending that neither interpretation would detect in isolation.
-- Depends on: payment-ledger-is-fully-auditable, daily-limit-only-counts-outflows
-- Unless: payment-balance-check-not-atomic
-
 ### module-autonomy-enables-per-use-case-cost-optimization [OUT] DERIVED
 Module autonomy is the structural precondition for per-use-case cost optimization: because each module independently chooses its error conventions, eviction timing, and safety boundaries, it can also independently select the optimal write-read cost allocation for its specific access pattern — autocomplete and leaderboard pay at write time for read-heavy workloads, while payment and URL shortener defer to reads for write-heavy or low-frequency paths — without cross-cutting constraints imposing a uniform cost model.
 - Depends on: module-autonomy-spans-conventions-and-safety, write-cost-allocation-matches-access-pattern
@@ -1878,10 +1875,13 @@ Nearby-friends correctly enforces bidirectional visibility with staleness reject
 The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.
 - Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
-### notification-system-is-delivery-complete [OUT] DERIVED
-The notification system achieves delivery completeness when bounded delivery (double rate checks, retry escalation), strict rendering (fail-fast on missing templates/variables), and stable ordering (deterministic priority queue) all function correctly — unless the unused group-key infrastructure signals an incomplete aggregation feature needed for batch delivery scenarios.
-- Depends on: notification-delivery-is-bounded, notif-template-rendering-strict, notif-priority-heap-stable
-- Unless: notif-group-key-unused
+### notif-group-key-unused [OUT] OBSERVATION
+`_pending_groups` dict and `_group_window` field are initialized in `NotificationService.__init__` but never used — appears to be a planned notification batching/digest feature that was never implemented
+- Source: entries/2026/06/05/notification-system-notification_system.md
+
+### payment-balance-check-not-atomic [OUT] OBSERVATION
+`process_payment` checks balance before processing but the check and ledger write are not atomic — a race condition under concurrency that real systems solve with optimistic locking or serializable transactions
+- Source: entries/2026/06/05/payment-system-payment_system.md
 
 ### payment-overdraft-not-atomic [OUT] OBSERVATION
 The overdraft check in `process_payment` reads balance and then processes without atomicity — a TOCTOU race in any concurrent context.

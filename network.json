@@ -3,7 +3,7 @@
     "schema_version": "1.0",
     "project_name": "reasons",
     "created_at": "2026-06-05T17:13:33+00:00",
-    "updated_at": "2026-06-06T12:21:58+00:00",
+    "updated_at": "2026-06-06T19:54:59+00:00",
     "node_count": 477,
     "generator": "ftl-reasons/0.43.0"
   },
@@ -214,7 +214,7 @@
     },
     "all-monetary-operations-maintain-double-entry-invariant": {
       "text": "All monetary operations maintain the double-entry invariant under concurrency: payment ledgers create balanced debit-credit pairs for every movement, and wallet transfers are deadlock-free with frozen-check inside the lock \u2014 unless the non-atomic balance check allows concurrent payments to create valid double-entry pairs for overdrafted amounts, producing an internally consistent but financially incorrect ledger.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2588,7 +2588,7 @@
     },
     "financial-concurrency-is-comprehensively-safe": {
       "text": "Financial systems achieve comprehensive monetary safety when domain-appropriate concurrency strategies (pessimistic locking, optimistic version checks) and monotonic state ratchets (cursors that only advance, preconditions before removal) jointly prevent both concurrent corruption and state regression across all money-movement operations.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2633,7 +2633,7 @@
     },
     "financial-correctness-is-end-to-end": {
       "text": "Financial domains achieve end-to-end correctness when domain-adapted coordination (pessimistic locking for wallets, optimistic control for hotels, combined with structural write-read asymmetry) combines with emergent auditability from irreversible accumulation \u2014 producing the architecture's only domains with simultaneous safety, lifecycle correctness, and full traceability.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3894,7 +3894,7 @@
     },
     "ledger-interpretation-is-consistently-safe": {
       "text": "The financial ledger's dual interpretation (full balance from complete scan, spending limits from outflows only) provides both audit completeness and focused business metrics from a single data source \u2014 unless the non-atomic balance check allows concurrent mutations between balance reads and spending limit enforcement, enabling over-spending that neither interpretation would detect in isolation.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -4891,7 +4891,7 @@
     },
     "notif-group-key-unused": {
       "text": "`_pending_groups` dict and `_group_window` field are initialized in `NotificationService.__init__` but never used \u2014 appears to be a planned notification batching/digest feature that was never implemented",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/notification-system-notification_system.md",
       "source_url": "",
@@ -5020,7 +5020,7 @@
     },
     "notification-system-is-delivery-complete": {
       "text": "The notification system achieves delivery completeness when bounded delivery (double rate checks, retry escalation), strict rendering (fail-fast on missing templates/variables), and stable ordering (deterministic priority queue) all function correctly \u2014 unless the unused group-key infrastructure signals an incomplete aggregation feature needed for batch delivery scenarios.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -5089,7 +5089,7 @@
     },
     "payment-balance-check-not-atomic": {
       "text": "`process_payment` checks balance before processing but the check and ledger write are not atomic \u2014 a race condition under concurrency that real systems solve with optimistic locking or serializable transactions",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/payment-system-payment_system.md",
       "source_url": "",
