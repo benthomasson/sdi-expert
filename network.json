@@ -3,8 +3,8 @@
     "schema_version": "1.0",
     "project_name": "reasons",
     "created_at": "2026-06-05T17:13:33+00:00",
-    "updated_at": "2026-06-06T19:54:59+00:00",
-    "node_count": 477,
+    "updated_at": "2026-06-06T22:21:57+00:00",
+    "node_count": 482,
     "generator": "ftl-reasons/0.43.0"
   },
   "nodes": {
@@ -872,6 +872,16 @@
     },
     "chat-group-size-cap-500": {
       "text": "`add_member` raises `ValueError` if the group already has 500 or more members, enforcing a hard cap on group size.",
+      "truth_value": "IN",
+      "justifications": [],
+      "source": "entries/2026/06/05/chat-system-chat_system.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "chat-lamport-clock-is-thread-safe": {
+      "text": "The Lamport clock and per-conversation sequence numbers are protected by threading.Lock, making all clock/sequence increments atomic across send_message, send_group_message, add_member, and remove_member.",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/chat-system-chat_system.md",
@@ -4644,6 +4654,16 @@
       "date": "",
       "metadata": {}
     },
+    "nearby-friends-grid-is-thread-safe": {
+      "text": "Location storage, grid index updates, and candidate snapshots in update_location and get_nearby_friends are protected by threading.Lock, preventing concurrent corruption of the spatial index.",
+      "truth_value": "IN",
+      "justifications": [],
+      "source": "entries/2026/06/05/nearby-friends-nearby_friends.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "nearby-friends-history-bounded-100": {
       "text": "Per-user location history uses `deque(maxlen=100)`, silently dropping oldest entries to prevent unbounded memory growth",
       "truth_value": "IN",
@@ -4702,6 +4722,16 @@
     },
     "news-feed-cache-is-bounded-deque": {
       "text": "Feed caches use `deque(maxlen=cache_size)` which silently drops the oldest post IDs when full, providing implicit eviction without explicit cache management",
+      "truth_value": "IN",
+      "justifications": [],
+      "source": "entries/2026/06/05/news-feed-system-news_feed.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "news-feed-cache-is-rebuildable": {
+      "text": "rebuild_cache reconstructs the feed cache from the social graph and post store, providing a repair path when cache state is lost \u2014 skipping celebrity posts in hybrid mode to match the write-time fan-out policy.",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/news-feed-system-news_feed.md",
@@ -5800,6 +5830,27 @@
       "date": "",
       "metadata": {}
     },
+    "read-path-verification-is-improving": {
+      "text": "Two read-path verification mechanisms were added \u2014 S3 ETag integrity checking (detect corruption on read) and news feed cache rebuild (repair lost cache state) \u2014 narrowing the gap between the read path's growing responsibility and its verification coverage, though the broader pattern persists for KV read-repair, lazy evaluation, and metadata-as-deletion in other systems.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "s3-etag-verified-on-read",
+            "news-feed-cache-is-rebuildable",
+            "read-path-responsibility-exceeds-verification"
+          ],
+          "outlist": [],
+          "label": ""
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "read-paths-filter-by-entity-state": {
       "text": "Read paths systematically exclude entities based on lifecycle state: video search returns only READY/UPLOADING statuses, and recommendations exclude already-watched videos \u2014 adding read-time filtering cost proportional to the number of state categories that must be checked.",
       "truth_value": "IN",
@@ -6077,6 +6128,16 @@
     },
     "s3-delete-marker-hides-not-removes": {
       "text": "Deleting a versioned object appends a delete marker; all prior versions remain accessible by explicit `version_id`.",
+      "truth_value": "IN",
+      "justifications": [],
+      "source": "entries/2026/06/05/s3-object-storage-s3_object_storage.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "s3-etag-verified-on-read": {
+      "text": "get_object re-computes the MD5 ETag from stored data and compares against the stored ETag before returning, raising ValueError on mismatch \u2014 detecting data corruption at read time rather than silently serving corrupted data.",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/s3-object-storage-s3_object_storage.md",

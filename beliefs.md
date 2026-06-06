@@ -1,8 +1,8 @@
 ---
 schema_version: "1.0"
 project_name: "reasons"
-updated_at: "2026-06-06T19:54:59+00:00"
-node_count: 477
+updated_at: "2026-06-06T22:21:57+00:00"
+node_count: 482
 generator: ftl-reasons/0.43.0
 ---
 
@@ -207,6 +207,10 @@ Chat system uses per-conversation monotonic sequence numbers for total order wit
 
 ### chat-group-size-cap-500 [IN] OBSERVATION
 `add_member` raises `ValueError` if the group already has 500 or more members, enforcing a hard cap on group size.
+- Source: entries/2026/06/05/chat-system-chat_system.md
+
+### chat-lamport-clock-is-thread-safe [IN] OBSERVATION
+The Lamport clock and per-conversation sequence numbers are protected by threading.Lock, making all clock/sequence increments atomic across send_message, send_group_message, add_member, and remove_member.
 - Source: entries/2026/06/05/chat-system-chat_system.md
 
 ### chat-monotonic-read-progress [IN] DERIVED
@@ -962,6 +966,10 @@ For user A to see friend B as nearby, both A and B must have location sharing en
 Grid cell size is `distance_threshold_km / 111.0` degrees (111 km ≈ 1° latitude), meaning changing the distance threshold automatically rescales the spatial index
 - Source: entries/2026/06/05/nearby-friends-nearby_friends.md
 
+### nearby-friends-grid-is-thread-safe [IN] OBSERVATION
+Location storage, grid index updates, and candidate snapshots in update_location and get_nearby_friends are protected by threading.Lock, preventing concurrent corruption of the spatial index.
+- Source: entries/2026/06/05/nearby-friends-nearby_friends.md
+
 ### nearby-friends-history-bounded-100 [IN] OBSERVATION
 Per-user location history uses `deque(maxlen=100)`, silently dropping oldest entries to prevent unbounded memory growth
 - Source: entries/2026/06/05/nearby-friends-nearby_friends.md
@@ -972,6 +980,10 @@ Both notification (`update_location`) and query (`get_nearby_friends`) paths rej
 
 ### news-feed-cache-is-bounded-deque [IN] OBSERVATION
 Feed caches use `deque(maxlen=cache_size)` which silently drops the oldest post IDs when full, providing implicit eviction without explicit cache management
+- Source: entries/2026/06/05/news-feed-system-news_feed.md
+
+### news-feed-cache-is-rebuildable [IN] OBSERVATION
+rebuild_cache reconstructs the feed cache from the social graph and post store, providing a repair path when cache state is lost — skipping celebrity posts in hybrid mode to match the write-time fan-out policy.
 - Source: entries/2026/06/05/news-feed-system-news_feed.md
 
 ### news-feed-cache-silently-drops-oldest [IN] OBSERVATION
@@ -1216,6 +1228,10 @@ The read path's responsibility encompasses three orthogonal dimensions: active c
 The read path's active convergence role (healing divergence via repair, computing deferred state via lazy evaluation, interpreting metadata-as-deletion) grows in responsibility as distribution complexity increases, yet the co-designed test infrastructure validates structural write-path properties most effectively — creating a widening gap where the component bearing maximum correctness responsibility has the weakest verification coverage relative to its burden.
 - Depends on: reads-are-active-convergence-engines, growing-read-complexity-outpaces-test-coverage
 
+### read-path-verification-is-improving [IN] DERIVED
+Two read-path verification mechanisms were added — S3 ETag integrity checking (detect corruption on read) and news feed cache rebuild (repair lost cache state) — narrowing the gap between the read path's growing responsibility and its verification coverage, though the broader pattern persists for KV read-repair, lazy evaluation, and metadata-as-deletion in other systems.
+- Depends on: s3-etag-verified-on-read, news-feed-cache-is-rebuildable, read-path-responsibility-exceeds-verification
+
 ### read-paths-filter-by-entity-state [IN] DERIVED
 Read paths systematically exclude entities based on lifecycle state: video search returns only READY/UPLOADING statuses, and recommendations exclude already-watched videos — adding read-time filtering cost proportional to the number of state categories that must be checked.
 - Depends on: search-status-filter, recommendation-excludes-watched
@@ -1278,6 +1294,10 @@ Bucket deletion requires the bucket to be logically empty: no live objects, and 
 
 ### s3-delete-marker-hides-not-removes [IN] OBSERVATION
 Deleting a versioned object appends a delete marker; all prior versions remain accessible by explicit `version_id`.
+- Source: entries/2026/06/05/s3-object-storage-s3_object_storage.md
+
+### s3-etag-verified-on-read [IN] OBSERVATION
+get_object re-computes the MD5 ETag from stored data and compares against the stored ETag before returning, raising ValueError on mismatch — detecting data corruption at read time rather than silently serving corrupted data.
 - Source: entries/2026/06/05/s3-object-storage-s3_object_storage.md
 
 ### s3-get-returns-none-for-missing [IN] OBSERVATION
