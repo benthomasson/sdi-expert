@@ -3,8 +3,8 @@
     "schema_version": "1.0",
     "project_name": "reasons",
     "created_at": "2026-06-05T17:13:33+00:00",
-    "updated_at": "2026-06-06T01:49:28+00:00",
-    "node_count": 359,
+    "updated_at": "2026-06-06T09:26:11+00:00",
+    "node_count": 477,
     "generator": "ftl-reasons/0.43.0"
   },
   "nodes": {
@@ -54,6 +54,26 @@
         "review_result": "pass"
       }
     },
+    "accumulative-state-scales-without-coordination": {
+      "text": "The architecture scales without state coordination: logical indirection decouples topology from data (adding layers without touching existing state), and irreversibly accumulative state eliminates the need for compaction, migration, or distributed garbage collection \u2014 scaling adds abstraction but never revisits existing state.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-is-irreversibly-accumulative",
+            "scaling-uses-logically-uniform-indirection"
+          ],
+          "outlist": [],
+          "label": "state irreversibility and logical scaling indirection are independently derived but jointly eliminate the hardest distributed systems problem: coordinated state transformation during topology changes"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "ad-click-dedup-global-not-per-ad": {
       "text": "Ad click deduplication keys on `event_id` alone (global registry), not per-ad, converting at-least-once delivery into exactly-once aggregation.",
       "truth_value": "IN",
@@ -69,6 +89,26 @@
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/topic-consistency-models.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "adaptation-is-bidimensional-across-frequency-and-risk": {
+      "text": "The architecture adapts along two independent dimensions without cross-module coordination: cost allocation adapts to access frequency (celebrity threshold converts follower count into write-vs-read cost placement, eager-vs-lazy rebuild adapts to mutation-vs-query ratio), while safety mechanisms adapt to domain risk (pessimistic locking for financial domains, coordination-free structural discipline for social domains) \u2014 both adaptations are structurally encoded in module design, not runtime decisions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "hybrid-fanout-instantiates-adaptive-cost-model",
+            "architecture-adapts-mechanisms-to-domain-risk"
+          ],
+          "outlist": [],
+          "label": "Cost-frequency and safety-risk adaptation are orthogonal module-local decisions"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -97,6 +137,26 @@
         "review_result": "pass"
       }
     },
+    "adaptive-coordination-enables-quality-preserving-scaling": {
+      "text": "The architecture scales horizontally without quality degradation because coordination strategy adapts to correctness cost: low-risk domains use coordination-free structural mechanisms that inherently preserve triple convergence (correctness, simplicity, performance), while high-risk financial domains add targeted pessimistic or optimistic coordination only where the cost of incorrectness justifies the complexity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "coordination-strategy-adapts-to-correctness-cost",
+            "coordination-free-scaling-preserves-triple-convergence"
+          ],
+          "outlist": [],
+          "label": "depth-7 and depth-8 unused beliefs; combining reveals that coordination adaptation is the mechanism that ENABLES quality-preserving scaling \u2014 not just that both exist"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "algorithmic-simplicity-is-preferred-over-optimal-performance": {
       "text": "The codebase consistently favors algorithmic correctness and simplicity over performance optimality: search heuristics use admissible but loose bounds (haversine for road distance, global max speed for time estimates), guaranteeing optimal results at the cost of extra exploration, while data structure operations use brute-force approaches (linear prefix scan, key-by-key Merkle diff, full re-sort on insertion, linear cache purge), correct by simplicity at pedagogical scale.",
       "truth_value": "IN",
@@ -119,6 +179,48 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "algorithmic-simplicity-reinforces-structural-correctness": {
+      "text": "The preference for simpler algorithms (loose but admissible heuristics, brute-force at pedagogical scale) and the strategy of constraining existing structures for correctness (immutable values, synchronized collections) are mutually reinforcing: simpler algorithms have fewer edge cases that structural constraints must cover, and constraining existing structures is easier when the algorithms operating on them are straightforward \u2014 complexity in either dimension would stress the other.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "algorithmic-simplicity-is-preferred-over-optimal-performance",
+            "correctness-through-structural-reuse"
+          ],
+          "outlist": [],
+          "label": "Algorithmic simplicity reduces the surface area that structural discipline must protect, and vice versa"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "all-monetary-operations-maintain-double-entry-invariant": {
+      "text": "All monetary operations maintain the double-entry invariant under concurrency: payment ledgers create balanced debit-credit pairs for every movement, and wallet transfers are deadlock-free with frozen-check inside the lock \u2014 unless the non-atomic balance check allows concurrent payments to create valid double-entry pairs for overdrafted amounts, producing an internally consistent but financially incorrect ledger.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "payment-double-entry-guarantees-balance-integrity",
+            "wallet-transfers-are-safe-under-concurrency"
+          ],
+          "outlist": [
+            "payment-balance-check-not-atomic"
+          ],
+          "label": "Payment + wallet achieve structural safety independently, but the payment system's TOCTOU on balance check undermines the combined end-to-end guarantee"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "all-stateful-generators-thread-safe": {
       "text": "Every generator with mutable state (Snowflake, Ticket, Flake, ULID, Coordinator) protects it with a `threading.Lock`.",
@@ -176,6 +278,26 @@
         "review_result": "pass"
       }
     },
+    "approximation-spans-counting-windowing-and-similarity": {
+      "text": "The codebase's approximation strategies form a complete accuracy-cost spectrum: probabilistic structures (HLL for cardinality, Morris for counting, SimHash for similarity) trade accuracy for space, and the sliding window counter trades exact window boundaries for bounded resource consumption via current/previous window weighting \u2014 together covering counting, rate limiting, and content dedup.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "probabilistic-structures-trade-accuracy-for-space",
+            "sliding-window-counter-weighted-approximation"
+          ],
+          "outlist": [],
+          "label": "probabilistic structures and weighted windows are complementary approximation strategies spanning different computational domains"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "architectural-coherence-is-bounded-at-the-write-read-split": {
       "text": "The write-available, read-correct architecture is coherent exactly at the structural boundary: everything within the structural safety net (immutability, construction-based guarantees, deterministic testing) reinforces itself in a self-consistent system, but coherence cannot extend past what structural enforcement reaches \u2014 the write-read split is simultaneously the source of the architecture's strength and the edge where its guarantees end.",
       "truth_value": "OUT",
@@ -198,6 +320,67 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "architectural-invariants-are-scale-independent-and-redundantly-enforced": {
+      "text": "The architecture's core invariants exhibit two orthogonal robustness properties: quality guarantees are scale-and-layer-independent (holding regardless of module count, implementation complexity, or abstraction layer), and state irreversibility is redundantly prevented (operational guards, structural monotonicity, and forward-only state machines enforce it at different architectural levels) \u2014 neither property depends on the other, creating a robustness product.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "quality-guarantees-are-scale-and-layer-independent",
+            "state-reversal-is-redundantly-prevented"
+          ],
+          "outlist": [],
+          "label": "two unused depth-9 beliefs representing independent robustness dimensions; combining reveals the architecture's guarantees are robust in a product space (scale-independence \u00d7 redundant enforcement)"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "architectural-trinity-of-correctness-scaling-and-cost": {
+      "text": "Self-reinforcing correctness, coordination-free scaling, and robust cost allocation form a composable architectural trinity: modules independently generate and verify correctness (closed loop), scale by adding logical indirection without coordination (accumulative state), and safely reallocate work between write and read paths (forward-only semantics prevent cost-shifting from undermining either property).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "self-reinforcing-correctness-composes-with-coordination-free-scaling",
+            "forward-only-enables-robust-cost-allocation"
+          ],
+          "outlist": [],
+          "label": "depth-9 scaling-correctness composition + depth-7 cost robustness yields the three independently composable architectural guarantees"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "architecture-adapts-mechanisms-to-domain-risk": {
+      "text": "The architecture systematically adapts its safety mechanisms to domain risk across two independent dimensions: coordination strategy scales with correctness cost (explicit locking for financial domains vs coordination-free construction elsewhere), and cost allocation between write and read paths is robust through forward-only guarantees that prevent shifted computation from requiring re-verification \u2014 both the presence and weight of safety mechanisms track the consequence of failure.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "financial-correctness-combines-locking-with-structural-asymmetry",
+            "write-correctness-is-both-structural-and-coordination-free",
+            "forward-only-enables-robust-cost-allocation"
+          ],
+          "outlist": [],
+          "label": "coordination and cost-allocation mechanisms both adapt to domain risk; forward-only ensures cost shifting is safe regardless of which domain applies it"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "architecture-is-correctly-self-limiting": {
       "text": "The architecture's correctness properties are self-limiting: coherence holds at the structural enforcement boundary (not beyond), and read correctness is structural rather than temporal \u2014 the system provides guarantees precisely where they can be mechanically enforced, while temporal consistency on the read path remains an accepted rather than guaranteed property.",
@@ -418,6 +601,26 @@
       "date": "",
       "metadata": {}
     },
+    "boundary-normalization-serves-defense-and-correctness": {
+      "text": "Normalizing inputs once at system boundaries serves dual architectural purposes: it establishes the perimeter defense model that maintains internal data quality (enabling trusted internal callers), and it independently enables robust query behavior (autocomplete search operates on consistent normalized state with eagerly-rebuilt caches) \u2014 a single mechanism yielding both security and feature correctness.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "autocomplete-search-is-robust",
+            "perimeter-defense-ensures-data-quality"
+          ],
+          "outlist": [],
+          "label": "boundary normalization is the shared root of both perimeter defense (security) and query robustness (correctness)"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "bounded-collections-trade-completeness-for-memory": {
       "text": "Four systems use fixed-capacity collections (deque maxlen, list pruning) that silently drop oldest entries to bound memory growth, accepting silent data loss as the tradeoff for guaranteed memory bounds.",
       "truth_value": "IN",
@@ -490,6 +693,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "cascade-effects-propagate-through-graph-traversal": {
+      "text": "Graph-based effects propagate through traversal in two independent domains: folder deletion cascades via BFS to soft-delete all descendants, and pipeline failure cascades through the DAG to skip transitively dependent stages \u2014 both use graph structure to scope the blast radius of a triggering event.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "gdrive-soft-delete-cascade",
+            "dag-failure-cascade"
+          ],
+          "outlist": [],
+          "label": "both use graph traversal to determine which downstream entities are affected by an upstream event"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "ch-add-remove-idempotent": {
       "text": "`add_node` on an existing node and `remove_node` on a missing node are both no-ops returning empty results, making the ring safe against duplicate operations.",
@@ -707,6 +930,28 @@
         "review_result": "insufficient"
       }
     },
+    "complete-dependency-injection-enables-hermetic-testing": {
+      "text": "The combination of time injection (notification, rate limiter, crawler) and service injection (payment processor) covers both sources of test non-determinism \u2014 temporal behavior and external service responses \u2014 unless the inconsistent current_time fallback means some code paths silently revert to wall-clock time when injection is omitted.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "time-injection-enables-deterministic-testing",
+            "payment-processor-injectable"
+          ],
+          "outlist": [
+            "current-time-fallback-inconsistent"
+          ],
+          "label": "time and service injection together eliminate the two main non-determinism sources; the fallback inconsistency threatens completeness"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "complexity-increases-both-read-cost-and-read-risk": {
       "text": "As system distribution complexity increases, the read path becomes simultaneously more expensive (absorbing deferred consistency, lazy computation, and soft-delete interpretation costs) and more vulnerable (temporal correctness gaps and permissive safety enforcement compound at the same boundaries) \u2014 creating a correlation where the most burdened reads are also the least protected.",
       "truth_value": "OUT",
@@ -752,6 +997,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "concurrency-safety-strategy-varies-by-financial-risk": {
+      "text": "Financial systems use domain-appropriate concurrency strategies: wallets use pessimistic sorted locking (guaranteed deadlock-free, zero conflict window) while hotels use optimistic versioned locking (retry on conflict, higher throughput), matching strategy strictness to violation cost.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "wallet-transfers-are-safe-under-concurrency",
+            "hotel-occ-prevents-overbooking"
+          ],
+          "outlist": [],
+          "label": "Wallets can't tolerate any conflict window (money at risk); hotels can retry (inventory contention is less costly)"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "conflict-detection-varies-by-consistency-model": {
       "text": "Three systems use distinct conflict detection strategies \u2014 sibling retention (KV), per-device version vectors (GDrive), and per-date version counters (hotel) \u2014 each matched to the system's merge semantics and consistency requirements.",
@@ -799,6 +1064,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "conflict-resolution-is-forward-only-at-all-distribution-levels": {
+      "text": "Conflict resolution at all distribution levels resolves concurrency conflicts by moving forward rather than rolling back: single-node optimistic locking retries with updated state, multi-replica sibling retention adds all concurrent versions, and multi-device version vectors create new version entries \u2014 no conflict resolution mechanism discards or reverses already-committed state, containing temporal gaps without reversal.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "conflict-resolution-depth-scales-with-distribution",
+            "forward-only-preserves-correctness-despite-accepted-gaps"
+          ],
+          "outlist": [],
+          "label": "Conflict handling always appends or retries rather than reverting committed state"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "consistency-strategy-scales-uniformly-with-distribution": {
       "text": "Both conflict resolution and deletion strategy scale in the same way with distribution topology \u2014 simple structural mechanisms for single-node systems (optimistic locking, soft delete), metadata-based approaches for replicated systems (version vectors, tombstones) \u2014 showing a uniform architectural response where distribution complexity drives strategy sophistication across independent concerns.",
@@ -870,6 +1155,66 @@
         "review_result": "pass"
       }
     },
+    "control-data-separation-enables-forward-progress": {
+      "text": "Pipeline forward progress is architecturally enabled by control-data separation: the DAG control plane determines failure cascading and stage ordering independently of the mutable ctx dict data plane, allowing the forward-only design principle to skip failed branches without corrupting shared state \u2014 a concrete mechanism underlying the codebase's maximum-progress philosophy.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "video-pipeline-separates-control-from-data-flow",
+            "forward-only-design-prevents-regression-and-maximizes-progress"
+          ],
+          "outlist": [],
+          "label": "decoupling control (DAG) from data (ctx dict) is what makes forward-only failure handling safe in practice"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "coordination-free-scaling-preserves-triple-convergence": {
+      "text": "The architecture scales horizontally while preserving per-module quality convergence: because correctness, simplicity, and performance are structurally self-contained within each independent module, scaling via accumulative state and logical indirection layers neither introduces coordination overhead nor degrades any of the three convergent properties.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "accumulative-state-scales-without-coordination",
+            "module-level-triple-convergence"
+          ],
+          "outlist": [],
+          "label": "Quality and scale are orthogonal \u2014 module-local convergence survives indirection-based scaling because scaling never touches module internals"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "coordination-strategy-adapts-to-correctness-cost": {
+      "text": "The architecture adapts its coordination strategy to the cost of incorrectness: financial domains use explicit locking (pessimistic for wallets, optimistic for hotels) because monetary errors are high-cost and must be prevented, while non-financial domains achieve correctness coordination-free through deterministic identity derivation and structural construction because eventual consistency is acceptable \u2014 the mechanism complexity matches the domain's tolerance for inconsistency.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "financial-correctness-combines-locking-with-structural-asymmetry",
+            "write-correctness-is-both-structural-and-coordination-free"
+          ],
+          "outlist": [],
+          "label": "financial vs non-financial domains demand different coordination weight; the architecture matches mechanism to risk"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "correctness-and-simplicity-share-the-same-mechanism": {
       "text": "The codebase achieves both correctness and simplicity through the same underlying mechanism: leveraging existing structures (heaps, topics, sorted lists) rather than inventing new ones, so that correctness guarantees of underlying structures are inherited from reuse while construction-time constraints eliminate entire classes of bugs \u2014 parsimony and safety are not in tension but emerge from the same design choices.",
       "truth_value": "IN",
@@ -939,6 +1284,66 @@
         "review_result": "invalid"
       }
     },
+    "correctness-has-universal-floor-and-adaptive-ceiling": {
+      "text": "The architecture achieves layered correctness assurance: scale-independent invariants enforced redundantly at multiple architectural levels provide a universal correctness floor (quality guarantees hold regardless of module count, state reversal prevented by overlapping mechanisms), while domain-adapted coordination and self-reinforcing per-module loops raise the ceiling where domain risk justifies it \u2014 the floor is never violated, the ceiling adapts to correctness cost.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "architectural-invariants-are-scale-independent-and-redundantly-enforced",
+            "correctness-scales-through-adaptation-and-self-reinforcement"
+          ],
+          "outlist": [],
+          "label": "Redundantly enforced invariants provide a universal floor while adaptive coordination provides a domain-specific ceiling"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "correctness-is-layered-and-self-reinforcing": {
+      "text": "The architecture achieves correctness redundancy through two complementary strategies operating at different granularities: defense-in-depth provides layered guarantees across system boundaries (perimeter normalization ensures clean inputs, structural construction prevents internal corruption), while per-module self-reinforcement creates closed verification loops (structural construction generates testable properties that verify the construction itself).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "defense-in-depth-correctness",
+            "correctness-is-self-reinforcing-per-module"
+          ],
+          "outlist": [],
+          "label": "defense-in-depth (depth 5, unused) and self-reinforcing (depth 8, unused) are independent correctness strategies; combining shows the architecture has both inter-layer and intra-module redundancy"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "correctness-is-self-reinforcing-per-module": {
+      "text": "Each module independently achieves a closed correctness loop: structural construction generates testable properties, deterministic testing verifies them, and module isolation prevents cross-contamination \u2014 making correctness self-reinforcing at the module level rather than depending on codebase-wide coordination.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "correctness-loop-covers-all-critical-properties",
+            "modules-are-independently-correct"
+          ],
+          "outlist": [],
+          "label": "the closed correctness loop (construction generates what testing verifies) could require global coherence; module independence proves each module is a self-contained correctness unit"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "correctness-loop-covers-all-critical-properties": {
       "text": "The write-available, read-correct architecture with its closed testing-construction loop verifies all critical correctness properties \u2014 structural construction prevents write-path corruption while deterministic tests validate those same properties comprehensively \u2014 but only when all critical invariants are structurally enforced rather than left as developer assumptions.",
       "truth_value": "IN",
@@ -983,6 +1388,46 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "correctness-scales-through-adaptation-and-self-reinforcement": {
+      "text": "The architecture's correctness is simultaneously adaptive and self-reinforcing at scale: coordination strategy adapts to domain risk (preserving quality during horizontal scaling), and layered correctness (defense-in-depth at boundaries plus per-module closed verification loops) ensures each module independently maintains its invariants \u2014 the two mechanisms compose without interference because adaptation operates on coordination overhead while self-reinforcement operates on invariant coverage.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "adaptive-coordination-enables-quality-preserving-scaling",
+            "correctness-is-layered-and-self-reinforcing"
+          ],
+          "outlist": [],
+          "label": "coordination adaptation and correctness self-reinforcement operate on orthogonal dimensions (overhead vs coverage) enabling clean composition"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "correctness-simplicity-and-performance-converge": {
+      "text": "Three seemingly independent architectural qualities \u2014 correctness, simplicity, and performance \u2014 emerge from the same structural approach: reusing existing constructs produces correctness, minimizing new concepts produces simplicity, and aligning cost allocation with access patterns produces performance, such that improving one quality tends to improve the others rather than trading off.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "correctness-and-simplicity-share-the-same-mechanism",
+            "quality-and-performance-strategies-are-aligned"
+          ],
+          "outlist": [],
+          "label": "The three qualities share structural roots (reuse, construction, access-pattern alignment) rather than being independent optimization axes"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "correctness-through-structural-reuse": {
       "text": "The codebase achieves correctness by constraining existing structures (immutable values that prevent aliasing, synchronized collections that prevent desync, repurposed min-heaps via sign negation) rather than inventing specialized abstractions, making correctness properties compositional and verifiable from known building blocks.",
@@ -1052,6 +1497,27 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "cost-shifting-is-fully-verifiable": {
+      "text": "The architecture's cost shifting between write and read paths is both structurally safe and fully verifiable \u2014 the testing infrastructure covers the read path's growing responsibility as computation shifts toward it.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "structural-correctness-enables-safe-cost-shifting"
+          ],
+          "outlist": [
+            "read-path-responsibility-exceeds-verification"
+          ],
+          "label": "cost shifting is structurally safe (structural correctness holds) but the read path where costs accumulate has responsibilities exceeding test coverage \u2014 this gate captures the tension between structural soundness and verification completeness"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "crawl-uses-simulated-clock": {
       "text": "The crawl loop advances a `sim_time` counter for politeness scheduling rather than calling `time.sleep()`, making the simulation deterministic; real `time.time()` is only used to measure total crawl duration for stats.",
@@ -1216,6 +1682,27 @@
       "date": "",
       "metadata": {}
     },
+    "dedup-is-stratified-across-boundaries-and-accuracy-levels": {
+      "text": "The architecture applies dedup at three independent system boundaries with accuracy adapted to cost: exact key-based dedup at API boundaries (idempotency keys for hotel, payment, ad-click), exact event-based dedup at stream processing boundaries (coordinated dedup with watermark finalization), and approximate content-based dedup at crawling boundaries (Bloom filter + SimHash) \u2014 each boundary uses the mechanism whose accuracy-memory tradeoff fits its domain's scale and failure cost.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "idempotency-keys-ignore-payload-content",
+            "forward-only-stream-processing-is-exactly-once",
+            "probabilistic-dedup-trades-memory-for-coverage"
+          ],
+          "outlist": [],
+          "label": "Three dedup mechanisms at three boundaries \u2014 API (exact/key), stream (exact/event), crawl (approximate/content)"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "dedup-outlives-aggregation-window": {
       "text": "The dedup registry retains entries for 2\u00d7 the allowed lateness, ensuring late-arriving duplicates are still caught even after their aggregation window has been finalized by the watermark \u2014 the dedup horizon intentionally exceeds the processing horizon.",
       "truth_value": "IN",
@@ -1272,6 +1759,26 @@
         "review_result": "pass"
       }
     },
+    "defense-in-depth-correctness": {
+      "text": "The architecture achieves defense-in-depth correctness through two independent layers: perimeter normalization guarantees clean inputs at system boundaries, and structural construction (immutability, synchronized structures, state ratchets) guarantees correct state transitions internally \u2014 neither alone covers the full input-to-state lifecycle, but together they eliminate an entire class of corruption bugs.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "boundary-normalization-serves-defense-and-correctness",
+            "structural-correctness-is-universally-applied"
+          ],
+          "outlist": [],
+          "label": "Perimeter normalization and structural construction are complementary correctness layers"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "deletion-is-append-only-across-all-contexts": {
       "text": "Deletion never destroys data regardless of distribution level or system type: single-node soft deletes preserve structural invariants, distributed tombstones prevent resurrection, versioned storage appends delete markers, and finalized stream results are irrevocable \u2014 the entire data lifecycle is append-only from local state through distributed storage to stream processing.",
       "truth_value": "IN",
@@ -1317,6 +1824,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "deletion-is-doubly-preserved": {
+      "text": "Data preservation through deletion is enforced by two independent mechanisms: preconditions prevent premature deletion (empty-bucket requirements, trash-first workflows) and the deletion operation itself preserves data (append-only tombstones, delete markers, version entries) \u2014 neither alone suffices, but together they guarantee no data is irrecoverably lost through a delete operation at any distribution level.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "deletion-is-cautious-at-every-level",
+            "deletion-is-append-only-across-all-contexts"
+          ],
+          "outlist": [],
+          "label": "Guards prevent accidental deletion while append-only semantics prevent intentional deletion from destroying data \u2014 independent mechanisms, joint guarantee"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "deletion-is-guarded-by-preconditions": {
       "text": "Permanent deletion requires satisfied preconditions \u2014 S3 buckets must be logically empty, emails must be trashed before permanent removal \u2014 enforcing a deliberate multi-step process that prevents accidental irreversible data loss through a single operation.",
@@ -1364,6 +1891,26 @@
         "review_result": "pass"
       }
     },
+    "deletion-reinforces-monotonic-state": {
+      "text": "State monotonicity has no exception path: because deletion never destroys data (preconditions prevent premature removal, append-only metadata preserves history), the operation most likely to violate monotonic accumulation is itself accumulative \u2014 deletion reinforces rather than threatens the monotonic state model.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "deletion-is-doubly-preserved",
+            "state-is-monotonically-accumulative"
+          ],
+          "outlist": [],
+          "label": "deletion is the natural adversary of monotonic accumulation; showing it is itself accumulative closes the last potential escape path from the monotonicity invariant"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "deletion-strategy-scales-with-distribution": {
       "text": "Deletion strategy scales in complexity with system distribution: single-node systems use soft delete to preserve structural invariants (sequence contiguity, trie connectivity), distributed systems additionally require tombstones and delete markers for anti-entropy, and the KV store demonstrates both layers coexisting in a single system.",
       "truth_value": "IN",
@@ -1386,6 +1933,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "delivery-guarantees-follow-write-read-cost-asymmetry": {
+      "text": "Message delivery guarantees enforced at the consumer side instantiate the architecture's broader read-path responsibility pattern: just as KV reads absorb convergence (repair) and computation (lazy evaluation), message consumers absorb delivery semantics (at-least-once vs exactly-once) through their own poll/commit behavior, keeping the write/publish path simple and coordination-free.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "message-delivery-guarantees-are-consumer-side",
+            "reads-are-active-convergence-engines"
+          ],
+          "outlist": [],
+          "label": "Consumer-side delivery guarantees are a specific case of read-path absorbing complexity"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "derivation-over-creation": {
       "text": "The codebase systematically derives new capabilities from existing data and structures rather than introducing new mechanisms: identifiers from existing pairs and messages (eliminating coordination), data structures from sign-flipped heaps and repurposed topics (inheriting proven properties) \u2014 favoring derivation over creation at both the data and infrastructure levels.",
@@ -1432,6 +1999,28 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "invalid"
       }
+    },
+    "design-to-verification-traceability": {
+      "text": "The codebase achieves end-to-end traceability from design specification to runtime verification: prescriptive plans create verifiable specifications, structural construction ensures correctness properties are testable by design, and deterministic testing validates the correspondence \u2014 forming a plan-to-construction-to-verification pipeline.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "plan-to-implementation-correspondence-is-verifiable",
+            "structural-correctness-and-testability-are-co-designed"
+          ],
+          "outlist": [
+            "no-divergence-annotations"
+          ],
+          "label": "plan prescriptiveness + co-designed testability yields a complete specification-to-verification chain, blocked only by missing divergence tracking"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "deterministic-ids-eliminate-coordination": {
       "text": "Both chat and email derive identifiers deterministically from existing data (sorted user-pair for DM conversations, first message ID for threads) rather than generating separate IDs, eliminating coordination overhead and guaranteeing idempotent ID creation.",
@@ -1582,11 +2171,71 @@
         "review_result": "invalid"
       }
     },
+    "domain-excellence-composes-with-universal-invariant-enforcement": {
+      "text": "Domain-adapted specialization (achieving excellence through financial risk-adaptation and symmetric-domain quality optimization) and scale-independent invariant enforcement (quality guarantees holding regardless of scale or layer, with redundant prevention of state reversal) compose cleanly: adding new domain specializations customizes coordination mechanisms but cannot compromise the universal invariants that the redundant enforcement guarantees \u2014 specialization operates below the invariant ceiling.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "domain-specialization-achieves-dual-excellence",
+            "architectural-invariants-are-scale-independent-and-redundantly-enforced"
+          ],
+          "outlist": [],
+          "label": "domain specialization customizes mechanisms within the invariant boundary; redundant enforcement ensures new specializations cannot breach universal guarantees"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "domain-specialization-achieves-dual-excellence": {
+      "text": "The architecture achieves excellence through domain-adapted specialization rather than a single optimal pattern: symmetric domains optimize for quality (structurally correct lifecycle + triple convergence of correctness/simplicity/performance), while financial domains optimize for completeness (domain-adapted coordination strategies + emergent auditability from accumulative state).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "financial-domains-are-most-completely-realized",
+            "symmetric-domains-are-quality-optimal"
+          ],
+          "outlist": [],
+          "label": "both are unused depth-8/9 peaks representing different domain categories; combining reveals the architecture has two distinct excellence modes adapted to domain structure"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "double-entry-invariant": {
       "text": "Every money movement (initial funding, payment, refund) creates exactly two ledger entries \u2014 one debit and one credit \u2014 and `verify_ledger_integrity` audits that total debits equal total credits",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/payment-system-payment_system.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "duplicate-prevention-is-complete-from-api-to-storage": {
+      "text": "The architecture achieves complete duplicate prevention from external API boundary to internal storage through complementary forward-only mechanisms: idempotency keys extend forward-only semantics to the client boundary (making duplicate submissions return cached results permanently), while stratified dedup covers internal processing with accuracy adapted to cost (exact key-based at API boundaries, coordinated window-based at stream boundaries, probabilistic at crawl boundaries).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "idempotency-extends-forward-only-to-client-boundary",
+            "dedup-is-stratified-across-boundaries-and-accuracy-levels"
+          ],
+          "outlist": [],
+          "label": "Client-facing idempotency and internal stratified dedup together cover the full duplicate prevention surface"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -1780,6 +2429,26 @@
         "review_result": "pass"
       }
     },
+    "event-and-task-processing-share-forward-only-correctness": {
+      "text": "Event stream processing (exactly-once via coordinated dedup and finalization) and task graph processing (video pipeline forward progress via control-data separation and failure cascading) achieve their correctness guarantees through the same forward-only principle despite operating on fundamentally different processing models \u2014 both prevent regression and maximize useful work through irrevocable transitions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-stream-processing-is-exactly-once",
+            "control-data-separation-enables-forward-progress"
+          ],
+          "outlist": [],
+          "label": "two independent processing domains converge on the same no-regression mechanism"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "eviction-timing-has-no-codebase-convention": {
       "text": "Data eviction timing varies across modules with no consistent strategy: message queue trims eagerly on every publish, rate limiter replaces its counter dict on each allowed request, URL shortener checks expiration lazily at read time, and the dedup registry prunes on watermark advance \u2014 each module independently decides when to reclaim old data, unlike other cross-cutting patterns (soft delete, time injection) where conventions exist.",
       "truth_value": "IN",
@@ -1828,6 +2497,110 @@
         "review_result": "invalid"
       }
     },
+    "financial-auditability-is-emergent-from-accumulation": {
+      "text": "Payment ledger auditability is an emergent consequence of the architecture's irreversible accumulation: because double-entry pairs are append-only and balances are derived from complete ledger scans, the full financial history is structurally unlosable \u2014 auditability requires no separate bookkeeping because the state-growth property already guarantees complete traceability.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "payment-ledger-is-fully-auditable",
+            "state-is-irreversibly-accumulative"
+          ],
+          "outlist": [],
+          "label": "domain-specific auditability falls out of the architecture's general irreversible-accumulation property"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "financial-concurrency-is-comprehensively-safe": {
+      "text": "Financial systems achieve comprehensive monetary safety when domain-appropriate concurrency strategies (pessimistic locking, optimistic version checks) and monotonic state ratchets (cursors that only advance, preconditions before removal) jointly prevent both concurrent corruption and state regression across all money-movement operations.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "concurrency-safety-strategy-varies-by-financial-risk",
+            "monotonicity-and-caution-prevent-state-loss"
+          ],
+          "outlist": [
+            "payment-balance-check-not-atomic"
+          ],
+          "label": "comprehensive financial safety requires both concurrency control and monotonic guards; the non-atomic payment balance check leaves a gap"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "financial-correctness-combines-locking-with-structural-asymmetry": {
+      "text": "Financial systems achieve end-to-end correctness through the intersection of domain-appropriate concurrency control (pessimistic locking for wallets, optimistic locking for hotels) and the architectural write-read asymmetry (irrevocable ledger entries, reconciling balance derivation): concurrency control prevents write-time corruption while structural asymmetry ensures read-time consistency \u2014 each mechanism covering the gap the other leaves open.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "concurrency-safety-strategy-varies-by-financial-risk",
+            "write-read-asymmetry-is-end-to-end-correct"
+          ],
+          "outlist": [],
+          "label": "domain-specific concurrency strategies and codebase-wide write-read asymmetry are complementary, not redundant"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "financial-correctness-is-end-to-end": {
+      "text": "Financial domains achieve end-to-end correctness when domain-adapted coordination (pessimistic locking for wallets, optimistic control for hotels, combined with structural write-read asymmetry) combines with emergent auditability from irreversible accumulation \u2014 producing the architecture's only domains with simultaneous safety, lifecycle correctness, and full traceability.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "financial-correctness-combines-locking-with-structural-asymmetry",
+            "financial-auditability-is-emergent-from-accumulation"
+          ],
+          "outlist": [
+            "payment-balance-check-not-atomic"
+          ],
+          "label": "Financial correctness + auditability is end-to-end unless payment atomicity gap breaks the safety guarantee"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "financial-domains-are-most-completely-realized": {
+      "text": "Financial domains are the codebase's most completely realized instantiation of the full architecture: domain-adapted coordination strategies provide write-path safety, structural write-read asymmetry provides lifecycle correctness, and irreversible accumulation provides emergent auditability \u2014 the only domains that simultaneously achieve safety, correctness, and accountability across all three dimensions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "architecture-adapts-mechanisms-to-domain-risk",
+            "financial-auditability-is-emergent-from-accumulation"
+          ],
+          "outlist": [],
+          "label": "Financial domains combine coordination, asymmetry, and auditability across all quality dimensions"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "fixed-window-single-key-gc": {
       "text": "FixedWindowCounterLimiter replaces its entire counter dict with just the current window's entry on every allowed request, effectively garbage-collecting all old windows immediately",
       "truth_value": "IN",
@@ -1861,6 +2634,46 @@
         "review_result": "pass"
       }
     },
+    "forward-only-and-monotonicity-jointly-bound-read-path-risk": {
+      "text": "Forward-only design and unconditional state monotonicity jointly bound read-path risk through complementary mechanisms: forward-only prevents temporal regression from creating new convergence obligations, while monotonic growth ensures the read path's active convergence always targets a larger consistent state \u2014 together limiting the unbounded verification burden that would otherwise grow with system complexity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-compensates-for-read-path-verification-gap",
+            "state-growth-is-unconditionally-monotonic"
+          ],
+          "outlist": [],
+          "label": "two independent structural guarantees (no regression + only growth) jointly close the read path's open-ended risk"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-compensates-for-read-path-verification-gap": {
+      "text": "Forward-only design specifically compensates for the architecture's most critical verification gap: the read path bears growing responsibility that outpaces test coverage, but forward-only semantics prevent unverified read-path behaviors from causing regression \u2014 temporal gaps in the least-tested component cannot propagate backward.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-preserves-correctness-despite-accepted-gaps",
+            "read-path-responsibility-exceeds-verification"
+          ],
+          "outlist": [],
+          "label": "Forward-only targets exactly where the testing strategy is weakest \u2014 the growing unverified read-path responsibility"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "forward-only-design-prevents-regression-and-maximizes-progress": {
       "text": "The codebase's forward-only philosophy combines no-regression state ratchets (monotonic cursors, irreversible window finalization) with failure-tolerant pipelines that continue independent branches on failure, ensuring useful progress is never lost and partial failure never triggers backtracking.",
       "truth_value": "IN",
@@ -1883,6 +2696,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "forward-only-enables-robust-cost-allocation": {
+      "text": "Cost shifting between write and read paths is robust against two independent failure modes: forward-only semantics ensure shifted computation never needs rollback (temporal robustness), and structural construction guarantees the shifted state remains consistent (spatial robustness) \u2014 together they make the write-read cost balance arbitrarily adjustable without correctness risk.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-preserves-correctness-despite-accepted-gaps",
+            "structural-correctness-enables-safe-cost-shifting"
+          ],
+          "outlist": [],
+          "label": "two independently justified safety mechanisms (temporal via forward-only, spatial via structural correctness) jointly remove both categories of risk from cost rebalancing decisions"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "forward-only-extends-to-failure-handling": {
       "text": "The forward-only design principle extends beyond normal state evolution (monotonic cursors, irreversible window finalization, maximum-progress pipeline branching) to failure handling: retry logic escalates transient failures to permanent outcomes via exponential backoff rather than attempting rollback, treating failure resolution as another forward-only state transition that produces irrevocable results.",
@@ -1907,6 +2740,127 @@
         "review_result": "pass"
       }
     },
+    "forward-only-extends-to-time-generation": {
+      "text": "Forward-only design extends from state ratchets (monotonic cursors, irreversible finalization) to the time dimension of ID generation: Snowflake rejects backward clocks rather than generating out-of-order IDs, applying the same no-regression principle at the time-generation layer that state ratchets enforce at the data layer.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-ratchets-prevent-regression-across-domains",
+            "snowflake-rejects-backward-clock"
+          ],
+          "outlist": [],
+          "label": "clock regression rejection is a concrete instantiation of the no-regression ratchet pattern applied to time input"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-is-the-architectures-load-bearing-constraint": {
+      "text": "Forward-only design is both the architecture's most universally applied pattern (spanning event streams, task pipelines, and notification delivery as a single processing primitive) and its primary correctness mechanism (containing temporal gaps, preventing regression, enabling safe cost shifting despite accepted weaknesses) \u2014 making it the single most load-bearing architectural constraint across all 25 modules.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-is-universal-processing-primitive",
+            "forward-only-preserves-correctness-despite-accepted-gaps"
+          ],
+          "outlist": [],
+          "label": "Forward-only is universal in scope AND primary in correctness role \u2014 uniquely load-bearing"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-is-universal-processing-primitive": {
+      "text": "Forward-only correctness is the codebase's universal processing primitive, applying uniformly across all three processing paradigms: event streams (exactly-once via coordinated dedup and finalization), task orchestration (DAG forward progress via control-data separation), and message delivery (bounded retry with escalation to permanent failure).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "event-and-task-processing-share-forward-only-correctness",
+            "notification-instantiates-forward-only-delivery"
+          ],
+          "outlist": [],
+          "label": "depth-5 beliefs covering streams+tasks and delivery are both unused; combining reveals forward-only spans every processing paradigm, not just data and execution layers"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-is-universally-load-bearing-across-all-layers": {
+      "text": "Forward-only design is simultaneously the most broadly applied pattern (independently enforcing no-regression at data, domain, and execution layers) and the single most critical constraint (the load-bearing principle whose removal would compromise correctness across all processing paradigms) \u2014 its universality and criticality are the same property viewed from coverage and dependency perspectives.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-spans-data-domain-and-execution-layers",
+            "forward-only-is-the-architectures-load-bearing-constraint"
+          ],
+          "outlist": [],
+          "label": "Universality of layer coverage and criticality of constraint are two views of the same forward-only property"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-preserves-correctness-despite-accepted-gaps": {
+      "text": "The architecture achieves end-to-end correctness not by eliminating temporal gaps but by containing them within a forward-only framework: forward-only design prevents gap-induced regression (non-atomic checks cannot cause backward state transitions) while write-read asymmetry ensures irrevocable writes and reconciling reads remain correct despite accepted temporal weaknesses.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "temporal-gaps-are-contained-by-forward-only-design",
+            "write-read-asymmetry-is-end-to-end-correct"
+          ],
+          "outlist": [],
+          "label": "Containment strategy \u2014 correctness emerges from progress guarantees rather than exhaustive verification, making accepted gaps survivable"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-spans-data-domain-and-execution-layers": {
+      "text": "Forward-only design enforces no-regression guarantees independently at three architectural layers: domain-level state machines contain temporal gaps through irrevocable transitions, execution-level stream processing achieves exactly-once through coordinated dedup and finalization, and execution-level task pipelines maximize forward progress through control-data separation \u2014 the no-regression principle is layered across the architecture, not singular.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-machines-enforce-temporal-gap-containment",
+            "forward-only-stream-processing-is-exactly-once",
+            "control-data-separation-enables-forward-progress"
+          ],
+          "outlist": [],
+          "label": "three independent architectural layers each instantiate forward-only independently"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "forward-only-stream-processing-is-exactly-once": {
       "text": "Stream processing achieves exactly-once delivery per entity: dedup outlives finalization windows, finalized results are irrevocable, and the pipeline never backtracks \u2014 producing correct per-event semantics when event IDs are globally unique.",
       "truth_value": "IN",
@@ -1921,6 +2875,26 @@
             "dedup-is-global-not-per-ad"
           ],
           "label": "Global dedup keying (event_id alone, not per ad_id) means two legitimate events sharing an ID across different entities are silently merged, breaking per-entity exactly-once semantics"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "forward-only-unifies-processing-and-conflict-resolution": {
+      "text": "Forward-only semantics provide a single consistency guarantee across two independent architectural concerns: processing paradigms (event streams, task pipelines, notification delivery all use irrevocable forward progress) and conflict resolution at all distribution levels (single-node optimistic retry, multi-node sibling retention, cross-replica anti-entropy all resolve by moving forward rather than rolling back) \u2014 making forward-only the architecture's universal consistency primitive.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "forward-only-is-universal-processing-primitive",
+            "conflict-resolution-is-forward-only-at-all-distribution-levels"
+          ],
+          "outlist": [],
+          "label": "Forward-only governs both normal processing and conflict resolution, establishing it as the universal consistency primitive"
         }
       ],
       "source": "",
@@ -2073,6 +3047,28 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "growth-does-not-increase-maintenance-burden": {
+      "text": "The architecture's monotonically expanding verified state does not create a growing maintenance burden: self-reinforcing correctness means new state inherits verification from structural construction rather than requiring runtime checks, coordination-free scaling means adding state requires no coordination overhead, and robust cost allocation means read/write cost ratios remain stable as state grows \u2014 all structural properties of the architectural trinity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "architectural-trinity-of-correctness-scaling-and-cost",
+            "monotonically-expanding-verified-state"
+          ],
+          "outlist": [
+            "assumed-invariants-are-unenforced"
+          ],
+          "label": "depth-10 \u2192 depth-11 synthesis; both antecedents unused at the network's apex; gated because unenforced invariants would require per-state human vigilance that scales with state size, converting structural maintenance-freedom into a growing burden"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "heap-sign-negation-repurposes-min-heap": {
       "text": "Both leaderboard (negated scores in SortedList) and URL frontier (sign-flipped sequence numbers in heapq) repurpose ascending-order data structures for alternative orderings by negating sort keys, rather than using custom comparators or different data structures.",
@@ -2230,6 +3226,46 @@
       "date": "",
       "metadata": {}
     },
+    "hybrid-fanout-bounds-both-write-and-read-cost": {
+      "text": "The hybrid fan-out strategy bounds both paths: the follower-count threshold limits write amplification to non-celebrity authors, and heap-merge limits read cost to O(k log n) for pull-based celebrity retrieval.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "news-feed-hybrid-splits-on-follower-count",
+            "news-feed-pull-uses-heap-merge"
+          ],
+          "outlist": [],
+          "label": "Threshold caps write fan-out; heap merge caps read materialization \u2014 each path has an independent cost bound"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "hybrid-fanout-instantiates-adaptive-cost-model": {
+      "text": "The hybrid fan-out strategy is the codebase's most explicit instantiation of access-frequency-adapted cost allocation: the celebrity threshold converts the abstract principle (shift work to the cheaper path based on access pattern) into a concrete runtime decision boundary, dynamically partitioning authors between write-amplified push and read-time merge-pull to bound both paths simultaneously.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "hybrid-fanout-bounds-both-write-and-read-cost",
+            "cost-model-adapts-to-access-frequency"
+          ],
+          "outlist": [],
+          "label": "the celebrity threshold makes the per-use-case cost adaptation principle into a concrete, observable mechanism"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "id-generators-preserve-monotonic-order": {
       "text": "Stateful ID generators maintain monotonic ordering within their time granularity through distinct sub-millisecond strategies: Snowflake uses a bounded sequence counter (4096/ms), ULID increments the random component, and the stock exchange uses a global counter \u2014 all thread-safe via locks to prevent ID collision under concurrency.",
       "truth_value": "IN",
@@ -2254,6 +3290,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "idempotency-extends-forward-only-to-client-boundary": {
+      "text": "Idempotency keys extend forward-only semantics to the external API boundary: once a client-provided key maps to a result, that result is permanent and irrevocable \u2014 the same pattern that internal state ratchets apply to stream windows and read cursors, but applied to client-facing retry safety across hotel reservations, payments, and ad click processing.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "idempotency-keys-ignore-payload-content",
+            "forward-only-extends-to-failure-handling"
+          ],
+          "outlist": [],
+          "label": "Idempotency is forward-only applied to external client retries"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "idempotency-keys-ignore-payload-content": {
       "text": "Three systems implement idempotency by keying on opaque identifiers (idempotency key, event ID) without verifying that the associated payload matches the original request, silently returning cached results even when parameters differ.",
@@ -2324,6 +3380,46 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "invalid"
       }
+    },
+    "information-preservation-is-doubly-guaranteed": {
+      "text": "Information is never lost through either normal operations or conflict resolution: unconditional state monotonicity ensures even deletion and eviction add metadata rather than removing data, and forward-only conflict resolution at all distribution levels ensures conflicts produce additional state (siblings, new versions, repair writes) rather than overwriting or discarding existing information.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-growth-is-unconditionally-monotonic",
+            "conflict-resolution-is-forward-only-at-all-distribution-levels"
+          ],
+          "outlist": [],
+          "label": "State monotonicity and forward-only conflict resolution independently guarantee no information loss"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "input-and-storage-representations-are-decoupled": {
+      "text": "The architecture separates input representations from storage representations: email uses `Email` dataclass for send-time input but stores plain dicts, and KV separates coordinator writes (`local_put` with clock increment) from replication writes (`local_put_raw` with pre-built versions) \u2014 enabling internal storage evolution independent of external API.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "email-service-input-storage-decoupling",
+            "kv-local-put-vs-raw-separation"
+          ],
+          "outlist": [],
+          "label": "both decouple the external write representation from internal storage format"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "irreversibility-is-the-simplicity-mechanism": {
       "text": "By eliminating reversal from the design vocabulary entirely (all deletes are additive, all state changes are forward-only, all finalization is permanent), the codebase removes an entire complexity class \u2014 undo, compensation, rollback, conflict-from-regression \u2014 achieving both correctness and simplicity through the same irreversibility constraint rather than trading one for the other.",
@@ -2596,6 +3692,26 @@
       "date": "",
       "metadata": {}
     },
+    "kv-write-path-separates-coordinator-from-replication": {
+      "text": "The KV write path separates coordinator responsibility (local_put increments vector clocks, wraps deletes as tombstones) from replication (local_put_raw accepts pre-built VersionedValues), enabling read repair and anti-entropy to use the raw path without re-incrementing clocks.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "kv-local-put-vs-raw-separation",
+            "kv-delete-is-tombstone-write"
+          ],
+          "outlist": [],
+          "label": "Coordinator path owns causal metadata; replication path preserves it \u2014 preventing clock inflation during repair"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "lazy-read-time-evaluation-trades-write-simplicity-for-read-cost": {
       "text": "Autocomplete (time decay), URL shortener (expiration), and payment (balance derivation) all defer computation to the read path, keeping writes simple and append-only at the cost of read-time complexity and latency.",
       "truth_value": "IN",
@@ -2675,6 +3791,48 @@
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "ledger-interpretation-is-consistently-safe": {
+      "text": "The financial ledger's dual interpretation (full balance from complete scan, spending limits from outflows only) provides both audit completeness and focused business metrics from a single data source \u2014 unless the non-atomic balance check allows concurrent mutations between balance reads and spending limit enforcement, enabling over-spending that neither interpretation would detect in isolation.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "payment-ledger-is-fully-auditable",
+            "daily-limit-only-counts-outflows"
+          ],
+          "outlist": [
+            "payment-balance-check-not-atomic"
+          ],
+          "label": "dual ledger interpretation is complete only if the balance check is atomic; the TOCTOU gap could allow over-spending between the two read modes"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "ledger-supports-asymmetric-read-interpretation": {
+      "text": "The financial ledger supports multiple asymmetric interpretations from a single data source: full-scan balance derivation counts all transactions, while daily spending limits count only outflows (withdrawals, transfers out) \u2014 the ledger is the sole source of truth but different read paths apply different projection filters.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "balance-derived-from-ledger",
+            "daily-limit-only-counts-outflows"
+          ],
+          "outlist": [],
+          "label": "same ledger data read through different filters for balance vs spending limit business questions"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -2872,6 +4030,67 @@
       "date": "",
       "metadata": {}
     },
+    "metrics-indexing-separates-write-key-from-read-matching": {
+      "text": "Metrics separates write-path identity (frozen tag sets as immutable hash-safe keys) from read-path flexibility (subset matching enables partial-tag queries without key enumeration).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "metrics-series-keyed-by-frozen-tags",
+            "metrics-tag-matching-is-subset"
+          ],
+          "outlist": [],
+          "label": "Frozen keys guarantee stable identity for storage while subset matching decouples query expressiveness from key structure"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "metrics-instantiates-write-read-cost-pattern": {
+      "text": "Metrics is a concrete instantiation of the codebase's per-use-case write-read cost allocation: frozen tag sets and sorted insertion keep the write path structurally simple (O(log n) per point), while subset matching and multi-tier downsampling absorb read-path flexibility and cost \u2014 the module explicitly allocates complexity to reads for query expressiveness.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "metrics-indexing-separates-write-key-from-read-matching",
+            "metrics-sorted-invariant-survives-downsampling",
+            "write-read-cost-allocation-is-per-use-case"
+          ],
+          "outlist": [],
+          "label": "metrics as a domain-specific instance of the broader write-simple/read-flexible cost pattern"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "metrics-is-complete-write-read-exemplar": {
+      "text": "Metrics is the codebase's most complete single-module instantiation of the write-read architecture, achieving both structural separation (frozen tags for write identity, subset matching for read flexibility) and per-use-case cost optimization (eager sorted insertion on writes, deferred matching on reads) \u2014 demonstrating that structural and economic separation are two facets of the same design.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "metrics-instantiates-write-read-cost-pattern",
+            "metrics-write-read-separation-is-structurally-complete"
+          ],
+          "outlist": [],
+          "label": "Metrics achieves both structural AND economic write-read separation in a single module"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "metrics-series-keyed-by-frozen-tags": {
       "text": "Series are stored keyed by `(metric_name, frozenset(tags.items()))`, so each unique tag combination creates a distinct time series \u2014 the standard cardinality model",
       "truth_value": "IN",
@@ -2892,11 +4111,51 @@
       "date": "",
       "metadata": {}
     },
+    "metrics-sorted-invariant-survives-downsampling": {
+      "text": "Metrics maintains its sorted timestamp invariant through both ingestion (bisect insertion for O(log n) per-point insert) and two-tier downsampling (re-sort after age-based aggregation), ensuring temporal queries are correct across all retention tiers.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "metrics-series-sorted-invariant",
+            "metrics-downsample-two-tier"
+          ],
+          "outlist": [],
+          "label": "Sorted order is re-established after downsampling, not merely assumed to survive aggregation"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "metrics-tag-matching-is-subset": {
       "text": "`_matching_keys` performs subset matching: a query with `tags_filter={\"a\": 1}` matches any series whose tags include `a=1`, regardless of additional tags present",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "metrics-write-read-separation-is-structurally-complete": {
+      "text": "Metrics achieves complete write-read structural separation: the write path uses frozen tag sets as immutable hash-safe keys with bisect insertion maintaining sorted temporal order, while the read path provides flexible subset matching for partial-tag queries and two-tier downsampling for bounded historical access \u2014 neither path compromises the other's invariants.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "metrics-indexing-separates-write-key-from-read-matching",
+            "metrics-sorted-invariant-survives-downsampling"
+          ],
+          "outlist": [],
+          "label": "write-path immutability and read-path flexibility are independently maintained"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -2948,6 +4207,26 @@
         "review_result": "pass"
       }
     },
+    "module-boundary-is-universal-containment-mechanism": {
+      "text": "The module boundary serves as the architecture's universal containment mechanism across two independent concerns: quality properties (each module's simplicity-to-verification cycle is hermetically self-contained with no cross-module dependencies) and pragmatic tradeoffs (brute-force algorithms, bounded collections, and simplified implementations are safely confined by module isolation) \u2014 ensuring that per-module design choices neither constrain nor compromise other modules.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "verified-simplicity-is-hermetically-contained",
+            "pedagogical-breadth-is-safely-contained"
+          ],
+          "outlist": [],
+          "label": "Module boundaries contain both quality cycles and pragmatic tradeoffs, making them the universal isolation mechanism"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "module-isolation-is-pedagogical-and-architectural": {
       "text": "Module isolation exhibits two complementary properties: each module is a hermetic, standalone unit with only stdlib dependencies and no real I/O (supporting independent testability), while operational conventions \u2014 error signaling strategies, eviction timing, failure reporting \u2014 remain module-scoped rather than codebase-wide (producing locally reasonable but collectively unpredictable operational surfaces). These properties appear to reinforce each other: standalone modules with no shared infrastructure naturally avoid convention coupling across module boundaries.",
       "truth_value": "IN",
@@ -2971,6 +4250,48 @@
         "review_result": "invalid"
       }
     },
+    "module-level-triple-convergence": {
+      "text": "Each module independently achieves the convergence of correctness, simplicity, and performance: module isolation ensures these properties are self-contained rather than emerging only at codebase scale, and structural correctness being universally applied means the convergence holds per-module, not just in aggregate.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "modules-are-independently-correct",
+            "correctness-simplicity-and-performance-converge"
+          ],
+          "outlist": [],
+          "label": "the triple convergence (correctness, simplicity, performance from the same structural approach) could be a codebase-level statistical property; module independence proves it holds at the unit level"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "modules-are-independently-correct": {
+      "text": "Each module achieves correctness independently: module isolation ensures no shared mutable state or cross-cutting dependencies, and universally applied structural correctness (immutability, state ratchets) holds within each module's boundary \u2014 together, each module's correctness can be verified and reasoned about in isolation.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "module-isolation-is-pedagogical-and-architectural",
+            "structural-correctness-is-universally-applied"
+          ],
+          "outlist": [
+            "dmq-reused-by-stock-exchange"
+          ],
+          "label": "Independent correctness requires both isolation (no shared state) and universal structural discipline \u2014 cross-module dependency breaks the independence guarantee"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "modules-are-independently-runnable": {
       "text": "Each SDI module is independently runnable with only stdlib dependencies, in-process simulation, and no shared code \u2014 unless the stock exchange's cross-module import of the message queue is considered, which introduces a runtime dependency that breaks strict module independence.",
       "truth_value": "IN",
@@ -2984,6 +4305,46 @@
             "dmq-reused-by-stock-exchange"
           ],
           "label": "Module independence holds for 24/25 modules; the stock exchange's DMQ import is the sole counter-example"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "monotonic-state-is-bounded-by-fidelity-not-reversal": {
+      "text": "The architecture resolves the tension between unconditionally growing state (forward-only, append-only) and finite physical resources through fidelity reduction rather than state reversal: bounded collections truncate old entries and probabilistic structures approximate counts, but no mechanism reverses or rolls back accumulated state \u2014 old data is forgotten, never undone.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-growth-is-unconditionally-monotonic",
+            "resource-bounding-uses-dual-fidelity-strategies"
+          ],
+          "outlist": [],
+          "label": "Monotonic growth coexists with finite resources via fidelity loss, not via reversal"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "monotonically-expanding-verified-state": {
+      "text": "The architecture achieves permanently accumulating verified state: per-module self-reinforcing correctness composes with coordination-free scaling, and unconditional state monotonicity ensures no operation can reduce accumulated correctness guarantees \u2014 each module's verified properties persist and grow as the system scales, never regressing.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "self-reinforcing-correctness-composes-with-coordination-free-scaling",
+            "state-growth-is-unconditionally-monotonic"
+          ],
+          "outlist": [],
+          "label": "depth-9 self-reinforcing scaling + depth-7 unconditional monotonicity ensures correctness only accumulates"
         }
       ],
       "source": "",
@@ -3471,6 +4832,69 @@
         "review_result": "pass"
       }
     },
+    "notification-delivery-is-bounded": {
+      "text": "The notification delivery pipeline is bounded: double rate checks at send and process time prevent over-delivery even across queue delays, and retry escalation to permanent failure ensures every notification eventually terminates \u2014 no notification retries indefinitely or escapes rate control.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "notification-defensive-double-rate-check",
+            "retry-escalates-to-permanent-failure"
+          ],
+          "outlist": [],
+          "label": "complementary boundedness \u2014 rate checks bound throughput, retry escalation bounds duration"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "notification-instantiates-forward-only-delivery": {
+      "text": "Notification delivery is a concrete instantiation of forward-only failure handling: double rate checks bound over-delivery, exponential backoff spaces retries, and escalation to permanent failure ensures the delivery pipeline terminates in finite time \u2014 the forward-only principle applied to the entire attempt-retry-escalate lifecycle.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "notification-delivery-is-bounded",
+            "forward-only-extends-to-failure-handling"
+          ],
+          "outlist": [],
+          "label": "Notification's bounded retry lifecycle is structurally isomorphic to forward-only failure handling"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "notification-system-is-delivery-complete": {
+      "text": "The notification system achieves delivery completeness when bounded delivery (double rate checks, retry escalation), strict rendering (fail-fast on missing templates/variables), and stable ordering (deterministic priority queue) all function correctly \u2014 unless the unused group-key infrastructure signals an incomplete aggregation feature needed for batch delivery scenarios.",
+      "truth_value": "OUT",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "notification-delivery-is-bounded",
+            "notif-template-rendering-strict",
+            "notif-priority-heap-stable"
+          ],
+          "outlist": [
+            "notif-group-key-unused"
+          ],
+          "label": "delivery, rendering, and ordering form a complete pipeline; the vestigial group-key code suggests a missing aggregation layer"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "one-directional-state-machines-span-domains": {
       "text": "One-directional state machines appear across unrelated domains: stream processing windows (OPEN\u2192CLOSED\u2192FINALIZED) use irreversible state progression to control event acceptance at each stage, and metrics alerting (OK\u2192PENDING\u2192ALERTING\u2192RESOLVED) uses ordered states to gate alert firing through a duration threshold. Both employ forward-progressing state to reduce complexity, though the alerting machine allows a partial regression (PENDING\u2192OK) when conditions clear early, making it not strictly one-directional.",
       "truth_value": "IN",
@@ -3645,6 +5069,26 @@
         "retract_reason": "research: abandoned \u2014 The two antecedents describe the same single non-atomic balance check from different angles, not two independent TOCTOU windows. The core claim of 'two independent TOCTOU windows' is factually wrong \u2014 there is only one vulnerability described twice. Softening would require changing the claim so fundamentally (from 'two independent windows compound' to 'one window exists') that it would just duplicate either antecedent. No linking can fix this since the problem is redundant antecedents, not a missing one."
       }
     },
+    "pedagogical-breadth-is-safely-contained": {
+      "text": "Module isolation safely enables pedagogical breadth: multiple algorithm variants and simplified implementations serve learning goals without production risk, because module boundaries contain the impact of any performance or correctness tradeoff.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "multiple-algorithms-serve-pedagogical-breadth",
+            "pedagogical-tradeoffs-are-safe-within-module-boundaries"
+          ],
+          "outlist": [],
+          "label": "Breadth (multiple variants) and tolerance (brute-force implementations) are both safe because module isolation bounds blast radius"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "pedagogical-tradeoffs-are-safe-within-module-boundaries": {
       "text": "Brute-force algorithms, bounded collections, and in-process simulation are acceptable pedagogical trade-offs because each module is a standalone learning artifact with no cross-module dependencies \u2014 simplifications that would be dangerous in production are safe when confined to self-contained demonstrations.",
       "truth_value": "IN",
@@ -3660,6 +5104,66 @@
             "dmq-reused-by-stock-exchange"
           ],
           "label": "module isolation is the safety boundary for pedagogical simplifications; cross-module reuse means a simplified module becomes a production dependency"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "per-module-design-to-verification-is-hermetic": {
+      "text": "Each module achieves a hermetic design-to-verification cycle: prescriptive plans create verifiable specifications, structural construction produces testable properties, deterministic testing validates those properties, and the entire chain is contained within the module with no cross-module dependencies \u2014 the full plan-implement-verify pipeline is self-contained per module.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "design-to-verification-traceability",
+            "modules-are-independently-correct"
+          ],
+          "outlist": [],
+          "label": "module independence makes the verification chain leak-free"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "perimeter-and-forward-only-jointly-bound-state-space": {
+      "text": "The architecture constrains its state space through complementary entry and progression mechanisms: perimeter normalization restricts what enters the system (clean, canonicalized inputs only), and forward-only design restricts how state evolves (monotonically, irreversibly, without regression) \u2014 together defining a wedge-shaped state space that narrows at entry and only expands forward.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "boundary-normalization-serves-defense-and-correctness",
+            "forward-only-preserves-correctness-despite-accepted-gaps"
+          ],
+          "outlist": [],
+          "label": "Perimeter normalization bounds entry, forward-only design bounds progression \u2014 joint state-space constraint"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "perimeter-defense-enables-cheap-writes": {
+      "text": "The write path's cheapness is partially enabled by the perimeter defense model: because inputs are normalized once at system boundaries and internal callers are trusted, writes operate on pre-validated data without redundant checking, keeping the asymmetric cost model's write side genuinely lightweight beyond just routing simplicity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "perimeter-defense-ensures-data-quality",
+            "writes-are-cheap-reads-pay"
+          ],
+          "outlist": [],
+          "label": "perimeter defense and asymmetric cost allocation are independently motivated but mutually reinforcing \u2014 the trust model explains HOW writes stay cheap, not just THAT they are cheap"
         }
       ],
       "source": "",
@@ -3775,6 +5279,26 @@
       "date": "",
       "metadata": {}
     },
+    "probabilistic-dedup-trades-memory-for-coverage": {
+      "text": "The crawler's multi-layer dedup combines deterministic normalization with probabilistic structures (Bloom filter for O(k) exact-URL rejection, SimHash for O(1) near-content detection), achieving coverage across three dimensions while maintaining bounded memory through tunable accuracy-space tradeoffs.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "crawler-three-layer-dedup",
+            "probabilistic-structures-trade-accuracy-for-space"
+          ],
+          "outlist": [],
+          "label": "Each dedup layer uses a different probabilistic tradeoff; bounded memory is the unifying constraint across all three"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "probabilistic-structures-trade-accuracy-for-space": {
       "text": "Three systems deploy probabilistic data structures with explicitly tunable accuracy-space tradeoffs: HyperLogLog with 16384 registers for ~1% cardinality error, Morris counters averaging 32 independent estimators for approximate counting, and SimHash with a 3-bit Hamming threshold for near-duplicate detection \u2014 each accepting bounded inaccuracy to achieve sub-linear space consumption.",
       "truth_value": "IN",
@@ -3851,6 +5375,46 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "invalid"
       }
+    },
+    "quality-convergence-is-scale-independent": {
+      "text": "Each module's correctness-simplicity-performance convergence is independent of implementation scale: the structural patterns (immutability, synchronized structures, state ratchets, forward-only transitions) that produce triple convergence are identical whether the algorithms underneath are production-optimized or pedagogically simplified \u2014 because the trade-offs (brute-force algorithms, bounded collections) are safely contained within module boundaries and do not affect the structural layer where convergence occurs.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "module-level-triple-convergence",
+            "pedagogical-breadth-is-safely-contained"
+          ],
+          "outlist": [],
+          "label": "structural quality patterns operate above implementation complexity; module isolation prevents pedagogical shortcuts from leaking upward"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "quality-guarantees-are-scale-and-layer-independent": {
+      "text": "The architecture's quality guarantees hold without regard to either scale or abstraction layer: per-module triple convergence (correctness, simplicity, performance) is independent of implementation scale, and forward-only correctness (no-regression state machines, monotonic ordering, irrevocable finalization) applies independently at the data, domain, and execution layers \u2014 quality neither degrades with growth nor varies across architectural levels.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "quality-convergence-is-scale-independent",
+            "forward-only-spans-data-domain-and-execution-layers"
+          ],
+          "outlist": [],
+          "label": "Quality convergence is scale-independent; forward-only correctness is layer-independent \u2014 together they're universal"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "queue-abstraction-is-logical-not-physical": {
       "text": "The message queue is designed as a logical abstraction layer, not a physical storage system: offsets are logical (surviving partition trimming via base_offset adjustment), dead-letter queues are regular topics with a naming convention (no special infrastructure), and delivery guarantees are enforced entirely at the consumer layer through poll/commit semantics \u2014 the broker provides ordering and retention while consumers own correctness.",
@@ -4041,6 +5605,87 @@
         "review_result": "invalid"
       }
     },
+    "read-path-is-universal-site-of-deferred-work": {
+      "text": "The read path's responsibility encompasses three orthogonal dimensions: active convergence (repair, lazy computation, consistency enforcement), entity-state filtering (lifecycle-aware result exclusion for search and recommendations), and delivery guarantee enforcement (consumer-side poll/commit semantics determine at-least-once vs exactly-once) \u2014 making reads the universal site where the architecture's deferred and delegated correctness work is performed.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "read-responsibility-spans-convergence-and-filtering",
+            "delivery-guarantees-follow-write-read-cost-asymmetry"
+          ],
+          "outlist": [],
+          "label": "Three independent dimensions of read-path responsibility converge into a universal deferred-work pattern"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "read-path-responsibility-exceeds-verification": {
+      "text": "The read path's active convergence role (healing divergence via repair, computing deferred state via lazy evaluation, interpreting metadata-as-deletion) grows in responsibility as distribution complexity increases, yet the co-designed test infrastructure validates structural write-path properties most effectively \u2014 creating a widening gap where the component bearing maximum correctness responsibility has the weakest verification coverage relative to its burden.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "reads-are-active-convergence-engines",
+            "growing-read-complexity-outpaces-test-coverage"
+          ],
+          "outlist": [],
+          "label": "Architectural tension \u2014 the most critical component is the least verified because structural testability co-design favors the simpler write path"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "read-paths-filter-by-entity-state": {
+      "text": "Read paths systematically exclude entities based on lifecycle state: video search returns only READY/UPLOADING statuses, and recommendations exclude already-watched videos \u2014 adding read-time filtering cost proportional to the number of state categories that must be checked.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "search-status-filter",
+            "recommendation-excludes-watched"
+          ],
+          "outlist": [],
+          "label": "both defer entity-state filtering to the read path rather than pre-filtering at write time"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "read-responsibility-spans-convergence-and-filtering": {
+      "text": "The read path's responsibility extends beyond active convergence (repair, lazy computation, consistency enforcement) to include systematic entity-state filtering (excluding processing/failed/watched items) \u2014 both are deferred-to-read decisions whose complexity grows with the system's state space, compounding the read path's total correctness burden.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "reads-are-active-convergence-engines",
+            "search-status-filter",
+            "recommendation-excludes-watched"
+          ],
+          "outlist": [],
+          "label": "entity-state filtering is an additional read-path cost dimension alongside the already-identified convergence and computation responsibilities"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "reads-are-active-convergence-engines": {
       "text": "Reads in this architecture are active convergence engines rather than passive data retrievals: they perform the deferred computation and consistency work that writes skip (lazy evaluation, read repair, tombstone interpretation) AND mutate system state as a side effect (triggering replica repair, advancing read markers), making the read path simultaneously the system's primary workload, its primary state-evolution mechanism, and its primary consistency enforcement layer.",
       "truth_value": "IN",
@@ -4115,6 +5760,66 @@
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/design-youtube-design_youtube.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "representation-decoupling-spans-module-and-architecture-scales": {
+      "text": "Representation decoupling operates at two architectural scales through the same principle: within modules, input representations are separated from storage representations (dataclasses vs dicts, coordinator writes vs raw replicas); across the architecture, logical semantics are separated from physical state (offsets survive partition trimming, hash positions decouple from topology, delete markers decouple from data removal) \u2014 both enabling independent evolution of interfaces and implementations at their respective granularities.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "input-and-storage-representations-are-decoupled",
+            "logical-physical-separation-spans-topology-storage-and-deletion"
+          ],
+          "outlist": [],
+          "label": "Representation decoupling at module scale and architecture scale are the same principle at different granularities"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "reservation-strategies-prevent-over-commitment": {
+      "text": "Two systems prevent over-commitment of shared resources through complementary reservation strategies: Google Drive reserves full quota at upload initiation (capacity locked upfront), while hotel reservations use optimistic version checks on per-date inventory (conflicts detected at commit) \u2014 both ensure capacity is not exceeded despite concurrent access.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "gdrive-quota-reservation",
+            "hotel-occ-two-phase-reserve"
+          ],
+          "outlist": [],
+          "label": "both use upfront capacity checks to prevent concurrent access from exceeding resource limits"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "resource-bounding-uses-dual-fidelity-strategies": {
+      "text": "The codebase systematically bounds resource consumption through two orthogonal fidelity-reduction strategies: deterministic truncation (bounded deques, version pruning, click history caps) silently drops the oldest data in time-ordered domains, while probabilistic approximation (Bloom filters, SimHash, HyperLogLog, Morris counters) tolerates statistical error in set-membership domains \u2014 together covering both sequential and presence/absence resource bounding.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "memory-is-bounded-at-the-cost-of-silent-information-loss",
+            "probabilistic-dedup-trades-memory-for-coverage"
+          ],
+          "outlist": [],
+          "label": "deterministic truncation (time-ordered) and probabilistic approximation (set-membership) are complementary bounding strategies"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -4322,6 +6027,46 @@
         "review_result": "pass"
       }
     },
+    "scaling-is-safe-for-both-quality-and-risk": {
+      "text": "Horizontal scaling is safe along two independent dimensions: coordination-free scaling preserves per-module quality convergence (the correctness-simplicity-performance triad holds regardless of scale), and forward-only design with state monotonicity jointly bounds the read-path risk that would otherwise accumulate with growing state \u2014 scaling neither degrades quality nor amplifies risk.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "coordination-free-scaling-preserves-triple-convergence",
+            "forward-only-and-monotonicity-jointly-bound-read-path-risk"
+          ],
+          "outlist": [],
+          "label": "two unused depth-8 beliefs covering quality and risk independently; combining reveals scaling is safe along BOTH dimensions simultaneously"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "scaling-uses-logically-uniform-indirection": {
+      "text": "The architecture follows a single scaling pattern as distribution complexity increases: add logical indirection that decouples semantics from physical state \u2014 consistency strategies add semantic layers (tombstones, vector clocks) while topology and storage add logical abstractions (stateless rings, logical offsets, metadata-as-deletion) through the same mechanism of inserting a logical interpretation layer between operations and physical state.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "consistency-strategy-scales-uniformly-with-distribution",
+            "logical-physical-separation-spans-topology-storage-and-deletion"
+          ],
+          "outlist": [],
+          "label": "Both dimensions use the same scaling primitive (logical indirection), suggesting a single underlying architectural pattern"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "sdi-implementations-are-in-process-simulations": {
       "text": "All implementations simulate distributed behavior in-process with no real network or storage dependencies \u2014 they are pedagogical reference implementations, not production systems.",
       "truth_value": "IN",
@@ -4419,11 +6164,71 @@
         "review_result": "pass"
       }
     },
+    "self-reinforcing-correctness-composes-with-coordination-free-scaling": {
+      "text": "The architecture's self-reinforcing correctness composes with coordination-free scaling: each module's closed correctness loop generates and validates its own structural properties independently, while accumulative state scales through logical indirection \u2014 adding modules neither disrupts existing correctness loops nor requires coordination, because both correctness and scaling are structurally module-local.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "correctness-is-self-reinforcing-per-module",
+            "accumulative-state-scales-without-coordination"
+          ],
+          "outlist": [],
+          "label": "Self-reinforcing loops are module-local and scaling is through indirection \u2014 the two mechanisms operate on non-overlapping concerns and compose without interference"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "simhash-threshold-default-3": {
       "text": "Two pages are considered near-duplicates if their 64-bit SimHash fingerprints differ in 3 or fewer bits, configurable via the `duplicate_threshold` parameter.",
       "truth_value": "IN",
       "justifications": [],
       "source": "entries/2026/06/05/web-crawler-web_crawler.md",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "simplicity-is-dual-minimization": {
+      "text": "The codebase achieves simplicity through two orthogonal minimization strategies: conceptual minimization (deriving capabilities from existing data and structures rather than inventing new mechanisms) and algorithmic minimization (preferring simpler algorithms at pedagogical scale), both independently reducing the surface area for correctness bugs.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "abstractions-minimize-new-concepts",
+            "algorithmic-simplicity-reinforces-structural-correctness"
+          ],
+          "outlist": [],
+          "label": "conceptual and algorithmic minimization are independent simplicity axes that both contribute to correctness \u2014 the first shrinks the concept count, the second shrinks implementation complexity"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "simplicity-mechanisms-independently-produce-correctness": {
+      "text": "Both axes of the codebase's dual minimization strategy independently produce correctness: conceptual minimization (deriving from existing data, reusing abstractions) inherits proven invariants, and mechanical minimization (simpler algorithms, structural constraints) reduces bug surface \u2014 the simplicity-correctness convergence holds along each axis, not just in aggregate.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "simplicity-is-dual-minimization",
+            "correctness-and-simplicity-share-the-same-mechanism"
+          ],
+          "outlist": [],
+          "label": "Each minimization axis independently reinforces correctness \u2014 conceptual reuse inherits invariants, mechanical simplicity shrinks error surface"
+        }
+      ],
+      "source": "",
       "source_url": "",
       "source_hash": "",
       "date": "",
@@ -4459,6 +6264,26 @@
       "date": "",
       "metadata": {}
     },
+    "social-domains-fully-realize-ideal-write-path": {
+      "text": "Social domains are the purest instantiation of the architecture's write-path ideal: graph symmetry simultaneously provides routing completeness (all recipients reachable without lookup) and coordination freedom (no distributed agreement needed), achieving all three write-path virtues \u2014 cheapness, correctness, and coordination-free operation \u2014 from a single structural property.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "social-writes-are-complete-and-coordination-free",
+            "write-path-is-cheap-correct-and-coordination-free"
+          ],
+          "outlist": [],
+          "label": "depth-4 (unused) and depth-6 (unused); combining reveals symmetry is the single structural property that enables social domains to fully realize the general write-path ideal"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "social-systems-combine-symmetric-graphs-and-lightweight-fanout": {
       "text": "Social systems pair symmetric graph structures (bidirectional contacts and friendships with no one-way follow) with reference-based fan-out (IDs pushed at write time, data hydrated at read time), achieving simplified visibility rules at the graph layer and minimal write amplification at the delivery layer.",
       "truth_value": "IN",
@@ -4481,6 +6306,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "social-writes-are-complete-and-coordination-free": {
+      "text": "Social domains achieve the codebase's most streamlined write path: graph symmetry guarantees complete routing (all recipients are reachable without lookup), and deterministic identity derivation eliminates coordination (no distributed ID generation needed) \u2014 two independent properties that emerge from the same lightweight write-time decision framework.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "symmetric-graphs-enable-complete-lightweight-routing",
+            "write-path-eliminates-coordination-across-identity-and-routing"
+          ],
+          "outlist": [],
+          "label": "Symmetry provides routing completeness, identity derivation provides coordination freedom \u2014 together they fully streamline social writes"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "soft-delete-is-dual-purpose": {
       "text": "Soft delete serves two independent purposes across the codebase: preserving structural invariants (sequence contiguity, trie connectivity) in single-system contexts, and preventing distributed resurrection (tombstones, delete markers) in replicated contexts \u2014 making it a universal deletion strategy whose value transcends distribution model.",
@@ -4551,6 +6396,27 @@
         "review_result": "pass"
       }
     },
+    "spatial-queries-combine-adaptive-resolution-with-exact-filtering": {
+      "text": "Spatial query systems pair structurally adaptive resolution with exact distance filtering: both geohash and quadtree narrow candidates via spatial structure then filter by haversine, and the structural resolution itself is derived from query parameters (grid cell size from distance threshold, geohash precision from radius table).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "both-indexes-use-haversine-filter",
+            "nearby-friends-grid-cell-size-tied-to-threshold",
+            "precision-table-descending-radius"
+          ],
+          "outlist": [],
+          "label": "spatial indexing across all implementations couples structural resolution to query parameters and refines with exact distance"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "special-cases-reuse-existing-abstractions": {
       "text": "Special-case concepts are implemented as instances of existing abstractions rather than introducing new infrastructure: dead-letter queues are regular topics with a naming prefix, and thread IDs are the first message's ID rather than a separately generated concept \u2014 keeping the operational and data model uniform by avoiding special-case machinery.",
       "truth_value": "IN",
@@ -4574,6 +6440,86 @@
         "review_result": "pass"
       }
     },
+    "state-bounding-and-quality-scaling-are-orthogonal": {
+      "text": "The architecture bounds state evolution and preserves quality at scale through orthogonal mechanisms: state is bounded temporally (forward-only prevents regression) and spatially (fidelity reduction limits resource consumption), while quality scaling is achieved through adaptive coordination that preserves per-module triple convergence \u2014 bounding constrains physical resources without degrading logical correctness guarantees.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-is-temporally-and-spatially-bounded",
+            "adaptive-coordination-enables-quality-preserving-scaling"
+          ],
+          "outlist": [],
+          "label": "state bounding operates on physical resources while quality scaling operates on logical invariants \u2014 no interference"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-growth-is-unconditionally-monotonic": {
+      "text": "The system's state lattice is unconditionally growing: irreversible accumulation ensures state never shrinks through normal operations, and even the mechanism explicitly designed for removal (deletion) adds metadata that expands the lattice \u2014 the growth property has no exception path, making monotonic expansion a structural invariant.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-is-irreversibly-accumulative",
+            "deletion-reinforces-monotonic-state"
+          ],
+          "outlist": [],
+          "label": "No-reversal plus deletion-as-addition means the growth property has zero exception paths \u2014 not even the designated shrinkage mechanism shrinks"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-is-bounded-and-authority-preserving": {
+      "text": "The architecture bounds state space through complementary entry and progression mechanisms (perimeter normalization restricts what enters, forward-only progression constrains evolution) while the two-tier state model ensures bounding never sacrifices authority: deterministic truncation and probabilistic approximation affect only derived/cached state (deques, HLL registers), never authoritative state (ledgers, version histories, tombstones).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "perimeter-and-forward-only-jointly-bound-state-space",
+            "two-tier-state-preserves-authority-under-monotonicity"
+          ],
+          "outlist": [],
+          "label": "both depth-7 and unused; combining reveals that state bounding is selective \u2014 the architecture bounds growth without corrupting the authoritative record"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-is-irreversibly-accumulative": {
+      "text": "The system's state space is a monotonically expanding, append-only lattice: state only grows (monotonic accumulation from stream ratchets and append-only deletion) because no operation ever removes it (all deletes are additive, all finalization is permanent, all state changes are forward-only).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-is-monotonically-accumulative",
+            "no-operation-is-truly-reversible"
+          ],
+          "outlist": [],
+          "label": "Two independently derived depth-5 perspectives on the same foundational invariant \u2014 accumulation and irreversibility are the same constraint viewed from opposite directions"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "state-is-monotonically-accumulative": {
       "text": "State only accumulates across the full codebase: stream processing uses doubly-forward-only ratchets preventing regression (windows never reopen, dedup outlives finalization), and deletions across all system types append metadata rather than destroying data (tombstones, delete markers, soft-delete flags) \u2014 the system's information content is monotonically non-decreasing.",
       "truth_value": "IN",
@@ -4588,6 +6534,66 @@
             "wallet-creation-silently-overwrites"
           ],
           "label": "Forward-only processing + append-only deletion = no operation reduces information content \u2014 gated because wallet creation silently replaces existing wallet state, destroying balance history"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-is-temporally-and-spatially-bounded": {
+      "text": "The architecture bounds state evolution in two independent dimensions: temporal regression is structurally impossible (one-directional state machines and monotonic accumulation prevent backward movement), and spatial growth is bounded by dual-fidelity strategies (deterministic truncation and probabilistic structures cap resource consumption) \u2014 the system can neither go backward nor grow unbounded.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "temporal-regression-is-structurally-impossible",
+            "resource-bounding-uses-dual-fidelity-strategies"
+          ],
+          "outlist": [],
+          "label": "One-directional ratchets prevent temporal regression; truncation and probabilistic structures prevent spatial explosion"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-machines-enforce-temporal-gap-containment": {
+      "text": "One-directional state machines are the concrete enforcement mechanism for temporal gap containment: their irrevocable transitions (OPEN\u2192CLOSED\u2192FINALIZED, OK\u2192PENDING\u2192ALERTING) mechanically prevent temporal gaps from causing state regression, making gap containment structurally enforced rather than conventionally assumed.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-machines-instantiate-forward-only-monotonicity",
+            "temporal-gaps-are-contained-by-forward-only-design"
+          ],
+          "outlist": [],
+          "label": "State machines make forward-only containment physical \u2014 a gap between check and act cannot regress a state machine past its current position"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "state-machines-instantiate-forward-only-monotonicity": {
+      "text": "One-directional state machines across domains (window lifecycles, alert evaluators) are concrete instantiations of the codebase's unified forward-only/monotonicity constraint: the architectural primitive that prevents regression and ensures progress manifests at the domain level as irreversible state progressions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "one-directional-state-machines-span-domains",
+            "forward-only-and-monotonicity-are-a-single-constraint"
+          ],
+          "outlist": [],
+          "label": "connects the domain-level observation (state machines span domains) with the architectural principle (forward-only and monotonicity are unified), showing the specific mechanism by which the abstract constraint surfaces in implementations"
         }
       ],
       "source": "",
@@ -4618,6 +6624,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "state-reversal-is-redundantly-prevented": {
+      "text": "State reversal is prevented by redundant mechanisms at different architectural levels: operational guards (preconditions before permanent removal, two-phase trash workflows) prevent accidental data loss at the operation level, while structural ratchets (one-directional state machines, monotonic accumulation) prevent regression at the architectural level \u2014 defense-in-depth against the single most dangerous failure mode.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-reversal-is-uniformly-guarded",
+            "temporal-regression-is-structurally-impossible"
+          ],
+          "outlist": [],
+          "label": "Operational guards and structural ratchets independently prevent state reversal at different levels"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "state-reversal-is-uniformly-guarded": {
       "text": "The codebase guards state reversal through layered mechanisms: soft delete serves dual purposes (preserving invariants locally, preventing resurrection distributedly), and permanent deletion requires preconditions (empty buckets, trashed state) \u2014 unless non-deletion reversals like hotel cancellation lack equivalent underflow guards, showing the reversal-safety pattern is incomplete.",
@@ -4756,6 +6782,26 @@
       "date": "",
       "metadata": {}
     },
+    "stock-exchange-validates-complex-write-correctness": {
+      "text": "The stock exchange demonstrates that write-path structural correctness scales to complex multi-step mutations: price-time priority matching is a composite write operation (match against book, fill partial orders, cancel or rest the remainder) where structural discipline (FIFO deques, sorted price levels) ensures each step is valid \u2014 write correctness handles compositional complexity, not just single-step simplicity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "stock-exchange-matching-produces-valid-trades",
+            "write-path-is-self-consistent-by-design"
+          ],
+          "outlist": [],
+          "label": "Stock exchange proves write-path structural correctness scales to composite multi-step operations"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "stream-processing-correctness-is-doubly-forward-only": {
       "text": "Stream processing achieves its correctness guarantees through two coordinated forward-only mechanisms: state ratchets prevent regression (windows never reopen, cursors never reverse), and dedup retention outlives finalization (2x allowed lateness), ensuring the system never double-counts events and never revises emitted results.",
       "truth_value": "IN",
@@ -4802,6 +6848,26 @@
         "review_result": "pass"
       }
     },
+    "structural-correctness-enables-safe-cost-shifting": {
+      "text": "Shifting computation between write and read paths is safe precisely because structural correctness (immutability, synchronized structures, state ratchets) is universally applied \u2014 cost reallocation cannot introduce consistency bugs because the structural discipline that prevents them holds on both paths, making the choice of where to compute a pure performance decision rather than a correctness risk.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "structural-correctness-is-universally-applied",
+            "cost-model-adapts-to-access-frequency"
+          ],
+          "outlist": [],
+          "label": "Path-independent structural discipline makes cost optimization a safe, orthogonal concern"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "structural-correctness-is-universally-applied": {
       "text": "The codebase enforces correctness through structural construction (immutability, synchronized data structures, state ratchets) rather than runtime validation \u2014 but this discipline is not universally applied, with critical invariants like quorum overlap and payment atomicity remaining assumed but unenforced.",
       "truth_value": "IN",
@@ -4845,6 +6911,68 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "sustainable-architecture-quality-under-enforcement": {
+      "text": "The architecture achieves sustainable quality: domain-adapted excellence composes with universal invariant enforcement to produce quality that never degrades across modules, and monotonically expanding verified state ensures new modules add to the system's knowledge without increasing maintenance burden \u2014 quality improves monotonically as the system grows, as long as structural invariants remain enforced.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "domain-excellence-composes-with-universal-invariant-enforcement",
+            "growth-does-not-increase-maintenance-burden"
+          ],
+          "outlist": [
+            "assumed-invariants-are-unenforced"
+          ],
+          "label": "Depth-12 composition \u2014 domain excellence and growth sustainability jointly hold under structural enforcement"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "symmetric-domains-achieve-strongest-lifecycle-correctness": {
+      "text": "Symmetric domains achieve the codebase's strongest end-to-end correctness: the complete write-read lifecycle is structurally correct (bidirectional symmetry ensures complete routing, active reads converge state), and temporal gaps are independently contained by forward-only design \u2014 yielding domains where neither structural nor temporal invariants have gaps.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "write-read-lifecycle-is-correct-in-symmetric-domains",
+            "forward-only-preserves-correctness-despite-accepted-gaps"
+          ],
+          "outlist": [],
+          "label": "most domains have either structural or temporal correctness gaps; symmetric domains close both, making them the architecture's correctness ceiling"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "symmetric-domains-are-quality-optimal": {
+      "text": "Symmetric domains achieve the codebase's highest quality ceiling: structurally correct write-read lifecycle (bidirectional symmetry enables reliable routing and active convergence) intersects with per-module triple convergence (correctness, simplicity, and performance) \u2014 symmetric modules are simultaneously lifecycle-complete and optimally balanced across all three quality dimensions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "symmetric-domains-achieve-strongest-lifecycle-correctness",
+            "module-level-triple-convergence"
+          ],
+          "outlist": [],
+          "label": "strongest lifecycle correctness + triple convergence yields the codebase's quality apex in symmetric domains"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "symmetric-graphs-enable-complete-lightweight-routing": {
       "text": "Social graph symmetry is the enabling constraint for lightweight write-time routing: because relationships are always bidirectional, write-time routing decisions (who receives fan-out, who sees nearby friends) are fully determined by a single graph traversal \u2014 the combination of symmetric relationships with irrevocable reference-based fan-out eliminates the need for read-time routing correction that asymmetric follow graphs would require.",
@@ -4891,6 +7019,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "symmetry-is-both-simplifier-and-routing-enabler": {
+      "text": "Bidirectional symmetry serves a dual architectural role: it simplifies reasoning across both social and spatial graph domains (eliminating one-way edge complexity) and specifically enables complete lightweight write-time routing in social systems through reference-based fan-out.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "symmetry-simplifies-across-graph-domains",
+            "social-systems-combine-symmetric-graphs-and-lightweight-fanout"
+          ],
+          "outlist": [],
+          "label": "Symmetry is both a simplification strategy (fewer edge types) and a routing prerequisite (fan-out reaches all parties)"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "symmetry-simplifies-across-graph-domains": {
       "text": "Bidirectional symmetry is enforced across social graphs (contacts, friendships) and spatial graphs (road edges), eliminating one-way edge complexity in visibility checks, nearby-friend computations, and shortest-path routing \u2014 a cross-domain preference for simpler invariants over expressive asymmetry.",
@@ -4975,6 +7123,26 @@
             "assumed-invariants-are-unenforced"
           ],
           "label": "Forward-only design limits temporal gap damage to the current operation, but unenforced invariants (quorum overlap, atomicity) break the consistency model that forward-only design depends on"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "temporal-regression-is-structurally-impossible": {
+      "text": "Temporal regression is prevented by two independent structural mechanisms operating at different architectural levels: one-directional state machines enforce irrevocable transitions (OPEN\u2192CLOSED\u2192FINALIZED) that contain temporal gaps at the control-flow level, while unconditional state monotonicity ensures the underlying data lattice only grows \u2014 making backward state motion impossible at both control-flow and data-flow levels.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-machines-enforce-temporal-gap-containment",
+            "state-growth-is-unconditionally-monotonic"
+          ],
+          "outlist": [],
+          "label": "control-plane state machines + data-plane monotonic growth independently prevent regression at their respective levels"
         }
       ],
       "source": "",
@@ -5095,6 +7263,28 @@
       "date": "",
       "metadata": {}
     },
+    "two-tier-state-preserves-authority-under-monotonicity": {
+      "text": "The architecture maintains a two-tier state model: authoritative state (ledgers, version histories, tombstones) accumulates monotonically and irreversibly, while derived state (feed caches, click histories, aggregation views) is bounded and lossy \u2014 resource bounding applies only to the derived tier, preserving full audit trail at the authoritative tier.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "state-is-irreversibly-accumulative",
+            "resource-bounding-uses-dual-fidelity-strategies"
+          ],
+          "outlist": [
+            "wallet-creation-silently-overwrites"
+          ],
+          "label": "monotonic authority + bounded derivation coexist; wallet creation overwrite would violate the authority tier's append-only guarantee"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "ulid-monotonic-within-millisecond": {
       "text": "ULIDGenerator maintains sort order within the same millisecond by incrementing the random component rather than generating new random bits.",
       "truth_value": "IN",
@@ -5188,6 +7378,26 @@
         "review_result": "pass"
       }
     },
+    "verified-simplicity-is-hermetically-contained": {
+      "text": "Each module achieves a self-contained simplicity-to-verification cycle: dual minimization strategies (conceptual reuse + algorithmic simplicity) independently produce correctness properties, which are then verified within the module's hermetic design-to-verification pipeline \u2014 no cross-module dependency is needed to close the loop from simplicity through correctness to verification.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "per-module-design-to-verification-is-hermetic",
+            "simplicity-mechanisms-independently-produce-correctness"
+          ],
+          "outlist": [],
+          "label": "both depth-6 and unused; combining reveals the full cycle from simplicity to verified correctness is hermetic per module"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "verify-integrity-ignores-transfers": {
       "text": "`verify_integrity` sums only `deposit` and `withdrawal` amounts against total balances, because `transfer_in`/`transfer_out` pairs are zero-sum and cancel out.",
       "truth_value": "OUT",
@@ -5220,6 +7430,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "video-pipeline-separates-control-from-data-flow": {
+      "text": "The video processing pipeline decouples control flow (DAG determines stage ordering and failure cascading) from data flow (mutable ctx dict blackboard passes state between stages without return-value threading).",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "youtube-ctx-dict-blackboard",
+            "youtube-pipeline-dag-structure"
+          ],
+          "outlist": [],
+          "label": "DAG handles ordering and failure; ctx dict handles data \u2014 neither constrains the other"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "wallet-creation-silently-overwrites": {
       "text": "`create_wallet` does not check for an existing `wallet_id`; calling it twice with the same ID replaces the wallet and loses the original balance.",
@@ -5403,6 +7633,68 @@
         "review_result": "pass"
       }
     },
+    "write-coordination-freedom-is-safe-under-module-isolation": {
+      "text": "Write-path coordination-free correctness (deterministic identity, lightweight routing, structural discipline) is safe because module isolation prevents cross-module state corruption \u2014 unless assumed-but-unenforced invariants (quorum overlap, non-atomic checks) mean that scaling beyond in-process simulation would expose coordination gaps invisible at pedagogical scale.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "write-correctness-is-both-structural-and-coordination-free",
+            "modules-are-independently-correct"
+          ],
+          "outlist": [
+            "assumed-invariants-are-unenforced"
+          ],
+          "label": "module isolation bounds the blast radius of coordination-free writes; unenforced invariants threaten this guarantee under real distribution"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "write-correctness-is-both-structural-and-coordination-free": {
+      "text": "The write-read architecture achieves end-to-end correctness with a coordination-free write path: deterministic identity derivation and lightweight routing eliminate distributed coordination, while structural construction ensures the asymmetric model's validity \u2014 coordination cost exists only on the reconciling read side.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "write-path-is-coordination-free-and-correct",
+            "write-read-asymmetry-is-end-to-end-correct"
+          ],
+          "outlist": [],
+          "label": "End-to-end correctness of the write-read model depends on writes being coordination-free; if writes required coordination, the asymmetric cost model would collapse"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "write-correctness-scales-from-routing-to-matching": {
+      "text": "Write-path structural correctness scales from simple fan-out routing to complex multi-step matching without adding distributed coordination: social domains achieve complete, coordination-free routing via graph symmetry, while the stock exchange achieves correct price-time priority matching with partial fills via structural reuse \u2014 both are coordination-free, differing only in mutation complexity.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "social-writes-are-complete-and-coordination-free",
+            "stock-exchange-validates-complex-write-correctness"
+          ],
+          "outlist": [],
+          "label": "two unused depth-4 beliefs at opposite ends of write complexity; combining shows structural correctness handles complexity scaling without coordination overhead"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "write-cost-allocation-matches-access-pattern": {
       "text": "The codebase's default cost model pushes deferred costs to reads, but this is selectively overridden based on access patterns: eagerly rebuilt derived state (such as autocomplete caches and leaderboard indexes) and lazily deferred computation (such as time decay, expiration, and balance derivation) coexist, suggesting that access-pattern frequency influences where the cost boundary is placed for a given use case.",
       "truth_value": "IN",
@@ -5425,6 +7717,46 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "invalid"
       }
+    },
+    "write-path-eliminates-coordination-across-identity-and-routing": {
+      "text": "Write-time operations eliminate coordination needs across two complementary dimensions: deterministic identity derivation (sorted user-pairs, first-message IDs) removes central ID assignment, and reference-based routing (post IDs, inbox pointers) removes data-payload coordination \u2014 together, writes commit binding decisions using only local computation and lightweight references, requiring neither a coordinator nor full data payloads.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "identity-derivation-trades-validation-for-simplicity",
+            "write-time-decisions-are-lightweight-but-binding"
+          ],
+          "outlist": [],
+          "label": "Two independent coordination-elimination strategies (identity derivation, reference routing) jointly make writes coordination-free"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
+    "write-path-is-cheap-correct-and-coordination-free": {
+      "text": "Write-path cheapness, correctness, and coordination freedom form a mutually enabling triad: perimeter normalization eliminates internal validation costs (cheap), structural discipline prevents corruption without runtime checks (correct), and deterministic identity derivation eliminates distributed lookups (coordination-free) \u2014 three seemingly competing properties that emerge from non-interfering mechanisms rather than trading off against each other.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "perimeter-defense-enables-cheap-writes",
+            "write-path-is-coordination-free-and-correct"
+          ],
+          "outlist": [],
+          "label": "Perimeter defense, structural discipline, and identity derivation jointly enable cheap + correct + coordination-free writes"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "write-path-is-complete-and-consistent-in-symmetric-domains": {
       "text": "In graph-based systems, write-path correctness is reinforced by two independent properties: structural discipline (immutable values, synchronized data structures) prevents state corruption during writes, while domain symmetry (bidirectional relationships with no one-way edges) guarantees that lightweight write-time routing reaches all affected parties without edge cases \u2014 together ensuring that writes are both valid in state and complete in dispatch.",
@@ -5449,6 +7781,26 @@
         "review_result": "pass"
       }
     },
+    "write-path-is-coordination-free-and-correct": {
+      "text": "The write path achieves correctness without distributed coordination: deterministic identity derivation and lightweight binding decisions eliminate consensus needs, while structural discipline and forward-only semantics guarantee every write produces valid, non-regressive state transitions.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "writes-always-produce-valid-forward-progress",
+            "write-path-eliminates-coordination-across-identity-and-routing"
+          ],
+          "outlist": [],
+          "label": "coordination-freedom (no consensus needed) and correctness (valid forward progress) are independent write-path properties that jointly yield a write path requiring no external verification or coordination"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
+    },
     "write-path-is-self-consistent-by-design": {
       "text": "Write-path consistency is achieved through two reinforcing mechanisms: structural discipline (immutable values, synchronized data structures) prevents data-level corruption, while lightweight-but-binding routing (reference-only fan-out, irrevocable strategy selection) keeps control-flow decisions simple enough to be correct by inspection.",
       "truth_value": "IN",
@@ -5471,6 +7823,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "write-path-validity-spans-the-full-complexity-spectrum": {
+      "text": "The write path guarantees valid forward progress across the full complexity spectrum: structural correctness scales from simple fan-out routing (social domains) to complex multi-step matching (stock exchange) without adding distributed coordination, and forward-only design ensures every write regardless of complexity produces irreversible state advancement \u2014 together establishing that no write can produce invalid or reversible state.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "write-correctness-scales-from-routing-to-matching",
+            "forward-only-is-the-architectures-load-bearing-constraint"
+          ],
+          "outlist": [],
+          "label": "Write-path structural correctness over the full complexity range composes with forward-only irreversibility"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "write-read-asymmetry-is-end-to-end-correct": {
       "text": "The write-read asymmetric model (irrevocable lightweight writes with reconciling reads, enforced through structural construction rather than runtime validation) is end-to-end correct \u2014 unless the read path depends on assumed invariants (quorum overlap, payment atomicity) that are never enforced in code, undermining the reconciliation that reads are supposed to perform.",
@@ -5516,6 +7888,26 @@
         "last_reviewed": "2026-06-05T18:21:49",
         "review_result": "pass"
       }
+    },
+    "write-read-lifecycle-is-correct-in-symmetric-domains": {
+      "text": "In structurally regular domains (symmetric graphs, forward-only state), the complete data lifecycle from mutation to retrieval is correct: writes commit complete, consistent state via symmetric routing with structural discipline, and reads actively converge any remaining divergence through repair and lazy evaluation \u2014 the write path's structural completeness and the read path's active convergence together close the correctness loop.",
+      "truth_value": "IN",
+      "justifications": [
+        {
+          "type": "SL",
+          "antecedents": [
+            "write-path-is-complete-and-consistent-in-symmetric-domains",
+            "reads-are-active-convergence-engines"
+          ],
+          "outlist": [],
+          "label": "Write completeness (structural) and read convergence (active repair) are complementary halves of the lifecycle \u2014 neither alone guarantees end-to-end correctness"
+        }
+      ],
+      "source": "",
+      "source_url": "",
+      "source_hash": "",
+      "date": "",
+      "metadata": {}
     },
     "write-shifting-extends-the-irreversibility-boundary": {
       "text": "Write-shifting works as the architecture's self-improvement mechanism specifically because it moves computation from the reconciling read path (where guarantees are temporal and hard to enforce) to the irrevocable write path (where guarantees are structural and self-enforcing), extending the irreversibility-based simplicity and enforceability boundary to cover properties that would otherwise require runtime validation on reads.",
