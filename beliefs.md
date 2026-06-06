@@ -1,7 +1,7 @@
 ---
 schema_version: "1.0"
 project_name: "reasons"
-updated_at: "2026-06-05T22:41:59+00:00"
+updated_at: "2026-06-06T01:47:33+00:00"
 node_count: 359
 generator: ftl-reasons/0.43.0
 ---
@@ -337,10 +337,6 @@ Consumer group rebalancing uses simple modular assignment: partition `p` goes to
 
 ### dmq-retention-trimmed-on-publish [IN] OBSERVATION
 Retention is enforced per-publish: every `publish()` call trims the target partition. Messages are never evicted between publishes.
-- Source: entries/2026/06/05/distributed-message-queue-solution.md
-
-### dmq-reused-by-stock-exchange [IN] OBSERVATION
-The message queue is imported by `stock-exchange/test_exchange.py` as an event bus for order matching, demonstrating cross-module reuse across SDI implementations.
 - Source: entries/2026/06/05/distributed-message-queue-solution.md
 
 ### dmq-two-tier-offset-tracking [IN] OBSERVATION
@@ -679,6 +675,11 @@ Module autonomy extends beyond implementation to encompass both operational conv
 Module isolation exhibits two complementary properties: each module is a hermetic, standalone unit with only stdlib dependencies and no real I/O (supporting independent testability), while operational conventions — error signaling strategies, eviction timing, failure reporting — remain module-scoped rather than codebase-wide (producing locally reasonable but collectively unpredictable operational surfaces). These properties appear to reinforce each other: standalone modules with no shared infrastructure naturally avoid convention coupling across module boundaries.
 - Depends on: operational-conventions-are-module-scoped, deterministic-testability-by-design
 
+### modules-are-independently-runnable [IN] DERIVED
+Each SDI module is independently runnable with only stdlib dependencies, in-process simulation, and no shared code — unless the stock exchange's cross-module import of the message queue is considered, which introduces a runtime dependency that breaks strict module independence.
+- Depends on: sdi-modules-are-standalone-learning-artifacts
+- Unless: dmq-reused-by-stock-exchange
+
 ### monotonicity-is-the-universal-ordering-primitive [IN] DERIVED
 Monotonic progression is the codebase's universal mechanism for establishing order and preventing regression: ID generators ensure global sequencing, read cursors prevent consumption regression, and window lifecycles enforce irreversible finalization — all encoding progress as a single non-decreasing value.
 - Depends on: id-generators-preserve-monotonic-order, state-ratchets-prevent-regression-across-domains
@@ -754,10 +755,6 @@ Fan-out-on-read merges all followed users' timelines via `heapq.merge` with nega
 ### news-feed-unfollow-purges-via-linear-scan [IN] OBSERVATION
 `_remove_author_from_cache` does a full linear scan and rebuild of the follower's deque to purge the unfollowed author's posts
 - Source: entries/2026/06/05/news-feed-system-news_feed.md
-
-### no-divergence-annotations [IN] OBSERVATION
-The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.
-- Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
 ### no-operation-is-truly-reversible [IN] DERIVED
 The codebase has no genuine undo or reversal: deletion is append-only metadata across all contexts (tombstones, delete markers, version entries), and failure handling escalates forward to permanent outcomes (retry-to-permanent-failure, independent-branch continuation) — both intentional removal and error recovery strictly add information rather than removing or reversing prior state.
@@ -843,6 +840,11 @@ The overdraft check in `process_payment` reads balance and then processes withou
 The external payment processor is injected via `set_processor()` as a callable returning a status dict, decoupling processing logic from payment orchestration
 - Source: entries/2026/06/05/payment-system-payment_system.md
 
+### pedagogical-tradeoffs-are-safe-within-module-boundaries [IN] DERIVED
+Brute-force algorithms, bounded collections, and in-process simulation are acceptable pedagogical trade-offs because each module is a standalone learning artifact with no cross-module dependencies — simplifications that would be dangerous in production are safe when confined to self-contained demonstrations.
+- Depends on: brute-force-acceptable-at-pedagogical-scale, bounded-collections-trade-completeness-for-memory, sdi-modules-are-standalone-learning-artifacts
+- Unless: dmq-reused-by-stock-exchange
+
 ### pipeline-processing-maximizes-forward-progress [IN] DERIVED
 Processing pipelines are designed to maximize forward progress and never backtrack: the video DAG continues independent branches when siblings fail (partial success over total failure), and stream processing makes finalization irreversible (no retraction of emitted results) — ensuring that completed work is never undone.
 - Depends on: video-pipeline-maximizes-useful-work-on-failure, watermark-finalization-is-irreversible
@@ -854,6 +856,11 @@ Processing pipelines are designed to maximize forward progress and never backtra
 ### plan-review-documents-known-gaps [IN] OBSERVATION
 The `plan_review.md` pattern explicitly catalogues TOCTOU, blocking sleep, and permanent-failure-on-idempotency-key as accepted divergences rather than bugs.
 - Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+
+### plan-to-implementation-correspondence-is-verifiable [IN] DERIVED
+Prescriptive plans specify exact signatures and data models, and design reviews document known gaps — together they should create a verifiable plan-to-implementation correspondence where deviations are traceable — but the absence of divergence annotations means actual implementation deviations are invisible post-implementation, making the correspondence unauditable.
+- Depends on: plans-are-prescriptive, plan-review-documents-known-gaps
+- Unless: no-divergence-annotations
 
 ### plans-are-prescriptive [IN] OBSERVATION
 Plans specify exact method signatures, data models, and assertion examples, leaving implementations with near-zero design freedom at the API level.
@@ -1308,6 +1315,10 @@ The read path bears maximum responsibility (deferred consistency, lazy computati
 The codebase's alignment between quality and performance strategies (structural correctness reinforcing efficient runtime behavior, verified through deterministic testing) forms a mutually supportive system for properties enforceable by construction. This coherence does not extend to temporal correctness, where gaps are documented and accepted rather than enforced — suggesting that design investment concentrates where structural guarantees are achievable.
 - Depends on: quality-and-performance-strategies-are-aligned, correctness-profile-is-structurally-split
 
+### dmq-reused-by-stock-exchange [OUT] OBSERVATION
+The message queue is imported by `stock-exchange/test_exchange.py` as an event bus for order matching, demonstrating cross-module reuse across SDI implementations.
+- Source: entries/2026/06/05/distributed-message-queue-solution.md
+
 ### documented-gaps-manifest-as-implementation-risks [OUT] DERIVED
 Design reviews explicitly document TOCTOU and atomicity gaps as known divergences, and similar temporal check-gap patterns appear as systematic risks in the implementations (payment TOCTOU windows, notification rate-limit re-checks), suggesting the pedagogical approach may intentionally preserve documented gaps rather than preventing them.
 - Depends on: plan-review-documents-known-gaps, temporal-check-gaps-are-systematic-risk
@@ -1359,11 +1370,6 @@ KV reads drive eventual consistency through read repair and sibling version dete
 - Depends on: kv-read-repair-on-get, kv-node-stores-sibling-versions
 - Unless: kv-store-quorum-overlap-not-enforced
 
-### modules-are-independently-runnable [OUT] DERIVED
-Each SDI module is independently runnable with only stdlib dependencies, in-process simulation, and no shared code — unless the stock exchange's cross-module import of the message queue is considered, which introduces a runtime dependency that breaks strict module independence.
-- Depends on: sdi-modules-are-standalone-learning-artifacts
-- Unless: dmq-reused-by-stock-exchange
-
 ### monotonicity-and-caution-prevent-state-loss [OUT] DERIVED
 Monotonic state ratchets (cursors only advance, windows never reopen) and cautious deletion (preconditions before permanent removal, two-phase trash workflows) together ensure that committed state can never be silently lost or regressed — unless wallet creation silently overwrites existing state, demonstrating that creation operations bypass both guards because the codebase protects against destructive deletion and regression but not destructive creation.
 - Depends on: state-ratchets-prevent-regression-across-domains, deletion-is-guarded-by-preconditions
@@ -1373,6 +1379,10 @@ Monotonic state ratchets (cursors only advance, windows never reopen) and cautio
 Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses — meaning notification throughput degrades linearly with social graph density while query performance does not.
 - Depends on: nearby-friends-bidirectional-visibility, nearby-friends-staleness-enforced-on-both-paths
 - Unless: nearby-friends-update-location-skips-grid-filtering
+
+### no-divergence-annotations [OUT] OBSERVATION
+The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.
+- Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
 ### payment-double-entry-guarantees-balance-integrity [OUT] DERIVED
 The double-entry ledger invariant (every movement creates balanced debit-credit pairs) and full-ledger balance derivation guarantee that balances reflect the true sum of all operations — unless the non-atomic overdraft check allows concurrent payments to both pass validation and create conflicting ledger entries.
@@ -1389,20 +1399,10 @@ The payment system has two independent TOCTOU windows in the same code path: the
 - Depends on: payment-balance-check-not-atomic, payment-overdraft-not-atomic
 - Stale reason: research: abandoned — The two antecedents describe the same single non-atomic balance check from different angles, not two independent TOCTOU windows. The core claim of 'two independent TOCTOU windows' is factually wrong — there is only one vulnerability described twice. Softening would require changing the claim so fundamentally (from 'two independent windows compound' to 'one window exists') that it would just duplicate either antecedent. No linking can fix this since the problem is redundant antecedents, not a missing one.
 
-### pedagogical-tradeoffs-are-safe-within-module-boundaries [OUT] DERIVED
-Brute-force algorithms, bounded collections, and in-process simulation are acceptable pedagogical trade-offs because each module is a standalone learning artifact with no cross-module dependencies — simplifications that would be dangerous in production are safe when confined to self-contained demonstrations.
-- Depends on: brute-force-acceptable-at-pedagogical-scale, bounded-collections-trade-completeness-for-memory, sdi-modules-are-standalone-learning-artifacts
-- Unless: dmq-reused-by-stock-exchange
-
 ### perimeter-defense-ensures-data-quality [OUT] DERIVED
 The codebase's perimeter defense model — normalize inputs once at system boundaries, then trust all internal callers — ensures internal operations work on clean, canonical data throughout the processing pipeline.
 - Depends on: normalize-once-at-system-boundary, callers-trusted-at-internal-boundaries
 - Unless: proximity-no-coordinate-validation
-
-### plan-to-implementation-correspondence-is-verifiable [OUT] DERIVED
-Prescriptive plans specify exact signatures and data models, and design reviews document known gaps — together they should create a verifiable plan-to-implementation correspondence where deviations are traceable — but the absence of divergence annotations means actual implementation deviations are invisible post-implementation, making the correspondence unauditable.
-- Depends on: plans-are-prescriptive, plan-review-documents-known-gaps
-- Unless: no-divergence-annotations
 
 ### read-burden-is-managed-through-selective-write-shifting [OUT] DERIVED
 The read path's growing cost and risk as system complexity increases is managed by selectively shifting work to writes for high-frequency access paths — eager cache rebuilds, write-time index maintenance — concentrating write-time optimization exactly where the read-heavy default model creates the most pressure rather than applying a blanket strategy.

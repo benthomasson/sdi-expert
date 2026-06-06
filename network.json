@@ -3,7 +3,7 @@
     "schema_version": "1.0",
     "project_name": "reasons",
     "created_at": "2026-06-05T17:13:33+00:00",
-    "updated_at": "2026-06-05T22:41:59+00:00",
+    "updated_at": "2026-06-06T01:47:33+00:00",
     "node_count": 359,
     "generator": "ftl-reasons/0.43.0"
   },
@@ -1541,7 +1541,7 @@
     },
     "dmq-reused-by-stock-exchange": {
       "text": "The message queue is imported by `stock-exchange/test_exchange.py` as an event bus for order matching, demonstrating cross-module reuse across SDI implementations.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/distributed-message-queue-solution.md",
       "source_url": "",
@@ -2973,7 +2973,7 @@
     },
     "modules-are-independently-runnable": {
       "text": "Each SDI module is independently runnable with only stdlib dependencies, in-process simulation, and no shared code \u2014 unless the stock exchange's cross-module import of the message queue is considered, which introduces a runtime dependency that breaks strict module independence.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3281,7 +3281,7 @@
     },
     "no-divergence-annotations": {
       "text": "The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/topic-plan-to-implementation-fidelity.md",
       "source_url": "",
@@ -3647,7 +3647,7 @@
     },
     "pedagogical-tradeoffs-are-safe-within-module-boundaries": {
       "text": "Brute-force algorithms, bounded collections, and in-process simulation are acceptable pedagogical trade-offs because each module is a standalone learning artifact with no cross-module dependencies \u2014 simplifications that would be dangerous in production are safe when confined to self-contained demonstrations.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3735,7 +3735,7 @@
     },
     "plan-to-implementation-correspondence-is-verifiable": {
       "text": "Prescriptive plans specify exact signatures and data models, and design reviews document known gaps \u2014 together they should create a verifiable plan-to-implementation correspondence where deviations are traceable \u2014 but the absence of divergence annotations means actual implementation deviations are invisible post-implementation, making the correspondence unauditable.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
