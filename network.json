@@ -3,7 +3,7 @@
     "schema_version": "1.0",
     "project_name": "reasons",
     "created_at": "2026-06-05T17:13:33+00:00",
-    "updated_at": "2026-06-06T01:47:33+00:00",
+    "updated_at": "2026-06-06T01:49:28+00:00",
     "node_count": 359,
     "generator": "ftl-reasons/0.43.0"
   },
@@ -247,7 +247,7 @@
     },
     "autocomplete-blocklist-is-substring": {
       "text": "The blocklist filter removes results where any blocklisted term appears as a **substring** of the query, not just exact matches.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/search-autocomplete-search_autocomplete.md",
       "source_url": "",
@@ -287,7 +287,7 @@
     },
     "autocomplete-fuzzy-is-last-char-only": {
       "text": "`fuzzy_suggest()` only tries single-character edits (substitution, deletion, insertion) on the **last character** of the prefix \u2014 it is not a full edit-distance search.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/search-autocomplete-search_autocomplete.md",
       "source_url": "",
@@ -307,7 +307,7 @@
     },
     "autocomplete-overfetch-compensates-for-filtering": {
       "text": "The autocomplete service overfetches results (`k + len(blocklist) * 2`) to compensate for blocklist removals, maintaining result count \u2014 but substring matching can remove far more results than the linear compensation formula anticipates.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -328,7 +328,7 @@
     },
     "autocomplete-search-is-robust": {
       "text": "Autocomplete provides consistent, normalized search through boundary normalization (lowercasing, length truncation) and eagerly-rebuilt top-k caches, but fuzzy matching is limited to single-character edits on the last character only \u2014 meaning most mid-word typos produce zero results despite the system's otherwise thorough input handling.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -470,7 +470,7 @@
     },
     "callers-trusted-at-internal-boundaries": {
       "text": "Multiple systems omit input validation entirely at internal module boundaries \u2014 the stock exchange accepts any order fields without checking quantity or price, and proximity search accepts any coordinates without range validation \u2014 reflecting a convention of trusting callers within the module perimeter rather than validating defensively.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -1132,7 +1132,7 @@
     },
     "current-time-fallback-inconsistent": {
       "text": "Rate limiter defaults `current_time` to `time.time()` while chat system defaults to `0.0`, creating different behavior when the parameter is omitted.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/topic-plan-to-implementation-fidelity.md",
       "source_url": "",
@@ -1208,7 +1208,7 @@
     },
     "dedup-is-global-not-per-ad": {
       "text": "The `seen_events` dedup registry keys on `event_id` alone; the same event ID arriving for different `ad_id`s will be deduplicated.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md",
       "source_url": "",
@@ -1251,7 +1251,7 @@
     },
     "default-to-permissive-across-security-dimensions": {
       "text": "The codebase defaults to permissive behavior across independent security dimensions \u2014 authorization (S3 default-allow, GDrive owner bypass) and input validation (stock exchange accepts any order fields, proximity accepts any coordinates) \u2014 prioritizing availability and simplicity over defense-in-depth.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -1909,7 +1909,7 @@
     },
     "forward-only-stream-processing-is-exactly-once": {
       "text": "Stream processing achieves exactly-once delivery per entity: dedup outlives finalization windows, finalized results are irrevocable, and the pipeline never backtracks \u2014 producing correct per-event semantics when event IDs are globally unique.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2109,7 +2109,7 @@
     },
     "hotel-cancel-no-underflow-guard": {
       "text": "`cancel()` decrements `booked` without checking for `booked >= 0`, so a double-cancel bug (if the status check were bypassed) could produce negative inventory counts.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/hotel-reservation-system-hotel_reservation.md",
       "source_url": "",
@@ -2139,7 +2139,7 @@
     },
     "hotel-occ-prevents-overbooking": {
       "text": "Hotel reservations prevent overbooking through optimistic concurrency control with per-date version counters, rejecting concurrent conflicting bookings via version mismatch \u2014 unless a double-cancel bypasses the underflow guard and drives inventory counts negative, making the system believe more rooms are available than exist.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2171,7 +2171,7 @@
     },
     "hotel-pricing-is-deterministic": {
       "text": "Hotel dynamic pricing deterministically stacks occupancy and seasonal multipliers on the base price \u2014 but when seasonal pricing ranges overlap, the first-match rule makes the price depend on rule insertion order rather than a stable priority scheme.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2222,7 +2222,7 @@
     },
     "hotel-seasonal-pricing-first-match": {
       "text": "If seasonal pricing date ranges overlap, the first appended rule wins due to a `break` after the first match in `_get_price`.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/hotel-reservation-system-hotel_reservation.md",
       "source_url": "",
@@ -2480,7 +2480,7 @@
     },
     "kv-quorum-consistency-assumed-not-enforced": {
       "text": "The KV store's consistency model depends on W+R>N quorum overlap but never validates the constraint, and hinted handoff writes bypass quorum entirely \u2014 consistency is a caller convention, not a system guarantee.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -2536,7 +2536,7 @@
     },
     "kv-reads-eventually-converge": {
       "text": "KV reads drive eventual consistency through read repair and sibling version detection \u2014 every get actively heals divergence \u2014 but this guarantee holds only if W+R>N quorum overlap is actually maintained.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -2578,7 +2578,7 @@
     },
     "kv-store-quorum-overlap-not-enforced": {
       "text": "The key-value store's W+R>N read-write overlap guarantee is assumed by callers but never validated in code.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/topic-consistency-models.md",
       "source_url": "",
@@ -2904,7 +2904,7 @@
     },
     "module-autonomy-enables-per-use-case-cost-optimization": {
       "text": "Module autonomy is the structural precondition for per-use-case cost optimization: because each module independently chooses its error conventions, eviction timing, and safety boundaries, it can also independently select the optimal write-read cost allocation for its specific access pattern \u2014 autocomplete and leaderboard pay at write time for read-heavy workloads, while payment and URL shortener defer to reads for write-heavy or low-frequency paths \u2014 without cross-cutting constraints imposing a uniform cost model.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -2927,7 +2927,7 @@
     },
     "module-autonomy-spans-conventions-and-safety": {
       "text": "Module autonomy extends beyond implementation to encompass both operational conventions (error signaling varies by module, eviction timing has no codebase standard) and safety enforcement (error boundaries are module-local, access control defaults favor permissiveness), meaning there are no cross-cutting architectural constraints \u2014 each module is entirely self-governing in how it handles errors, manages resources, and enforces security.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -2994,7 +2994,7 @@
     },
     "monotonicity-and-caution-prevent-state-loss": {
       "text": "Monotonic state ratchets (cursors only advance, windows never reopen) and cautious deletion (preconditions before permanent removal, two-phase trash workflows) together ensure that committed state can never be silently lost or regressed \u2014 unless wallet creation silently overwrites existing state, demonstrating that creation operations bypass both guards because the codebase protects against destructive deletion and regression but not destructive creation.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3169,7 +3169,7 @@
     },
     "nearby-friends-update-location-skips-grid-filtering": {
       "text": "`update_location` iterates all friends and computes haversine for each (O(friends)), while `get_nearby_friends` uses the grid index to narrow candidates before distance checks",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/nearby-friends-nearby_friends.md",
       "source_url": "",
@@ -3179,7 +3179,7 @@
     },
     "nearby-friends-visibility-scales": {
       "text": "Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses \u2014 meaning notification throughput degrades linearly with social graph density while query performance does not.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3539,7 +3539,7 @@
     },
     "payment-double-entry-guarantees-balance-integrity": {
       "text": "The double-entry ledger invariant (every movement creates balanced debit-credit pairs) and full-ledger balance derivation guarantee that balances reflect the true sum of all operations \u2014 unless the non-atomic overdraft check allows concurrent payments to both pass validation and create conflicting ledger entries.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3581,7 +3581,7 @@
     },
     "payment-ledger-is-fully-auditable": {
       "text": "The double-entry ledger creates balanced debit-credit pairs for every money movement and derives balances from complete ledger scans, making the payment system's financial state fully reconstructible from its transaction history \u2014 unless the integrity verification function's exclusion of transfer transactions means the audit mechanism itself has blind spots that the ledger design was supposed to prevent.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3603,7 +3603,7 @@
     },
     "payment-overdraft-not-atomic": {
       "text": "The overdraft check in `process_payment` reads balance and then processes without atomicity \u2014 a TOCTOU race in any concurrent context.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/topic-consistency-models.md",
       "source_url": "",
@@ -3670,7 +3670,7 @@
     },
     "perimeter-defense-ensures-data-quality": {
       "text": "The codebase's perimeter defense model \u2014 normalize inputs once at system boundaries, then trust all internal callers \u2014 ensures internal operations work on clean, canonical data throughout the processing pipeline.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -3801,7 +3801,7 @@
     },
     "proximity-no-coordinate-validation": {
       "text": "Neither GeohashIndex nor Quadtree validates input coordinates; latitude outside [-90, 90] silently produces garbage geohashes, and Quadtree.insert silently returns False for out-of-bounds points",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/proximity-service-proximity_service.md",
       "source_url": "",
@@ -4301,7 +4301,7 @@
     },
     "safety-is-local-and-permissive": {
       "text": "Safety enforcement is both locally scoped (error contracts vary by module with no cross-cutting convention) and default-permissive (access control favors availability over restriction), producing a system where each module is individually lenient and no cross-cutting safety net catches errors that escape module boundaries.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -4398,7 +4398,7 @@
     },
     "security-permissiveness-spans-policy-and-data-boundaries": {
       "text": "Security permissiveness is systematic across two independent dimensions: policy enforcement (default-allow access control, trusted internal callers, no input validation) and data isolation (BCC recipients stored alongside visible recipients, presigned URL secrets shared across instances), creating a consistent availability-over-security bias that compounds \u2014 permissive policies let requests through, and weak data isolation lets those requests see more than intended.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [
         {
           "type": "SL",
@@ -4576,7 +4576,7 @@
     },
     "state-is-monotonically-accumulative": {
       "text": "State only accumulates across the full codebase: stream processing uses doubly-forward-only ratchets preventing regression (windows never reopen, dedup outlives finalization), and deletions across all system types append metadata rather than destroying data (tombstones, delete markers, soft-delete flags) \u2014 the system's information content is monotonically non-decreasing.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -4621,7 +4621,7 @@
     },
     "state-reversal-is-uniformly-guarded": {
       "text": "The codebase guards state reversal through layered mechanisms: soft delete serves dual purposes (preserving invariants locally, preventing resurrection distributedly), and permanent deletion requires preconditions (empty buckets, trashed state) \u2014 unless non-deletion reversals like hotel cancellation lack equivalent underflow guards, showing the reversal-safety pattern is incomplete.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -4673,7 +4673,7 @@
     },
     "stock-exchange-matching-produces-valid-trades": {
       "text": "The stock exchange correctly implements price-time priority matching (best price first, FIFO within price, execute at resting price), producing valid trades \u2014 but only when callers provide valid order fields, since the engine performs no input validation.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -4694,7 +4694,7 @@
     },
     "stock-exchange-no-input-validation": {
       "text": "The matching engine performs no validation on order fields (quantity, price, side); callers are trusted to provide valid inputs.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/stock-exchange-solution.md",
       "source_url": "",
@@ -5053,6 +5053,16 @@
           ],
           "outlist": [],
           "label": "Time injection is a recurring testability pattern, but default-value inconsistency creates integration risks"
+        },
+        {
+          "type": "SL",
+          "antecedents": [
+            "notif-caller-controls-time",
+            "rate-limiter-time-injectable",
+            "crawl-uses-simulated-clock"
+          ],
+          "outlist": [],
+          "label": ""
         }
       ],
       "source": "",
@@ -5066,7 +5076,7 @@
     },
     "time-injection-is-a-complete-testing-strategy": {
       "text": "Time injection enables fully deterministic testing by making wall-clock time an explicit parameter across notification, rate limiting, and crawling \u2014 unless the inconsistent fallback defaults (rate limiter falls back to `time.time()` while chat defaults to `0.0`) mean that tests omitting the time parameter exercise fundamentally different behavior depending on which module's convention they inherit.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -5180,7 +5190,7 @@
     },
     "verify-integrity-ignores-transfers": {
       "text": "`verify_integrity` sums only `deposit` and `withdrawal` amounts against total balances, because `transfer_in`/`transfer_out` pairs are zero-sum and cancel out.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/digital-wallet-wallet.md",
       "source_url": "",
@@ -5213,7 +5223,7 @@
     },
     "wallet-creation-silently-overwrites": {
       "text": "`create_wallet` does not check for an existing `wallet_id`; calling it twice with the same ID replaces the wallet and loses the original balance.",
-      "truth_value": "IN",
+      "truth_value": "OUT",
       "justifications": [],
       "source": "entries/2026/06/05/digital-wallet-wallet.md",
       "source_url": "",
@@ -5287,7 +5297,7 @@
     },
     "wallet-transfers-are-safe-under-concurrency": {
       "text": "Wallet concurrent transfers are deadlock-free via sorted lock acquisition with frozen-check inside the lock \u2014 but this safety guarantee assumes stable wallet identity, which silent creation-overwrite could violate mid-transfer.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",
@@ -5578,7 +5588,7 @@
     },
     "writes-always-produce-valid-forward-progress": {
       "text": "The write path both produces valid state (structural discipline prevents corruption, lightweight routing reaches all parties) and advances system progress forward-only (no-regression ratchets, maximum-progress pipelines) \u2014 unless cancel operations can underflow inventory below zero, enabling a write to produce invalid state and regress past a logical lower bound.",
-      "truth_value": "OUT",
+      "truth_value": "IN",
       "justifications": [
         {
           "type": "SL",

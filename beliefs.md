@@ -1,7 +1,7 @@
 ---
 schema_version: "1.0"
 project_name: "reasons"
-updated_at: "2026-06-06T01:47:33+00:00"
+updated_at: "2026-06-06T01:49:28+00:00"
 node_count: 359
 generator: ftl-reasons/0.43.0
 ---
@@ -50,10 +50,6 @@ Both versioned storage (S3 version lists, GDrive version histories) and stream p
 Both S3 and Google Drive model version history as append-only lists where restoring an old version creates a new entry rather than rolling back, preserving full audit trails and making every restore operation non-destructive.
 - Depends on: s3-version-list-append-only, gdrive-restore-creates-new-version
 
-### autocomplete-blocklist-is-substring [IN] OBSERVATION
-The blocklist filter removes results where any blocklisted term appears as a **substring** of the query, not just exact matches.
-- Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
-
 ### autocomplete-cache-consistency [IN] OBSERVATION
 Every trie mutation (insert, increment, delete) immediately rebuilds `top_k_cache` for all ancestor nodes via `_update_caches_on_path`; caches are never stale between operations.
 - Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
@@ -66,13 +62,19 @@ Time decay is computed lazily at query time in `search_prefix` using `raw_freq *
 Deleting a query zeroes its frequency and unsets `is_end` but does not remove trie nodes from the tree structure — deleted queries leave structural residue.
 - Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
 
-### autocomplete-fuzzy-is-last-char-only [IN] OBSERVATION
-`fuzzy_suggest()` only tries single-character edits (substitution, deletion, insertion) on the **last character** of the prefix — it is not a full edit-distance search.
-- Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
-
 ### autocomplete-normalize-at-boundary [IN] OBSERVATION
 All public methods in `AutocompleteTrie` lowercase and truncate queries to 200 characters before any trie operation; internal methods assume normalized input.
 - Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
+
+### autocomplete-overfetch-compensates-for-filtering [IN] DERIVED
+The autocomplete service overfetches results (`k + len(blocklist) * 2`) to compensate for blocklist removals, maintaining result count — but substring matching can remove far more results than the linear compensation formula anticipates.
+- Depends on: autocomplete-service-overfetches-for-blocklist
+- Unless: autocomplete-blocklist-is-substring
+
+### autocomplete-search-is-robust [IN] DERIVED
+Autocomplete provides consistent, normalized search through boundary normalization (lowercasing, length truncation) and eagerly-rebuilt top-k caches, but fuzzy matching is limited to single-character edits on the last character only — meaning most mid-word typos produce zero results despite the system's otherwise thorough input handling.
+- Depends on: normalize-once-at-system-boundary, autocomplete-cache-consistency
+- Unless: autocomplete-fuzzy-is-last-char-only
 
 ### autocomplete-service-overfetches-for-blocklist [IN] OBSERVATION
 `AutocompleteService` requests `k + len(blocklist) * 2` results from the trie to compensate for results that will be removed by blocklist filtering.
@@ -109,10 +111,6 @@ Four systems use fixed-capacity collections (deque maxlen, list pruning) that si
 ### brute-force-acceptable-at-pedagogical-scale [IN] DERIVED
 Four systems use algorithmically sub-optimal implementations — linear prefix scan, key-by-key Merkle diff, full re-sort on insertion, linear purge on unfollow — where O(log n) alternatives exist, prioritizing implementation clarity over asymptotic efficiency at the pedagogical scale these modules target.
 - Depends on: geohash-nearby-prefix-scan-is-linear, kv-merkle-tree-brute-force-diff, stock-exchange-price-sort-is-full-resort, news-feed-unfollow-purges-via-linear-scan
-
-### callers-trusted-at-internal-boundaries [IN] DERIVED
-Multiple systems omit input validation entirely at internal module boundaries — the stock exchange accepts any order fields without checking quantity or price, and proximity search accepts any coordinates without range validation — reflecting a convention of trusting callers within the module perimeter rather than validating defensively.
-- Depends on: stock-exchange-no-input-validation, proximity-no-coordinate-validation
 
 ### ch-add-remove-idempotent [IN] OBSERVATION
 `add_node` on an existing node and `remove_node` on a missing node are both no-ops returning empty results, making the ring safe against duplicate operations.
@@ -247,10 +245,6 @@ URLs are normalized via `URLNormalizer.normalize()` at the point of insertion in
 The web crawler achieves comprehensive deduplication through three coordinated layers: URL normalization at ingestion boundaries, Bloom filter for O(k) exact-URL rejection, and SimHash for near-duplicate content detection.
 - Depends on: crawler-layered-dedup-bloom-then-simhash, bloom-filter-prevents-frontier-duplicates, crawler-normalize-once-convention
 
-### current-time-fallback-inconsistent [IN] OBSERVATION
-Rate limiter defaults `current_time` to `time.time()` while chat system defaults to `0.0`, creating different behavior when the parameter is omitted.
-- Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
-
 ### dag-failure-cascade [IN] OBSERVATION
 When a `ProcessingDAG` stage fails, all transitively dependent stages are marked SKIPPED; independent branches continue executing.
 - Source: entries/2026/06/05/design-youtube-design_youtube.md
@@ -267,10 +261,6 @@ Two data-plane isolation gaps parallel common authorization-plane permissiveness
 Dedup retention outlives the aggregation window by 2×, and finalized results are irrevocable — this is coordinated design: since emitted results cannot be retracted, the system must ensure duplicates are caught before finalization, requiring dedup coverage to extend beyond the window boundary as a correctness invariant.
 - Depends on: dedup-outlives-aggregation-window, watermark-finalization-is-irreversible
 
-### dedup-is-global-not-per-ad [IN] OBSERVATION
-The `seen_events` dedup registry keys on `event_id` alone; the same event ID arriving for different `ad_id`s will be deduplicated.
-- Source: entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
-
 ### dedup-outlives-aggregation-window [IN] DERIVED
 The dedup registry retains entries for 2× the allowed lateness, ensuring late-arriving duplicates are still caught even after their aggregation window has been finalized by the watermark — the dedup horizon intentionally exceeds the processing horizon.
 - Depends on: dedup-pruning-uses-2x-lateness, watermark-drives-finalization
@@ -278,10 +268,6 @@ The dedup registry retains entries for 2× the allowed lateness, ensuring late-a
 ### dedup-pruning-uses-2x-lateness [IN] OBSERVATION
 The dedup registry evicts entries older than `2 * allowed_lateness` on watermark advance, meaning dedup coverage extends beyond the late-event acceptance window.
 - Source: entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
-
-### default-to-permissive-across-security-dimensions [IN] DERIVED
-The codebase defaults to permissive behavior across independent security dimensions — authorization (S3 default-allow, GDrive owner bypass) and input validation (stock exchange accepts any order fields, proximity accepts any coordinates) — prioritizing availability and simplicity over defense-in-depth.
-- Depends on: access-control-defaults-favor-availability-over-security, callers-trusted-at-internal-boundaries
 
 ### deletion-is-append-only-across-all-contexts [IN] DERIVED
 Deletion never destroys data regardless of distribution level or system type: single-node soft deletes preserve structural invariants, distributed tombstones prevent resurrection, versioned storage appends delete markers, and finalized stream results are irrevocable — the entire data lifecycle is append-only from local state through distributed storage to stream processing.
@@ -411,6 +397,11 @@ The codebase's forward-only philosophy combines no-regression state ratchets (mo
 The forward-only design principle extends beyond normal state evolution (monotonic cursors, irreversible window finalization, maximum-progress pipeline branching) to failure handling: retry logic escalates transient failures to permanent outcomes via exponential backoff rather than attempting rollback, treating failure resolution as another forward-only state transition that produces irrevocable results.
 - Depends on: forward-only-design-prevents-regression-and-maximizes-progress, retry-escalates-to-permanent-failure
 
+### forward-only-stream-processing-is-exactly-once [IN] DERIVED
+Stream processing achieves exactly-once delivery per entity: dedup outlives finalization windows, finalized results are irrevocable, and the pipeline never backtracks — producing correct per-event semantics when event IDs are globally unique.
+- Depends on: dedup-and-finalization-are-coordinated, forward-only-design-prevents-regression-and-maximizes-progress
+- Unless: dedup-is-global-not-per-ad
+
 ### gdrive-owner-bypasses-permission [IN] OBSERVATION
 `_check_permission` returns immediately if `meta.owner_id == user_id`, bypassing the full permission inheritance walk.
 - Source: entries/2026/06/05/design-google-drive-design_google_drive.md
@@ -463,10 +454,6 @@ Both leaderboard (negated scores in SortedList) and URL frontier (sign-flipped s
 `HyperLogLogCounter` defaults to precision 14 (16384 registers), matching the standard HLL recommendation for ~1% error rate.
 - Source: entries/2026/06/05/design-youtube-design_youtube.md
 
-### hotel-cancel-no-underflow-guard [IN] OBSERVATION
-`cancel()` decrements `booked` without checking for `booked >= 0`, so a double-cancel bug (if the status check were bypassed) could produce negative inventory counts.
-- Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
-
 ### hotel-checkout-exclusive [IN] OBSERVATION
 Date ranges are half-open `[check_in, check_out)`: a booking from March 15 to March 16 occupies inventory on March 15 only.
 - Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
@@ -475,9 +462,19 @@ Date ranges are half-open `[check_in, check_out)`: a booking from March 15 to Ma
 The idempotency key check returns the cached reservation without validating that guest name, dates, or room type match the original request.
 - Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
 
+### hotel-occ-prevents-overbooking [IN] DERIVED
+Hotel reservations prevent overbooking through optimistic concurrency control with per-date version counters, rejecting concurrent conflicting bookings via version mismatch — unless a double-cancel bypasses the underflow guard and drives inventory counts negative, making the system believe more rooms are available than exist.
+- Depends on: hotel-reservation-optimistic-locking, hotel-search-availability-is-bottleneck-date
+- Unless: hotel-cancel-no-underflow-guard
+
 ### hotel-occ-two-phase-reserve [IN] OBSERVATION
 `reserve()` implements optimistic concurrency via a read-then-verify-version pattern, but both phases execute synchronously with no actual interleaving, making the version check demonstrative rather than functional.
 - Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+
+### hotel-pricing-is-deterministic [IN] DERIVED
+Hotel dynamic pricing deterministically stacks occupancy and seasonal multipliers on the base price — but when seasonal pricing ranges overlap, the first-match rule makes the price depend on rule insertion order rather than a stable priority scheme.
+- Depends on: hotel-pricing-stacks-multipliers
+- Unless: hotel-seasonal-pricing-first-match
 
 ### hotel-pricing-stacks-multipliers [IN] OBSERVATION
 Dynamic occupancy pricing and seasonal pricing multiply independently on the base price; a 90% occupied room during peak season costs `base * seasonal_mult * 1.5`.
@@ -489,10 +486,6 @@ Hotel reservation uses optimistic concurrency control with per-date version coun
 
 ### hotel-search-availability-is-bottleneck-date [IN] OBSERVATION
 `search()` reports availability as the minimum available rooms across all nights in the requested range; the most-booked date determines what's bookable.
-- Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
-
-### hotel-seasonal-pricing-first-match [IN] OBSERVATION
-If seasonal pricing date ranges overlap, the first appended rule wins due to a `break` after the first match in `_get_price`.
 - Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
 
 ### id-generators-preserve-monotonic-order [IN] DERIVED
@@ -539,10 +532,6 @@ Hinted handoff writes to backup nodes are fire-and-forget and do not count towar
 `KVNode.store` maps each key to a list of `VersionedValue`; concurrent writes produce multiple siblings that the client must resolve
 - Source: entries/2026/06/05/key-value-store-key_value_store.md
 
-### kv-quorum-consistency-assumed-not-enforced [IN] DERIVED
-The KV store's consistency model depends on W+R>N quorum overlap but never validates the constraint, and hinted handoff writes bypass quorum entirely — consistency is a caller convention, not a system guarantee.
-- Depends on: kv-store-quorum-overlap-not-enforced, kv-hinted-handoff-not-counted-in-quorum
-
 ### kv-read-path-is-self-healing [IN] DERIVED
 Every KV get is self-healing: sibling versions detect replica divergence and read repair pushes non-dominated versions back to stale replicas as a side effect, converging the cluster toward consistency on every read.
 - Depends on: kv-read-repair-on-get, kv-node-stores-sibling-versions
@@ -551,6 +540,11 @@ Every KV get is self-healing: sibling versions detect replica divergence and rea
 Every `get` performs read repair — pushing non-dominated, non-tombstone versions back to stale replicas as a side effect of the read path
 - Source: entries/2026/06/05/key-value-store-key_value_store.md
 
+### kv-reads-eventually-converge [IN] DERIVED
+KV reads drive eventual consistency through read repair and sibling version detection — every get actively heals divergence — but this guarantee holds only if W+R>N quorum overlap is actually maintained.
+- Depends on: kv-read-repair-on-get, kv-node-stores-sibling-versions
+- Unless: kv-store-quorum-overlap-not-enforced
+
 ### kv-store-deletes-use-tombstones [IN] OBSERVATION
 KV store uses tombstones for deletes because a naive physical delete would be resurrected by anti-entropy from a replica that hasn't seen the deletion.
 - Source: entries/2026/06/05/topic-consistency-models.md
@@ -558,10 +552,6 @@ KV store uses tombstones for deletes because a naive physical delete would be re
 ### kv-store-quorum-exception [IN] OBSERVATION
 `put`, `get`, and `delete` raise generic `Exception` (not a custom type) when the quorum threshold (W or R) is not met
 - Source: entries/2026/06/05/key-value-store-key_value_store.md
-
-### kv-store-quorum-overlap-not-enforced [IN] OBSERVATION
-The key-value store's W+R>N read-write overlap guarantee is assumed by callers but never validated in code.
-- Source: entries/2026/06/05/topic-consistency-models.md
 
 ### kv-vector-clock-immutable [IN] OBSERVATION
 `VectorClock` operations (`increment`, `merge`, `prune`) return new instances rather than mutating in place, avoiding aliasing bugs across replicas
@@ -663,14 +653,6 @@ Every time series in `_data` is maintained in sorted timestamp order; `ingest` (
 `_matching_keys` performs subset matching: a query with `tags_filter={"a": 1}` matches any series whose tags include `a=1`, regardless of additional tags present
 - Source: entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
 
-### module-autonomy-enables-per-use-case-cost-optimization [IN] DERIVED
-Module autonomy is the structural precondition for per-use-case cost optimization: because each module independently chooses its error conventions, eviction timing, and safety boundaries, it can also independently select the optimal write-read cost allocation for its specific access pattern — autocomplete and leaderboard pay at write time for read-heavy workloads, while payment and URL shortener defer to reads for write-heavy or low-frequency paths — without cross-cutting constraints imposing a uniform cost model.
-- Depends on: module-autonomy-spans-conventions-and-safety, write-cost-allocation-matches-access-pattern
-
-### module-autonomy-spans-conventions-and-safety [IN] DERIVED
-Module autonomy extends beyond implementation to encompass both operational conventions (error signaling varies by module, eviction timing has no codebase standard) and safety enforcement (error boundaries are module-local, access control defaults favor permissiveness), meaning there are no cross-cutting architectural constraints — each module is entirely self-governing in how it handles errors, manages resources, and enforces security.
-- Depends on: operational-conventions-are-module-scoped, safety-is-local-and-permissive
-
 ### module-isolation-is-pedagogical-and-architectural [IN] DERIVED
 Module isolation exhibits two complementary properties: each module is a hermetic, standalone unit with only stdlib dependencies and no real I/O (supporting independent testability), while operational conventions — error signaling strategies, eviction timing, failure reporting — remain module-scoped rather than codebase-wide (producing locally reasonable but collectively unpredictable operational surfaces). These properties appear to reinforce each other: standalone modules with no shared infrastructure naturally avoid convention coupling across module boundaries.
 - Depends on: operational-conventions-are-module-scoped, deterministic-testability-by-design
@@ -679,6 +661,11 @@ Module isolation exhibits two complementary properties: each module is a hermeti
 Each SDI module is independently runnable with only stdlib dependencies, in-process simulation, and no shared code — unless the stock exchange's cross-module import of the message queue is considered, which introduces a runtime dependency that breaks strict module independence.
 - Depends on: sdi-modules-are-standalone-learning-artifacts
 - Unless: dmq-reused-by-stock-exchange
+
+### monotonicity-and-caution-prevent-state-loss [IN] DERIVED
+Monotonic state ratchets (cursors only advance, windows never reopen) and cautious deletion (preconditions before permanent removal, two-phase trash workflows) together ensure that committed state can never be silently lost or regressed — unless wallet creation silently overwrites existing state, demonstrating that creation operations bypass both guards because the codebase protects against destructive deletion and regression but not destructive creation.
+- Depends on: state-ratchets-prevent-regression-across-domains, deletion-is-guarded-by-preconditions
+- Unless: wallet-creation-silently-overwrites
 
 ### monotonicity-is-the-universal-ordering-primitive [IN] DERIVED
 Monotonic progression is the codebase's universal mechanism for establishing order and preventing regression: ID generators ensure global sequencing, read cursors prevent consumption regression, and window lifecycles enforce irreversible finalization — all encoding progress as a single non-decreasing value.
@@ -720,9 +707,10 @@ Per-user location history uses `deque(maxlen=100)`, silently dropping oldest ent
 Both notification (`update_location`) and query (`get_nearby_friends`) paths reject friend locations older than `location_ttl_seconds`
 - Source: entries/2026/06/05/nearby-friends-nearby_friends.md
 
-### nearby-friends-update-location-skips-grid-filtering [IN] OBSERVATION
-`update_location` iterates all friends and computes haversine for each (O(friends)), while `get_nearby_friends` uses the grid index to narrow candidates before distance checks
-- Source: entries/2026/06/05/nearby-friends-nearby_friends.md
+### nearby-friends-visibility-scales [IN] DERIVED
+Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses — meaning notification throughput degrades linearly with social graph density while query performance does not.
+- Depends on: nearby-friends-bidirectional-visibility, nearby-friends-staleness-enforced-on-both-paths
+- Unless: nearby-friends-update-location-skips-grid-filtering
 
 ### news-feed-cache-is-bounded-deque [IN] OBSERVATION
 Feed caches use `deque(maxlen=cache_size)` which silently drops the oldest post IDs when full, providing implicit eviction without explicit cache management
@@ -824,6 +812,11 @@ Operational concerns — error signaling strategies (exceptions vs return codes 
 `PaymentSystem.get_balance()` derives balance by scanning the full ledger on every call; no running total or balance cache is maintained.
 - Source: entries/2026/06/05/topic-consistency-models.md
 
+### payment-double-entry-guarantees-balance-integrity [IN] DERIVED
+The double-entry ledger invariant (every movement creates balanced debit-credit pairs) and full-ledger balance derivation guarantee that balances reflect the true sum of all operations — unless the non-atomic overdraft check allows concurrent payments to both pass validation and create conflicting ledger entries.
+- Depends on: double-entry-invariant, balance-derived-from-ledger
+- Unless: payment-overdraft-not-atomic
+
 ### payment-error-strategy-split [IN] OBSERVATION
 Programming errors (unknown account, duplicate account, invalid refund state) raise `ValueError`; business-rule failures (insufficient balance, currency mismatch, processor failure) return a `Payment` with `status="FAILED"`
 - Source: entries/2026/06/05/payment-system-payment_system.md
@@ -832,9 +825,10 @@ Programming errors (unknown account, duplicate account, invalid refund state) ra
 Idempotency is enforced by mapping client-provided keys to payment IDs in `_idempotency`; a repeated key returns the original `Payment` without re-processing
 - Source: entries/2026/06/05/payment-system-payment_system.md
 
-### payment-overdraft-not-atomic [IN] OBSERVATION
-The overdraft check in `process_payment` reads balance and then processes without atomicity — a TOCTOU race in any concurrent context.
-- Source: entries/2026/06/05/topic-consistency-models.md
+### payment-ledger-is-fully-auditable [IN] DERIVED
+The double-entry ledger creates balanced debit-credit pairs for every money movement and derives balances from complete ledger scans, making the payment system's financial state fully reconstructible from its transaction history — unless the integrity verification function's exclusion of transfer transactions means the audit mechanism itself has blind spots that the ledger design was supposed to prevent.
+- Depends on: double-entry-invariant, balance-derived-from-ledger
+- Unless: verify-integrity-ignores-transfers
 
 ### payment-processor-injectable [IN] OBSERVATION
 The external payment processor is injected via `set_processor()` as a callable returning a status dict, decoupling processing logic from payment orchestration
@@ -844,6 +838,11 @@ The external payment processor is injected via `set_processor()` as a callable r
 Brute-force algorithms, bounded collections, and in-process simulation are acceptable pedagogical trade-offs because each module is a standalone learning artifact with no cross-module dependencies — simplifications that would be dangerous in production are safe when confined to self-contained demonstrations.
 - Depends on: brute-force-acceptable-at-pedagogical-scale, bounded-collections-trade-completeness-for-memory, sdi-modules-are-standalone-learning-artifacts
 - Unless: dmq-reused-by-stock-exchange
+
+### perimeter-defense-ensures-data-quality [IN] DERIVED
+The codebase's perimeter defense model — normalize inputs once at system boundaries, then trust all internal callers — ensures internal operations work on clean, canonical data throughout the processing pipeline.
+- Depends on: normalize-once-at-system-boundary, callers-trusted-at-internal-boundaries
+- Unless: proximity-no-coordinate-validation
 
 ### pipeline-processing-maximizes-forward-progress [IN] DERIVED
 Processing pipelines are designed to maximize forward progress and never backtrack: the video DAG continues independent branches when siblings fail (partial success over total failure), and stream processing makes finalization irreversible (no retraction of emitted results) — ensuring that completed work is never undone.
@@ -873,10 +872,6 @@ GeohashIndex._PRECISION_TABLE is ordered by descending radius threshold; _precis
 ### probabilistic-structures-trade-accuracy-for-space [IN] DERIVED
 Three systems deploy probabilistic data structures with explicitly tunable accuracy-space tradeoffs: HyperLogLog with 16384 registers for ~1% cardinality error, Morris counters averaging 32 independent estimators for approximate counting, and SimHash with a 3-bit Hamming threshold for near-duplicate detection — each accepting bounded inaccuracy to achieve sub-linear space consumption.
 - Depends on: hll-default-precision, morris-counter-32-estimators, simhash-threshold-default-3
-
-### proximity-no-coordinate-validation [IN] OBSERVATION
-Neither GeohashIndex nor Quadtree validates input coordinates; latitude outside [-90, 90] silently produces garbage geohashes, and Quadtree.insert silently returns False for out-of-bounds points
-- Source: entries/2026/06/05/proximity-service-proximity_service.md
 
 ### quadtree-boundary-first-child-wins [IN] OBSERVATION
 Quadtree `_contains` uses inclusive bounds (`<=`), so a point on the boundary of multiple children is inserted into the first matching child in NW → NE → SW → SE order
@@ -990,10 +985,6 @@ In unversioned buckets, `put_object` replaces the entire version list with a sin
 Each object key maps to a `list[ObjectVersion]` where the latest version is always `versions[-1]`; versioned puts append, unversioned puts replace the entire list.
 - Source: entries/2026/06/05/s3-object-storage-s3_object_storage.md
 
-### safety-is-local-and-permissive [IN] DERIVED
-Safety enforcement is both locally scoped (error contracts vary by module with no cross-cutting convention) and default-permissive (access control favors availability over restriction), producing a system where each module is individually lenient and no cross-cutting safety net catches errors that escape module boundaries.
-- Depends on: error-boundaries-are-module-local, default-to-permissive-across-security-dimensions
-
 ### sdi-implementations-are-in-process-simulations [IN] OBSERVATION
 All implementations simulate distributed behavior in-process with no real network or storage dependencies — they are pedagogical reference implementations, not production systems.
 - Source: entries/2026/06/05/scan-sdi-implementations.md
@@ -1017,10 +1008,6 @@ Every module follows a consistent lifecycle: `plan.md` → `plan_review.md` → 
 ### search-status-filter [IN] OBSERVATION
 `VideoStore.search` returns only videos with status READY or UPLOADING, excluding PROCESSING and FAILED videos.
 - Source: entries/2026/06/05/design-youtube-design_youtube.md
-
-### security-permissiveness-spans-policy-and-data-boundaries [IN] DERIVED
-Security permissiveness is systematic across two independent dimensions: policy enforcement (default-allow access control, trusted internal callers, no input validation) and data isolation (BCC recipients stored alongside visible recipients, presigned URL secrets shared across instances), creating a consistent availability-over-security bias that compounds — permissive policies let requests through, and weak data isolation lets those requests see more than intended.
-- Depends on: data-isolation-gaps-parallel-access-control-gaps, default-to-permissive-across-security-dimensions
 
 ### simhash-threshold-default-3 [IN] OBSERVATION
 Two pages are considered near-duplicates if their 64-bit SimHash fingerprints differ in 3 or fewer bits, configurable via the `duplicate_threshold` parameter.
@@ -1058,9 +1045,19 @@ In distributed or versioned storage, physical deletion causes data resurrection 
 Special-case concepts are implemented as instances of existing abstractions rather than introducing new infrastructure: dead-letter queues are regular topics with a naming prefix, and thread IDs are the first message's ID rather than a separately generated concept — keeping the operational and data model uniform by avoiding special-case machinery.
 - Depends on: dmq-dlq-is-regular-topic, email-service-thread-id-is-first-msg
 
+### state-is-monotonically-accumulative [IN] DERIVED
+State only accumulates across the full codebase: stream processing uses doubly-forward-only ratchets preventing regression (windows never reopen, dedup outlives finalization), and deletions across all system types append metadata rather than destroying data (tombstones, delete markers, soft-delete flags) — the system's information content is monotonically non-decreasing.
+- Depends on: stream-processing-correctness-is-doubly-forward-only, deletion-is-append-only-across-all-contexts
+- Unless: wallet-creation-silently-overwrites
+
 ### state-ratchets-prevent-regression-across-domains [IN] DERIVED
 Both messaging and stream processing use one-directional state progressions — read cursors that only advance, windows that never reopen — to eliminate entire classes of regression bugs where state could move backwards.
 - Depends on: chat-monotonic-read-progress, watermark-finalization-is-irreversible
+
+### state-reversal-is-uniformly-guarded [IN] DERIVED
+The codebase guards state reversal through layered mechanisms: soft delete serves dual purposes (preserving invariants locally, preventing resurrection distributedly), and permanent deletion requires preconditions (empty buckets, trashed state) — unless non-deletion reversals like hotel cancellation lack equivalent underflow guards, showing the reversal-safety pattern is incomplete.
+- Depends on: soft-delete-is-dual-purpose, deletion-is-guarded-by-preconditions
+- Unless: hotel-cancel-no-underflow-guard
 
 ### stock-exchange-aggressive-then-rest [IN] OBSERVATION
 `place_order` first attempts to match the incoming order against the opposite side (`_match_order`), then adds any unfilled remainder to the book — the standard aggressor/resting model.
@@ -1074,9 +1071,10 @@ Orders at the same price level are matched in FIFO order, enforced by `deque` ap
 Market orders that can't be fully filled have their remainder cancelled; they are never added to the order book.
 - Source: entries/2026/06/05/stock-exchange-solution.md
 
-### stock-exchange-no-input-validation [IN] OBSERVATION
-The matching engine performs no validation on order fields (quantity, price, side); callers are trusted to provide valid inputs.
-- Source: entries/2026/06/05/stock-exchange-solution.md
+### stock-exchange-matching-produces-valid-trades [IN] DERIVED
+The stock exchange correctly implements price-time priority matching (best price first, FIFO within price, execute at resting price), producing valid trades — but only when callers provide valid order fields, since the engine performs no input validation.
+- Depends on: stock-exchange-price-time-priority
+- Unless: stock-exchange-no-input-validation
 
 ### stock-exchange-price-sort-is-full-resort [IN] OBSERVATION
 `_add_to_book` re-sorts the entire price list on every insertion (O(n log n)) rather than using `bisect.insort` — acceptable for interview scope but not production-grade.
@@ -1136,6 +1134,11 @@ TicketServerGenerator initializes its counter to `offset - step` so the first `g
 Three systems inject wall-clock time as an explicit parameter (notification, rate limiter, crawler), enabling deterministic testing without mocking — but inconsistent defaults across systems undermine the pattern's reliability at integration boundaries.
 - Depends on: notif-caller-controls-time, rate-limiter-time-injectable, crawl-uses-simulated-clock, current-time-fallback-inconsistent
 
+### time-injection-is-a-complete-testing-strategy [IN] DERIVED
+Time injection enables fully deterministic testing by making wall-clock time an explicit parameter across notification, rate limiting, and crawling — unless the inconsistent fallback defaults (rate limiter falls back to `time.time()` while chat defaults to `0.0`) mean that tests omitting the time parameter exercise fundamentally different behavior depending on which module's convention they inherit.
+- Depends on: time-injection-enables-deterministic-testing
+- Unless: current-time-fallback-inconsistent
+
 ### ulid-monotonic-within-millisecond [IN] OBSERVATION
 ULIDGenerator maintains sort order within the same millisecond by incrementing the random component rather than generating new random bits.
 - Source: entries/2026/06/05/unique-id-generator-unique_id_generator.md
@@ -1164,17 +1167,9 @@ Rate limiting uses a per-creator sliding window of 60 seconds, pruned eagerly on
 URLShortener supports two short code generation strategies: "counter" (monotonic base62) and "hash" (truncated SHA-256 with collision retry), selected at construction time.
 - Source: entries/2026/06/05/url-shortener-url_shortener.md
 
-### verify-integrity-ignores-transfers [IN] OBSERVATION
-`verify_integrity` sums only `deposit` and `withdrawal` amounts against total balances, because `transfer_in`/`transfer_out` pairs are zero-sum and cancel out.
-- Source: entries/2026/06/05/digital-wallet-wallet.md
-
 ### video-pipeline-maximizes-useful-work-on-failure [IN] DERIVED
 The video pipeline DAG runs independent branches (transcode, thumbnail, metadata) in parallel and lets them continue even when a sibling fails, marking only transitive dependents as skipped — maximizing useful work completion on partial failures.
 - Depends on: dag-failure-cascade, youtube-pipeline-dag-structure
-
-### wallet-creation-silently-overwrites [IN] OBSERVATION
-`create_wallet` does not check for an existing `wallet_id`; calling it twice with the same ID replaces the wallet and loses the original balance.
-- Source: entries/2026/06/05/digital-wallet-wallet.md
 
 ### wallet-currency-immutable-after-creation [IN] OBSERVATION
 Currency is immutable after wallet creation; `transfer` checks currency match before acquiring locks, which is safe because the field never changes.
@@ -1195,6 +1190,11 @@ Transfers acquire wallet locks sorted by `wallet_id`, preventing deadlock when t
 ### wallet-no-exceptions-caught [IN] OBSERVATION
 The wallet service has no `try`/`except` blocks; all seven custom exceptions propagate to the caller unconditionally.
 - Source: entries/2026/06/05/digital-wallet-wallet.md
+
+### wallet-transfers-are-safe-under-concurrency [IN] DERIVED
+Wallet concurrent transfers are deadlock-free via sorted lock acquisition with frozen-check inside the lock — but this safety guarantee assumes stable wallet identity, which silent creation-overwrite could violate mid-transfer.
+- Depends on: wallet-deadlock-free-concurrent-transfers
+- Unless: wallet-creation-silently-overwrites
 
 ### wallet-two-tier-locking [IN] OBSERVATION
 Per-wallet locks protect balance mutations; a separate `_tx_lock` protects the shared transactions list. The wallet lock is always acquired before `_tx_lock`, never the reverse.
@@ -1245,6 +1245,11 @@ Systems that route at write time push only lightweight references (post IDs, inb
 Both news feed and chat make irrevocable routing decisions at write time — selecting push vs pull strategy and routing to inbox vs offline queue respectively — with no mechanism to retroactively re-route messages when conditions change.
 - Depends on: news-feed-celebrity-threshold-at-write-time, chat-fanout-on-write
 
+### writes-always-produce-valid-forward-progress [IN] DERIVED
+The write path both produces valid state (structural discipline prevents corruption, lightweight routing reaches all parties) and advances system progress forward-only (no-regression ratchets, maximum-progress pipelines) — unless cancel operations can underflow inventory below zero, enabling a write to produce invalid state and regress past a logical lower bound.
+- Depends on: write-path-is-self-consistent-by-design, forward-only-design-prevents-regression-and-maximizes-progress
+- Unless: hotel-cancel-no-underflow-guard
+
 ### writes-are-cheap-reads-pay [IN] DERIVED
 The codebase implements an asymmetric cost model where writes push minimal data and make binding routing decisions, while reads absorb all deferred costs — lazy computation, consistency repair, data hydration, and metadata interpretation.
 - Depends on: write-time-decisions-are-lightweight-but-binding, read-path-absorbs-consistency-and-computation-cost
@@ -1277,15 +1282,17 @@ The architecture's correctness properties are self-limiting: coherence holds at 
 Critical correctness invariants exist only as developer assumptions, not as code-enforced constraints: the KV store relies on W+R>N quorum overlap without validating it, and the payment system assumes atomic balance checks despite non-atomic reads — both creating correctness guarantees that hold only when callers cooperate, with silent violations under edge conditions the code structurally permits.
 - Depends on: kv-quorum-consistency-assumed-not-enforced, payment-toctou-double-jeopardy
 
-### autocomplete-overfetch-compensates-for-filtering [OUT] DERIVED
-The autocomplete service overfetches results (`k + len(blocklist) * 2`) to compensate for blocklist removals, maintaining result count — but substring matching can remove far more results than the linear compensation formula anticipates.
-- Depends on: autocomplete-service-overfetches-for-blocklist
-- Unless: autocomplete-blocklist-is-substring
+### autocomplete-blocklist-is-substring [OUT] OBSERVATION
+The blocklist filter removes results where any blocklisted term appears as a **substring** of the query, not just exact matches.
+- Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
 
-### autocomplete-search-is-robust [OUT] DERIVED
-Autocomplete provides consistent, normalized search through boundary normalization (lowercasing, length truncation) and eagerly-rebuilt top-k caches, but fuzzy matching is limited to single-character edits on the last character only — meaning most mid-word typos produce zero results despite the system's otherwise thorough input handling.
-- Depends on: normalize-once-at-system-boundary, autocomplete-cache-consistency
-- Unless: autocomplete-fuzzy-is-last-char-only
+### autocomplete-fuzzy-is-last-char-only [OUT] OBSERVATION
+`fuzzy_suggest()` only tries single-character edits (substitution, deletion, insertion) on the **last character** of the prefix — it is not a full edit-distance search.
+- Source: entries/2026/06/05/search-autocomplete-search_autocomplete.md
+
+### callers-trusted-at-internal-boundaries [OUT] DERIVED
+Multiple systems omit input validation entirely at internal module boundaries — the stock exchange accepts any order fields without checking quantity or price, and proximity search accepts any coordinates without range validation — reflecting a convention of trusting callers within the module perimeter rather than validating defensively.
+- Depends on: stock-exchange-no-input-validation, proximity-no-coordinate-validation
 
 ### codebase-architecture-is-write-available-read-correct [OUT] DERIVED
 The codebase converges on a write-available, read-correct architecture: writes are structurally simple, irrevocable, and forward-only (maximizing availability), while reads absorb all deferred correctness work (reconciliation, lazy computation, conflict resolution), with structural enforcement and selective pre-computation preventing the read-path cost from becoming unsustainable.
@@ -1311,6 +1318,18 @@ The codebase has a bifurcated correctness guarantee: structural properties (immu
 The read path bears maximum responsibility (deferred consistency, lazy computation, active repair, tombstone interpretation) and accumulates maximum risk (temporal correctness gaps, TOCTOU windows), yet the testing strategy is co-designed to verify structural properties that are already safe by construction — making the architecture's most critical surface its least verified.
 - Depends on: read-path-is-architectures-critical-surface, compounding-gaps-are-in-the-testing-blind-spot
 
+### current-time-fallback-inconsistent [OUT] OBSERVATION
+Rate limiter defaults `current_time` to `time.time()` while chat system defaults to `0.0`, creating different behavior when the parameter is omitted.
+- Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+
+### dedup-is-global-not-per-ad [OUT] OBSERVATION
+The `seen_events` dedup registry keys on `event_id` alone; the same event ID arriving for different `ad_id`s will be deduplicated.
+- Source: entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+
+### default-to-permissive-across-security-dimensions [OUT] DERIVED
+The codebase defaults to permissive behavior across independent security dimensions — authorization (S3 default-allow, GDrive owner bypass) and input validation (stock exchange accepts any order fields, proximity accepts any coordinates) — prioritizing availability and simplicity over defense-in-depth.
+- Depends on: access-control-defaults-favor-availability-over-security, callers-trusted-at-internal-boundaries
+
 ### design-coherence-bounded-by-enforceability [OUT] DERIVED
 The codebase's alignment between quality and performance strategies (structural correctness reinforcing efficient runtime behavior, verified through deterministic testing) forms a mutually supportive system for properties enforceable by construction. This coherence does not extend to temporal correctness, where gaps are documented and accepted rather than enforced — suggesting that design investment concentrates where structural guarantees are achievable.
 - Depends on: quality-and-performance-strategies-are-aligned, correctness-profile-is-structurally-split
@@ -1332,25 +1351,18 @@ The design's enforceability boundary is not static: where the self-reinforcing s
 The architecture's structural enforcement boundary (where self-limiting correctness holds) and the testing strategy's blind spot (where temporal gaps compound) converge on the same dividing line — structural properties are both enforced by construction and verified by deterministic tests, while temporal properties are neither enforced nor testable, revealing a single coherent design boundary rather than two independent gaps.
 - Depends on: architecture-is-correctly-self-limiting, compounding-gaps-are-in-the-testing-blind-spot
 
-### forward-only-stream-processing-is-exactly-once [OUT] DERIVED
-Stream processing achieves exactly-once delivery per entity: dedup outlives finalization windows, finalized results are irrevocable, and the pipeline never backtracks — producing correct per-event semantics when event IDs are globally unique.
-- Depends on: dedup-and-finalization-are-coordinated, forward-only-design-prevents-regression-and-maximizes-progress
-- Unless: dedup-is-global-not-per-ad
-
 ### gap-containment-requires-module-independence [OUT] DERIVED
 Module isolation limits the blast radius of compounding safety and correctness gaps: because modules are standalone artifacts with module-local error boundaries, temporal-boundary risks (TOCTOU, atomicity) compound within a module but cannot cascade across modules — but only if module boundaries are truly independent with no cross-module dependencies.
 - Depends on: module-isolation-is-pedagogical-and-architectural, safety-and-correctness-gaps-compound
 - Unless: dmq-reused-by-stock-exchange
 
-### hotel-occ-prevents-overbooking [OUT] DERIVED
-Hotel reservations prevent overbooking through optimistic concurrency control with per-date version counters, rejecting concurrent conflicting bookings via version mismatch — unless a double-cancel bypasses the underflow guard and drives inventory counts negative, making the system believe more rooms are available than exist.
-- Depends on: hotel-reservation-optimistic-locking, hotel-search-availability-is-bottleneck-date
-- Unless: hotel-cancel-no-underflow-guard
+### hotel-cancel-no-underflow-guard [OUT] OBSERVATION
+`cancel()` decrements `booked` without checking for `booked >= 0`, so a double-cancel bug (if the status check were bypassed) could produce negative inventory counts.
+- Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
 
-### hotel-pricing-is-deterministic [OUT] DERIVED
-Hotel dynamic pricing deterministically stacks occupancy and seasonal multipliers on the base price — but when seasonal pricing ranges overlap, the first-match rule makes the price depend on rule insertion order rather than a stable priority scheme.
-- Depends on: hotel-pricing-stacks-multipliers
-- Unless: hotel-seasonal-pricing-first-match
+### hotel-seasonal-pricing-first-match [OUT] OBSERVATION
+If seasonal pricing date ranges overlap, the first appended rule wins due to a `break` after the first match in `_get_price`.
+- Source: entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
 
 ### irreversibility-is-the-simplicity-mechanism [STALE] DERIVED
 By eliminating reversal from the design vocabulary entirely (all deletes are additive, all state changes are forward-only, all finalization is permanent), the codebase removes an entire complexity class — undo, compensation, rollback, conflict-from-regression — achieving both correctness and simplicity through the same irreversibility constraint rather than trading one for the other.
@@ -1365,44 +1377,42 @@ Irreversibility is the shared root of two seemingly independent architectural pr
 Temporal irreversibility functions as a unifying architectural primitive in this codebase, yielding at least two properties from a single constraint: simplicity (eliminating reversal removes an entire complexity class including undo, compensation, and rollback) and ordering (forward-only processing and monotonic progression are manifestations of the same directional constraint). Because irreversibility simultaneously addresses correctness and simplicity rather than trading one for the other, forward-only design represents one of the codebase's most economical architectural commitments.
 - Depends on: irreversibility-is-the-simplicity-mechanism, forward-only-and-monotonicity-are-a-single-constraint
 
-### kv-reads-eventually-converge [OUT] DERIVED
-KV reads drive eventual consistency through read repair and sibling version detection — every get actively heals divergence — but this guarantee holds only if W+R>N quorum overlap is actually maintained.
-- Depends on: kv-read-repair-on-get, kv-node-stores-sibling-versions
-- Unless: kv-store-quorum-overlap-not-enforced
+### kv-quorum-consistency-assumed-not-enforced [OUT] DERIVED
+The KV store's consistency model depends on W+R>N quorum overlap but never validates the constraint, and hinted handoff writes bypass quorum entirely — consistency is a caller convention, not a system guarantee.
+- Depends on: kv-store-quorum-overlap-not-enforced, kv-hinted-handoff-not-counted-in-quorum
 
-### monotonicity-and-caution-prevent-state-loss [OUT] DERIVED
-Monotonic state ratchets (cursors only advance, windows never reopen) and cautious deletion (preconditions before permanent removal, two-phase trash workflows) together ensure that committed state can never be silently lost or regressed — unless wallet creation silently overwrites existing state, demonstrating that creation operations bypass both guards because the codebase protects against destructive deletion and regression but not destructive creation.
-- Depends on: state-ratchets-prevent-regression-across-domains, deletion-is-guarded-by-preconditions
-- Unless: wallet-creation-silently-overwrites
+### kv-store-quorum-overlap-not-enforced [OUT] OBSERVATION
+The key-value store's W+R>N read-write overlap guarantee is assumed by callers but never validated in code.
+- Source: entries/2026/06/05/topic-consistency-models.md
 
-### nearby-friends-visibility-scales [OUT] DERIVED
-Nearby-friends correctly enforces bidirectional visibility with staleness rejection on both notification and query paths, but `update_location` iterates all friends with haversine for each (O(friends)) rather than using the spatial grid that `get_nearby_friends` uses — meaning notification throughput degrades linearly with social graph density while query performance does not.
-- Depends on: nearby-friends-bidirectional-visibility, nearby-friends-staleness-enforced-on-both-paths
-- Unless: nearby-friends-update-location-skips-grid-filtering
+### module-autonomy-enables-per-use-case-cost-optimization [OUT] DERIVED
+Module autonomy is the structural precondition for per-use-case cost optimization: because each module independently chooses its error conventions, eviction timing, and safety boundaries, it can also independently select the optimal write-read cost allocation for its specific access pattern — autocomplete and leaderboard pay at write time for read-heavy workloads, while payment and URL shortener defer to reads for write-heavy or low-frequency paths — without cross-cutting constraints imposing a uniform cost model.
+- Depends on: module-autonomy-spans-conventions-and-safety, write-cost-allocation-matches-access-pattern
+
+### module-autonomy-spans-conventions-and-safety [OUT] DERIVED
+Module autonomy extends beyond implementation to encompass both operational conventions (error signaling varies by module, eviction timing has no codebase standard) and safety enforcement (error boundaries are module-local, access control defaults favor permissiveness), meaning there are no cross-cutting architectural constraints — each module is entirely self-governing in how it handles errors, manages resources, and enforces security.
+- Depends on: operational-conventions-are-module-scoped, safety-is-local-and-permissive
+
+### nearby-friends-update-location-skips-grid-filtering [OUT] OBSERVATION
+`update_location` iterates all friends and computes haversine for each (O(friends)), while `get_nearby_friends` uses the grid index to narrow candidates before distance checks
+- Source: entries/2026/06/05/nearby-friends-nearby_friends.md
 
 ### no-divergence-annotations [OUT] OBSERVATION
 The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK comments; deviations from plans are undocumented in the code itself.
 - Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
-### payment-double-entry-guarantees-balance-integrity [OUT] DERIVED
-The double-entry ledger invariant (every movement creates balanced debit-credit pairs) and full-ledger balance derivation guarantee that balances reflect the true sum of all operations — unless the non-atomic overdraft check allows concurrent payments to both pass validation and create conflicting ledger entries.
-- Depends on: double-entry-invariant, balance-derived-from-ledger
-- Unless: payment-overdraft-not-atomic
-
-### payment-ledger-is-fully-auditable [OUT] DERIVED
-The double-entry ledger creates balanced debit-credit pairs for every money movement and derives balances from complete ledger scans, making the payment system's financial state fully reconstructible from its transaction history — unless the integrity verification function's exclusion of transfer transactions means the audit mechanism itself has blind spots that the ledger design was supposed to prevent.
-- Depends on: double-entry-invariant, balance-derived-from-ledger
-- Unless: verify-integrity-ignores-transfers
+### payment-overdraft-not-atomic [OUT] OBSERVATION
+The overdraft check in `process_payment` reads balance and then processes without atomicity — a TOCTOU race in any concurrent context.
+- Source: entries/2026/06/05/topic-consistency-models.md
 
 ### payment-toctou-double-jeopardy [STALE] DERIVED
 The payment system has two independent TOCTOU windows in the same code path: the balance sufficiency check and the overdraft guard are both non-atomic, meaning concurrent payments can independently pass both validations.
 - Depends on: payment-balance-check-not-atomic, payment-overdraft-not-atomic
 - Stale reason: research: abandoned — The two antecedents describe the same single non-atomic balance check from different angles, not two independent TOCTOU windows. The core claim of 'two independent TOCTOU windows' is factually wrong — there is only one vulnerability described twice. Softening would require changing the claim so fundamentally (from 'two independent windows compound' to 'one window exists') that it would just duplicate either antecedent. No linking can fix this since the problem is redundant antecedents, not a missing one.
 
-### perimeter-defense-ensures-data-quality [OUT] DERIVED
-The codebase's perimeter defense model — normalize inputs once at system boundaries, then trust all internal callers — ensures internal operations work on clean, canonical data throughout the processing pipeline.
-- Depends on: normalize-once-at-system-boundary, callers-trusted-at-internal-boundaries
-- Unless: proximity-no-coordinate-validation
+### proximity-no-coordinate-validation [OUT] OBSERVATION
+Neither GeohashIndex nor Quadtree validates input coordinates; latitude outside [-90, 90] silently produces garbage geohashes, and Quadtree.insert silently returns False for out-of-bounds points
+- Source: entries/2026/06/05/proximity-service-proximity_service.md
 
 ### read-burden-is-managed-through-selective-write-shifting [OUT] DERIVED
 The read path's growing cost and risk as system complexity increases is managed by selectively shifting work to writes for high-frequency access paths — eager cache rebuilds, write-time index maintenance — concentrating write-time optimization exactly where the read-heavy default model creates the most pressure rather than applying a blanket strategy.
@@ -1420,20 +1430,17 @@ The codebase's core contract — irrevocable writes with reconciling reads — p
 Correctness weaknesses cluster at temporal boundaries (TOCTOU, non-atomic checks) while safety enforcement is local and permissive (per-module error contracts, default-allow access control) — the most temporally sensitive code paths operate under the least standardized safety nets, creating compounding rather than independent risk.
 - Depends on: safety-is-local-and-permissive, correctness-gaps-cluster-at-temporal-boundaries
 
-### state-is-monotonically-accumulative [OUT] DERIVED
-State only accumulates across the full codebase: stream processing uses doubly-forward-only ratchets preventing regression (windows never reopen, dedup outlives finalization), and deletions across all system types append metadata rather than destroying data (tombstones, delete markers, soft-delete flags) — the system's information content is monotonically non-decreasing.
-- Depends on: stream-processing-correctness-is-doubly-forward-only, deletion-is-append-only-across-all-contexts
-- Unless: wallet-creation-silently-overwrites
+### safety-is-local-and-permissive [OUT] DERIVED
+Safety enforcement is both locally scoped (error contracts vary by module with no cross-cutting convention) and default-permissive (access control favors availability over restriction), producing a system where each module is individually lenient and no cross-cutting safety net catches errors that escape module boundaries.
+- Depends on: error-boundaries-are-module-local, default-to-permissive-across-security-dimensions
 
-### state-reversal-is-uniformly-guarded [OUT] DERIVED
-The codebase guards state reversal through layered mechanisms: soft delete serves dual purposes (preserving invariants locally, preventing resurrection distributedly), and permanent deletion requires preconditions (empty buckets, trashed state) — unless non-deletion reversals like hotel cancellation lack equivalent underflow guards, showing the reversal-safety pattern is incomplete.
-- Depends on: soft-delete-is-dual-purpose, deletion-is-guarded-by-preconditions
-- Unless: hotel-cancel-no-underflow-guard
+### security-permissiveness-spans-policy-and-data-boundaries [OUT] DERIVED
+Security permissiveness is systematic across two independent dimensions: policy enforcement (default-allow access control, trusted internal callers, no input validation) and data isolation (BCC recipients stored alongside visible recipients, presigned URL secrets shared across instances), creating a consistent availability-over-security bias that compounds — permissive policies let requests through, and weak data isolation lets those requests see more than intended.
+- Depends on: data-isolation-gaps-parallel-access-control-gaps, default-to-permissive-across-security-dimensions
 
-### stock-exchange-matching-produces-valid-trades [OUT] DERIVED
-The stock exchange correctly implements price-time priority matching (best price first, FIFO within price, execute at resting price), producing valid trades — but only when callers provide valid order fields, since the engine performs no input validation.
-- Depends on: stock-exchange-price-time-priority
-- Unless: stock-exchange-no-input-validation
+### stock-exchange-no-input-validation [OUT] OBSERVATION
+The matching engine performs no validation on order fields (quantity, price, side); callers are trusted to provide valid inputs.
+- Source: entries/2026/06/05/stock-exchange-solution.md
 
 ### temporal-check-gaps-are-systematic-risk [OUT] DERIVED
 The gap between checking a condition and acting on it is a recurring design concern: the payment system has two independent TOCTOU windows in the same code path, while the notification system defensively re-checks rate limits at both send and process time — demonstrating that temporal check gaps require explicit architectural mitigation rather than assuming atomicity.
@@ -1451,19 +1458,17 @@ The codebase's deterministic test infrastructure validates structural correctnes
 The codebase's deterministic test infrastructure validates exactly the properties that structural construction already guarantees (immutability, synchronized structures, state ratchets), while the performance strategy (write-time caching, stdlib-only hermetic modules) ensures these constructions remain testable — creating a closed loop where correctness, testability, and performance are mutually reinforcing but collectively unable to reach temporal properties outside the loop.
 - Depends on: tested-properties-are-already-safe-by-construction, quality-and-performance-strategies-are-aligned
 
-### time-injection-is-a-complete-testing-strategy [OUT] DERIVED
-Time injection enables fully deterministic testing by making wall-clock time an explicit parameter across notification, rate limiting, and crawling — unless the inconsistent fallback defaults (rate limiter falls back to `time.time()` while chat defaults to `0.0`) mean that tests omitting the time parameter exercise fundamentally different behavior depending on which module's convention they inherit.
-- Depends on: time-injection-enables-deterministic-testing
-- Unless: current-time-fallback-inconsistent
-
 ### verification-gap-is-precisely-at-the-write-read-boundary [OUT] DERIVED
 The architecture's verification coverage is inversely correlated with responsibility: write-path properties generate their own verification through structural construction that the test infrastructure validates, while the read path — bearing maximum responsibility for deferred consistency, lazy computation, and active repair — sits precisely in the testing blind spot, creating an exact correspondence between verification absence and correctness burden.
 - Depends on: write-available-architecture-is-self-verifying, critical-path-is-least-verified
 
-### wallet-transfers-are-safe-under-concurrency [OUT] DERIVED
-Wallet concurrent transfers are deadlock-free via sorted lock acquisition with frozen-check inside the lock — but this safety guarantee assumes stable wallet identity, which silent creation-overwrite could violate mid-transfer.
-- Depends on: wallet-deadlock-free-concurrent-transfers
-- Unless: wallet-creation-silently-overwrites
+### verify-integrity-ignores-transfers [OUT] OBSERVATION
+`verify_integrity` sums only `deposit` and `withdrawal` amounts against total balances, because `transfer_in`/`transfer_out` pairs are zero-sum and cancel out.
+- Source: entries/2026/06/05/digital-wallet-wallet.md
+
+### wallet-creation-silently-overwrites [OUT] OBSERVATION
+`create_wallet` does not check for an existing `wallet_id`; calling it twice with the same ID replaces the wallet and loses the original balance.
+- Source: entries/2026/06/05/digital-wallet-wallet.md
 
 ### write-available-architecture-is-self-verifying [OUT] DERIVED
 The write-available, read-correct architecture generates its own verification: the structural properties that emerge from write-availability and read-correctness (immutability, synchronization, state ratchets) are exactly the properties that the closed testing-construction loop validates, making the architecture self-verifying within its structural domain.
@@ -1472,8 +1477,3 @@ The write-available, read-correct architecture generates its own verification: t
 ### write-shifting-extends-the-irreversibility-boundary [OUT] DERIVED
 Write-shifting works as the architecture's self-improvement mechanism specifically because it moves computation from the reconciling read path (where guarantees are temporal and hard to enforce) to the irrevocable write path (where guarantees are structural and self-enforcing), extending the irreversibility-based simplicity and enforceability boundary to cover properties that would otherwise require runtime validation on reads.
 - Depends on: enforceability-boundary-adapts-through-write-shifting, irreversibility-is-the-simplicity-mechanism
-
-### writes-always-produce-valid-forward-progress [OUT] DERIVED
-The write path both produces valid state (structural discipline prevents corruption, lightweight routing reaches all parties) and advances system progress forward-only (no-regression ratchets, maximum-progress pipelines) — unless cancel operations can underflow inventory below zero, enabling a write to produce invalid state and regress past a logical lower bound.
-- Depends on: write-path-is-self-consistent-by-design, forward-only-design-prevents-regression-and-maximizes-progress
-- Unless: hotel-cancel-no-underflow-guard
