@@ -1,6 +1,6 @@
 # Proposed Beliefs
 
-Edit each entry: change `[ACCEPT/REJECT]` to `[ACCEPT]` or `[REJECT]`.
+Edit each entry: change `[ACCEPT]` to `[ACCEPT]` or `[ACCEPT]`.
 Then run: `code-expert accept-beliefs`
 
 ---
@@ -544,11 +544,11 @@ FixedWindowCounterLimiter replaces its entire counter dict with just the current
 SlidingWindowCounterLimiter approximates a sliding window by keeping current and previous fixed-window counters, weighting the previous window's count by `(1 - elapsed_fraction)` as time progresses
 - Source: entries/2026/06/05/rate-limiter-rate_limiter.md
 
-### [REJECT] verify-py-is-empty
+### [ACCEPT] verify-py-is-empty
 Too ephemeral — an empty file is not a codebase invariant; it will either get filled in or deleted, and a belief about it adds no useful guidance
 - Source: entries/2026/06/05/rate-limiter-verify.md
 
-### [REJECT] verify-py-is-unique
+### [ACCEPT] verify-py-is-unique
 Trivial structural observation that provides no actionable guidance and will become stale as soon as another module adds a verify.py
 - Source: entries/2026/06/05/rate-limiter-verify.md
 
@@ -593,15 +593,15 @@ All implementations simulate distributed behavior in-process with no real networ
 Multiple modules use identical `run_tests.py` wrapper scripts that derive the test file path via `__file__.replace("run_tests.py", ...)` and invoke `pytest.main()` programmatically.
 - Source: entries/2026/06/05/search-autocomplete-run_tests.md
 
-### [REJECT] run-tests-relies-on-own-filename
+### [ACCEPT] run-tests-relies-on-own-filename
 Too narrow — this is an implementation detail of a utility script, not an architectural invariant a developer needs to know to work in the codebase effectively.
 - Source: entries/2026/06/05/search-autocomplete-run_tests.md
 
-### [REJECT] run-tests-propagates-exit-code
+### [ACCEPT] run-tests-propagates-exit-code
 Trivial — `sys.exit(pytest.main(...))` is standard boilerplate, not a codebase-specific insight.
 - Source: entries/2026/06/05/search-autocomplete-run_tests.md
 
-### [REJECT] run-tests-has-no-error-handling
+### [ACCEPT] run-tests-has-no-error-handling
 Not actionable — describing the absence of error handling in a 6-line wrapper script is trivia, not an invariant.
 - Source: entries/2026/06/05/search-autocomplete-run_tests.md
 
@@ -766,7 +766,7 @@ The rate limiter, payment system, and chat system contain zero TODO/FIXME/HACK c
 Rate limiter defaults `current_time` to `time.time()` while chat system defaults to `0.0`, creating different behavior when the parameter is omitted.
 - Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
-### [REJECT] payment-balance-is-O-n
+### [ACCEPT] payment-balance-is-O-n
 Duplicate of `payment-balance-never-cached` which captures the same claim more precisely.
 - Source: entries/2026/06/05/topic-plan-to-implementation-fidelity.md
 
@@ -814,7 +814,7 @@ Rate limiting uses a per-creator sliding window of 60 seconds, pruned eagerly on
 The hash strategy's collision resolution loop has no max-attempts guard — it will loop indefinitely if the keyspace is near-saturated.
 - Source: entries/2026/06/05/url-shortener-url_shortener.md
 
-### [REJECT] url-shortener-no-dedup-counter
+### [ACCEPT] url-shortener-no-dedup-counter
 Too narrow — this is implied by the counter strategy description in `url-shortener-two-strategies` (monotonic counter produces distinct codes by definition).
 - Source: entries/2026/06/05/url-shortener-url_shortener.md
 
@@ -851,4 +851,1271 @@ Deduplication is two-tiered: the Bloom filter rejects exact-URL revisits first (
 `BloomFilter.add()` internally calls `might_contain()` and then compensates for its side effect on `_negative_check_count` by decrementing — if `might_contain`'s bookkeeping logic changes, `add` breaks silently.
 - Source: entries/2026/06/05/web-crawler-web_crawler.md
 
+
+
+---
+
+**Generated:** 2026-11-11
+**Source:** 37 entries from /home/forge/workspace/entries/
+**Model:** openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-window-start-formula
+`_window_start` computes `math.floor(ts / size) * size` to snap a timestamp to its tumbling window boundary.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-default-window-size-60
+`ClickAggregator` defaults `window_size_seconds` to 60.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-default-allowed-lateness-300
+`ClickAggregator` defaults `allowed_lateness_seconds` to 300.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-process-event-idempotent-per-event-id
+`process_event` is idempotent per `event_id`; a repeated `event_id` is rejected as deduped.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-advance-watermark-monotonic
+`advance_watermark` is a no-op when the new timestamp is not strictly greater than the current watermark.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-late-acceptance-condition
+A late event is accepted only when `watermark - window.end <= allowed_lateness`.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-two-level-window-dict
+Windows are looked up via `windows[ad_id][window_start]`, giving O(1) access to any window.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-uses-stdlib-only
+`click_aggregator.py` imports only `math`, `dataclasses`, and `enum` from the standard library.
+- Source: /home/forge/workspace/entries/2026/06/05/ad-click-event-aggregation-click_aggregator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-typing-indicators-expire-5s
+Typing indicators auto-expire after 5 seconds, and `get_typing_users` prunes stale entries.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-group-membership-checked-on-send
+`send_group_message` raises `ValueError` if the sender is not a member of the group.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-edit-delete-permission-enforced
+`edit_message` and `delete_message` raise `PermissionError` if `user_id` differs from the message's `sender_id`.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-lamport-clock-increments-per-message-send
+Every `send_message` and `send_group_message` call increments the global `lamport_clock`.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-conversation-sequence-dense-monotonic
+Sequence numbers within a conversation are dense and monotonic, assigned by the `next_sequence` counter.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-read-cursors-sequence-based
+`read_cursors` store `last_read_sequence` per `(user_id, conv_id)`, and `mark_read` resolves a message ID to a sequence number before updating the cursor.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-conversation-lazy-creation
+DM conversations are created lazily on the first `send_message` call rather than through an explicit create-DM step.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-group-membership-authoritative
+`GroupInfo.members` is the authoritative membership set for permission checks, while `Conversation.participants` mirrors it.
+- Source: /home/forge/workspace/entries/2026/06/05/chat-system-chat_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-sorted-array-bisect-lookup
+The ring uses a sorted list with `bisect_left` for O(log n) lookups and `bisect.insort` for O(n) insertion.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-get-node-wraps-to-first-position
+`get_node` wraps to index 0 when the key hash is past the largest ring position, enforcing circularity.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-vnodes-default-150
+`ConsistentHashRing` defaults `num_virtual_nodes` to 150.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-get-nodes-caps-at-physical-node-count
+`get_nodes` returns at most `min(n, num_physical_nodes)` nodes by capping `n` at the total physical node count.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-add-node-skips-collisions
+`add_node` skips ring positions that already exist, so a node may end up with fewer than `num_virtual_nodes` positions if collisions occur.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-remove-node-snapshots-affected-keys
+`remove_node` identifies keys owned by the departing node before removing its positions, then re-resolves those keys to their new owners.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-get-node-empty-ring-raises-valueerror
+`get_node` and `get_nodes` raise `ValueError("No nodes in the ring")` when called on an empty ring.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ch-custom-hash-function-injection
+`ConsistentHashRing` accepts an optional custom `hash_fn` in its constructor.
+- Source: /home/forge/workspace/entries/2026/06/05/consistent-hashing-consistent_hashing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-targeted-25-implementations
+The knowledge base targeted `/Users/ben/git/sdi-implementations`, which contains 25 system design interview Python implementations.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-created-31-entries
+The session created 31 entries in the knowledge base.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-extracted-199-premise-beliefs
+Running `propose-beliefs` extracted 199 premise beliefs from the entries.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-derived-160-beliefs-in-12-rounds
+Running `derive --exhaust` for 12 rounds produced 160 derived beliefs with maximum depth 9.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-filed-15-blocker-issues
+The session filed 15 blocker beliefs as GitHub issues #16 through #30 in `benthomasson/sdi-implementations`, labeled `reasons-gate`.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-applied-13-code-fixes-across-10-modules
+The session applied 13 code fixes across 10 modules.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-retracted-15-blocker-premises
+All 15 blocker premise beliefs were retracted after the corresponding code fixes were applied.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-kb-final-tests-152-passing
+The final state reports 152 of 152 tests passing across 10 modules.
+- Source: /home/forge/workspace/entries/2026/06/05/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-permission-enum-order
+`Permission` is a three-tier enum ordered `READ < WRITE < ADMIN`, with a `PERMISSION_LEVEL` integer map used for comparison.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-default-quota-1gb
+`FileStore` defaults `default_quota_bytes` to 1 GB per user.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-chunked-upload-complete-checks-all-chunks
+`complete_chunked_upload` checks `range(total_chunks)` and raises an error if any chunk index is missing.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-soft-delete-retention-30-days
+Trash cleanup permanently deletes files after a default of 30 days, computed as `auto_days * 86400` seconds.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-file-folder-discriminated-by-is-folder
+`FileMetadata` represents both files and folders, discriminated by the `is_folder` field.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-checksums-sha256
+SHA-256 checksums are computed on upload and update and stored in both `FileMetadata.checksum` and `FileVersion.content_hash`.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-conflict-strategies-latest-wins-keep-both
+`resolve_conflict` supports two strategies: `latest_wins` and `keep_both`.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] gdrive-search-linear-scan-substring
+`search` performs a linear scan over all files, matching substrings in file names with an optional MIME type filter, and returns only files the user can read.
+- Source: /home/forge/workspace/entries/2026/06/05/design-google-drive-design_google_drive.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-video-status-transitions
+A Video's lifecycle status transitions are UPLOADING -> PROCESSING -> READY or FAILED.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-dag-cycle-detection-before-execution
+ProcessingDAG detects cycles before execution and raises ValueError if a cycle exists.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-format-validation-limits
+Video validation rejects formats not in mp4, avi, mkv, mov, webm and durations exceeding 43200 seconds.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-quality-selection-highest-fitting
+StreamingManifest.select_quality returns the highest-bitrate variant whose bandwidth fits, or None if no variant fits.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-view-counter-combines-counting-strategies
+ViewCounter combines exact count, Morris approximate count, HyperLogLog unique viewers, and watch percentage tracking per video.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] youtube-content-recommendation-jaccard
+Content-based recommendation uses Jaccard similarity on tag sets.
+- Source: /home/forge/workspace/entries/2026/06/05/design-youtube-design_youtube.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] audit-trail-covers-admin-and-financial-events
+The audit trail records both money movements and administrative actions, making it a superset of the transaction log.
+- Source: /home/forge/workspace/entries/2026/06/05/digital-wallet-wallet.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] wallet-transfer-timestamps-synchronized
+In a transfer, the debit and credit transactions share the same time.time() timestamp.
+- Source: /home/forge/workspace/entries/2026/06/05/digital-wallet-wallet.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] wallet-amounts-rounded-to-two-decimals
+Every wallet amount is rounded to two decimal places before use, and balances are rounded after arithmetic.
+- Source: /home/forge/workspace/entries/2026/06/05/digital-wallet-wallet.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] wallet-daily-limit-check-inside-lock
+The daily spending limit check occurs inside the wallet locks after other preconditions, so a DailyLimitExceeded failure causes no partial mutation.
+- Source: /home/forge/workspace/entries/2026/06/05/digital-wallet-wallet.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] wallet-custom-exceptions-flat-hierarchy
+The wallet service defines seven custom exceptions, all extending Exception directly.
+- Source: /home/forge/workspace/entries/2026/06/05/digital-wallet-wallet.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-service-seven-internal-stores
+EmailService maintains seven internal stores: accounts, emails, user_folders, read_status, threads, msg_to_thread, and drafts.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-list-folder-integer-cursor-pagination
+list_folder returns emails in reverse chronological order using integer-based cursor pagination.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-send-auto-marks-sender-read
+send() adds the sender's copy message ID to the sender's read_status immediately.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-search-linear-scan-no-index
+search() performs a linear scan with text matching on subject/body plus optional filters and uses no index.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-draft-not-found-raises-valueerror
+update_draft and send_draft raise ValueError('Draft not found') when the draft ID does not exist.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] email-send-generates-uuid-and-timestamp
+send() always generates a UUID and UTC timestamp for every sent message before storage.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-email-service-email_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-publish-routing-key-hash-or-round-robin
+publish routes keyed messages by key hash and null-key messages by a per-topic round-robin counter.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-next-offset-formula
+Partition.next_offset is always base_offset + len(messages).
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-delete-topic-cascades-consumer-groups
+delete_topic removes all consumer groups bound to that topic.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-seek-sentinels
+seek supports sentinel offsets: -1 means beginning and -2 means end.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-acknowledge-dlq-after-three-failures
+acknowledge increments per-message failure counts and routes a message to the DLQ after max_failures, default 3.
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] dmq-exactly-once-uses-seen-message-ids
+Exactly-once delivery deduplicates via an unbounded seen_message_ids set; already-seen messages are skipped during poll().
+- Source: /home/forge/workspace/entries/2026/06/05/distributed-message-queue-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] maps-turn-instruction-30-degree-threshold
+_turn_instruction maps bearing change to 'Continue straight' within +/-30 degrees, 'Turn right' for >30 degrees, and 'Turn left' for <-30 degrees.
+- Source: /home/forge/workspace/entries/2026/06/05/google-maps-map_routing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] maps-route-rounds-to-10-decimals
+_build_route rounds aggregate distance and duration totals to 10 decimal places.
+- Source: /home/forge/workspace/entries/2026/06/05/google-maps-map_routing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] maps-tile-flooring-default-size
+get_tile uses axis-aligned rectangular tiles defined by flooring lat/lon to tile_size increments, with default tile_size 0.01.
+- Source: /home/forge/workspace/entries/2026/06/05/google-maps-map_routing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] maps-geocode-lowercased-last-wins
+Geocode name lookups are case-insensitive because keys are lowercased; the last node added with a given name wins.
+- Source: /home/forge/workspace/entries/2026/06/05/google-maps-map_routing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] maps-eta-uses-time-optimized-route
+eta() finds the time-optimized route and returns its duration in minutes.
+- Source: /home/forge/workspace/entries/2026/06/05/google-maps-map_routing.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-availability-error-includes-full-date
+reserve() raises AvailabilityError when any date in the requested range has zero rooms left, and the exception includes the specific full date.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-cancel-refund-tiers
+cancel() computes refund as 100% if cancel_time is 24h or more before check-in, 50% if 0–24h before check-in, and 0% after check-in.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-occupancy-surcharge-tiers
+_get_price applies occupancy surcharges of 1.1x at 50%+ occupancy, 1.3x at 70%+, and 1.5x at 90%+.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-inventory-lazy-init
+_get_inventory lazily creates {'booked': 0, 'version': 0} on first access for any (hotel, type, date) tuple.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-version-monotonic-on-book-and-cancel
+Every reserve or cancel increments the version counter for each affected date; versions never decrease.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-no-rollback-mid-commit
+The commit loop has no transaction boundary; if _get_price or uuid.uuid4() raised mid-commit, inventory could be left inconsistent because earlier date updates would not roll back.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] hotel-cancellation-terminal
+A cancelled reservation cannot be re-confirmed, and attempting to cancel it again raises ValueError.
+- Source: /home/forge/workspace/entries/2026/06/05/hotel-reservation-system-hotel_reservation.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-hinted-handoff-buffers-and-replays
+HintedHandoff buffers writes destined for unavailable nodes and deliver_hints replays them when the node recovers.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-gossip-failure-thresholds
+run_gossip_round marks nodes SUSPECT when heartbeat age exceeds suspect_timeout and DOWN when it exceeds down_timeout, gossiping to up to 2 random peers per alive node.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-vector-clock-prune-keeps-highest-counters
+VectorClock.prune(max_entries) caps clock size by keeping only the highest-counter entries, trading precision for bounded size.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-anti-entropy-all-pairs-alive-nodes
+run_anti_entropy performs all-pairs Merkle tree comparison among alive nodes and bidirectionally syncs versions for differing keys.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-get-filters-tombstones
+get filters out is_tombstone=True versions before returning, so a deleted key returns an empty list.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-get-returns-siblings-list
+get returns a list of (value, vector_clock) tuples; multiple entries represent concurrent sibling versions the client must resolve.
+- Source: /home/forge/workspace/entries/2026/06/05/key-value-store-key_value_store.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-ingest-bisect-o-n-insertion
+ingest() uses bisect.bisect_right for O(log n) search but list.insert makes insertion O(n) due to shifting.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-aggregate-fallback-avg
+_aggregate silently falls back to avg for unrecognized aggregation names.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-percentile-linear-interpolation
+Percentile aggregation computes values via linear interpolation between floor and ceil indices.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-alert-rule-rate-change
+AlertRule supports rate_change conditions as percentage change over a window in addition to gt/lt/gte/lte threshold comparisons.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-empty-condition-suppressed
+_check_condition returns (False, 0) for empty data or unrecognized conditions, silently suppressing evaluation.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-retention-default-30-days
+apply_retention drops data older than retention_seconds, which defaults to 30 days, and removes empty series from _data.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-query-supports-group-by-tags
+query() supports group_by for tag-based grouping in addition to time-range slicing and bucketed aggregation.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] metrics-alert-callbacks-observer
+on_alert registers callbacks that evaluate_alerts invokes on alert state transitions.
+- Source: /home/forge/workspace/entries/2026/06/05/metrics-monitoring-and-alerting-metrics.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-haversine-earth-radius-6371
+_haversine returns great-circle distance in kilometers using Earth radius 6371 km.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-query-expands-3x3-neighborhood
+get_nearby_friends expands the user's grid cell to the 3×3 Moore neighborhood before intersecting candidates with the friend set.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-update-fires-subscriber-callbacks
+update_location fires registered subscriber callbacks as callback(updater_user_id, distance_km) for each friend found within threshold.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-location-ttl-default-600
+NearbyFriendsService defaults location_ttl_seconds to 600 seconds and distance_threshold_km to 5.0.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-sharing-defaults-true
+add_user sets _sharing[uid] = True, so location sharing defaults to enabled.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-results-sorted-by-distance
+get_nearby_friends returns result dicts sorted by distance ascending; each dict includes name, coordinates, distance, and timestamp.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-grid-updated-on-cell-change
+update_location updates the grid index only when a user's computed cell changes, moving the user between old and new cell sets.
+- Source: /home/forge/workspace/entries/2026/06/05/nearby-friends-nearby_friends.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-user-posts-sorted-per-call
+PostStore.get_user_posts sorts the author's posts on every call rather than maintaining a pre-sorted timeline index.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-like-post-idempotent
+like_post checks user_id in post.liked_by and returns False on duplicate likes without incrementing likes_count.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-relevance-score-formula
+Relevance ranking scores a feed item as timestamp + log(1 + likes_count + 2*comments_count) * 50.0.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-cursor-filter-before-ranking
+get_feed applies the timestamp cursor filter before ranking, so cursor pagination works with both chronological and relevance modes.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-follow-backfills-cache
+follow backfills the new follower's feed cache with the followee's existing posts for push/hybrid strategies when the followee is not a celebrity.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-social-graph-returns-copies
+SocialGraph.get_followers and get_following return copies of their sets to prevent external mutation.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-comment-increments-count
+add_comment raises ValueError for a missing post and otherwise increments the parent post's comments_count.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-hybrid-deduplicates-push-and-pull
+Hybrid feed generation combines pushed post IDs with read-time pulled celebrity posts and deduplicates before ranking.
+- Source: /home/forge/workspace/entries/2026/06/05/news-feed-system-news_feed.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] notif-missing-channel-marks-failed
+If a notification's channel is not configured in `self.channels`, the notification is marked `FAILED` without raising an exception.
+- Source: /home/forge/workspace/entries/2026/06/05/notification-system-notification_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] notif-optout-marked-rate-limited
+Opt-out notifications are marked `RATE_LIMITED` and stored, but are not counted in `_stats["total_rate_limited"]`.
+- Source: /home/forge/workspace/entries/2026/06/05/notification-system-notification_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] notif-status-transition-forward-only-with-queued-retry
+Notification status transitions are forward-only (PENDING → QUEUED → SENDING → DELIVERED/FAILED), except `QUEUED` can reappear after `SENDING` on retry.
+- Source: /home/forge/workspace/entries/2026/06/05/notification-system-notification_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-refund-only-completed-or-refunded
+Refunds are only allowed for payments in `COMPLETED` or `REFUNDED` status.
+- Source: /home/forge/workspace/entries/2026/06/05/payment-system-payment_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-refund-capped-at-original-amount
+Cumulative refunded amount cannot exceed the original payment amount; `refunded_amount + refund_amount` must not exceed `payment.amount`.
+- Source: /home/forge/workspace/entries/2026/06/05/payment-system-payment_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-currency-must-match-payer-payee
+Payer and payee accounts must both be denominated in the payment's currency for a payment to succeed.
+- Source: /home/forge/workspace/entries/2026/06/05/payment-system-payment_system.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] proximity-haversine-earth-radius-6371
+The haversine distance function uses Earth radius 6371 km.
+- Source: /home/forge/workspace/entries/2026/06/05/proximity-service-proximity_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] geohash-index-dual-map-storage
+GeohashIndex stores POIs in two dictionaries: `_pois` (id → (POI, geohash)) for O(1) removal and `_index` (geohash → {id: POI}) for spatial lookup.
+- Source: /home/forge/workspace/entries/2026/06/05/proximity-service-proximity_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] quadtree-subdivision-threshold-max-points-plus-one
+A quadtree leaf subdivides only when its point count exceeds `max_points` (strictly greater), so it can temporarily hold `max_points + 1` points.
+- Source: /home/forge/workspace/entries/2026/06/05/proximity-service-proximity_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] quadtree-children-order-nw-ne-sw-se
+Quadtree children are ordered NW, NE, SW, SE.
+- Source: /home/forge/workspace/entries/2026/06/05/proximity-service-proximity_service.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] token-bucket-refill-capped-at-bucket-size
+TokenBucketLimiter refills tokens at `refill_rate` tokens/second, capped at `bucket_size`.
+- Source: /home/forge/workspace/entries/2026/06/05/rate-limiter-rate_limiter.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sliding-window-log-stores-timestamps
+SlidingWindowLogLimiter stores every request timestamp in a deque per client.
+- Source: /home/forge/workspace/entries/2026/06/05/rate-limiter-rate_limiter.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] http-middleware-returns-200-429
+HTTPRateLimitMiddleware returns 200 with X-RateLimit-Remaining on success, and 429 with X-RateLimit-Remaining and X-RateLimit-Retry-After on rejection.
+- Source: /home/forge/workspace/entries/2026/06/05/rate-limiter-rate_limiter.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] verify-py-is-empty
+`rate-limiter/verify.py` contains no code; it is an empty file with no classes, functions, or imports.
+- Source: /home/forge/workspace/entries/2026/06/05/rate-limiter-verify.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] verify-py-is-unique
+No other module in sdi-implementations has a `verify.py`; this is specific to the rate-limiter component.
+- Source: /home/forge/workspace/entries/2026/06/05/rate-limiter-verify.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-update-score-sets-not-increments
+`update_score` sets a player's score to the supplied value (removing any previous entry from `_entries` first), while `increment_score` is an additive wrapper around it.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-history-bounded-deque
+Per-player score history is stored in a `defaultdict[str, deque]` bounded by `history_size` (default 10) using `deque(maxlen=...)`, so old entries are evicted automatically.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-percentile-formula
+`percentile(player_id)` computes `(total - rank) / total * 100`, so a rank-1 player in a 100-player board receives 99.0 rather than 100.0.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-around-me-neighborhood
+`around_me(player_id, count)` returns `count` players above and below the player plus the player, producing the neighborhood view used in gaming UIs.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-remove-player-clears-three-structures
+`remove_player` removes the player from `_entries`, `_players`, and `_history`, returning `False` if the player did not exist.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-no-input-validation
+`Leaderboard` performs no input validation: negative scores, empty player IDs, and nonsensical score ranges are not rejected.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] leaderboard-range-by-score-negated-irange
+`range_by_score` uses `SortedList.irange()` with negated bounds to find players in a score window; if `min_score > max_score` it returns an empty list silently.
+- Source: /home/forge/workspace/entries/2026/06/05/realtime-gaming-leaderboard-leaderboard.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-bucket-name-and-key-length-validation
+`create_bucket` enforces the bucket-name regex `^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`, and `put_object` enforces object keys of at most 1024 characters.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-etag-is-md5-of-data
+Each `ObjectVersion` stores an `etag` computed as the MD5 hex digest of its `data`, matching real S3's ETag behavior for non-multipart objects.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-multipart-requires-at-least-one-part
+`complete_multipart` raises `ValueError` if the multipart upload has no parts.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-presigned-token-expires
+`access_presigned` checks the token's `expires_at` against current time and rejects expired presigned tokens.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-presigned-tokens-not-cross-instance
+Although `_SECRET` is class-level, the `_presigned` token store is instance-scoped, so a token generated by one `ObjectStorage` instance is not actually valid on another instance.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-list-objects-folds-common-prefixes
+`list_objects` collects keys matching the prefix, sorts them, folds keys containing the delimiter after the prefix into common prefixes, and uses the last returned key as the `continuation_token` for pagination.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-policy-evaluation-order
+`check_bucket_policy` iterates policies in insertion order and returns on the first match; DENY wins over ALLOW only when the DENY policy matches first.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-uses-builtin-exceptions
+The S3 simulation uses built-in exceptions: missing buckets or upload IDs raise `KeyError`, invalid inputs raise `ValueError`, and there are no custom exception types.
+- Source: /home/forge/workspace/entries/2026/06/05/s3-object-storage-s3_object_storage.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-module-map-has-six-categories
+The scan groups the repository's implementations into six categories: Infrastructure Primitives, Application Systems, Search & Discovery, Storage & Media, Data Processing & Monitoring, and Gaming.
+- Source: /home/forge/workspace/entries/2026/06/05/scan-sdi-implementations.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-includes-realtime-gaming-leaderboard-module
+The repository includes a `realtime-gaming-leaderboard` module for real-time gaming leaderboard design.
+- Source: /home/forge/workspace/entries/2026/06/05/scan-sdi-implementations.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-includes-s3-object-storage-module
+The repository includes an `s3-object-storage` module for object storage and multipart upload design.
+- Source: /home/forge/workspace/entries/2026/06/05/scan-sdi-implementations.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sdi-includes-distributed-message-queue-module
+The repository includes a `distributed-message-queue` module covering pub/sub, ordering, and delivery guarantees.
+- Source: /home/forge/workspace/entries/2026/06/05/scan-sdi-implementations.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-relies-on-own-filename
+The path derivation uses `__file__.replace('run_tests.py', 'test_search_autocomplete.py')`, so renaming the script without updating the replacement string breaks test discovery.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-propagates-exit-code
+`sys.exit(pytest.main(...))` makes the wrapper script's process exit code match pytest's integer result, making it CI-compatible.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-has-no-error-handling
+The script catches no exceptions and adds no fallback behavior; all error reporting is delegated to pytest.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-invokes-pytest-in-process
+The script calls `pytest.main([...])` in-process rather than spawning a pytest subprocess.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-verbose-flag
+The wrapper invokes pytest with the `-v` flag for verbose output.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] run-tests-is-leaf-entry-point
+`run_tests.py` is a leaf entry-point script that is imported by nothing.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-trie-node-top-k-cache
+Each `TrieNode` stores a precomputed `top_k_cache` of the top-k completions reachable from that node, turning prefix lookup after traversal into O(1) cache access.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-insert-sets-exact-frequency
+`AutocompleteTrie.insert` sets a query to an exact frequency, while `increment` adds to an existing frequency or inserts at the given amount if the query is new.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-query-collector-batches-by-lowercase
+`QueryCollector.flush` groups buffered records by lowercased query, sums counts, takes the maximum timestamp, and calls `trie.increment` once per unique query.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-record-query-flushes-immediately
+`AutocompleteService.record_query` buffers a query and then immediately flushes, so it is effectively unbatched in this implementation.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-deserialize-rebuilds-caches
+`AutocompleteTrie.deserialize` rebuilds all top-k caches bottom-up via `_rebuild_all` after loading serialized state.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-cache-sort-order
+Top-k caches are sorted by descending frequency and then lexicographically by query for ties.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-negative-decay-hours-clamped
+`search_prefix` clamps negative decay hours (future timestamps) to 0 before applying exponential decay.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] autocomplete-no-positive-value-validation
+`AutocompleteTrie` does not validate that `frequency` or `amount` is positive; negative values would silently corrupt stored state.
+- Source: /home/forge/workspace/entries/2026/06/05/search-autocomplete-search_autocomplete.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] order-remaining-is-computed-property
+Order.remaining is a computed property equal to quantity - filled_quantity, not a stored field.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] orderbook-get-book-depth-aggregates-l2
+OrderBook.get_book_depth(levels) returns L2 market data by aggregating quantity per price level for the top N levels on each side.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] exchange-lazily-creates-orderbooks-per-symbol
+Exchange lazily creates OrderBook instances on first access to each symbol and routes orders to the per-symbol book.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] cancel-order-returns-false-for-terminal
+OrderBook.cancel_order returns False for orders that are already filled, already cancelled, or nonexistent rather than raising an exception.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] orderbook-remove-swallows-valueerror
+OrderBook._remove_from_book swallows ValueError if the order is not found in the price-level deque.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] trade-create-generates-id-and-timestamp
+Trade.create is the intended constructor that auto-generates a sequential trade ID and timestamp.
+- Source: /home/forge/workspace/entries/2026/06/05/stock-exchange-solution.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-ledger-integrity-tolerance-0-001
+PaymentSystem.verify_ledger_integrity checks that total debits equal total credits within a floating-point tolerance of 0.001.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-vector-clock-concurrent-means-no-dominance
+In the key-value store, vector-clock concurrent_with means neither clock dominates, indicating a true conflict.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] kv-read-repair-pushes-missing-versions
+The key-value store performs read repair by opportunistically pushing missing versions to stale replicas during reads.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] message-queue-delivery-mode-commit-timing
+The message queue implements at-most-once by auto-committing in poll() before processing, at-least-once by explicit commit() after processing, and exactly-once by adding consumer-side seen_message_ids deduplication.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-pull-fanout-assembles-via-heap-merge
+The news feed fan-out-on-read strategy assembles feeds at read time via heap merge of followed users' timelines.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] google-drive-conflict-requires-unseen-version-from-different-device
+Google Drive conflict detection requires a different device to have written a version that the requesting device has not seen.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] google-drive-conflict-strategies-latest-wins-keep-both
+Google Drive offers two conflict resolution strategies: latest_wins keeps the server version, and keep_both creates a conflict copy.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ad-click-late-events-bounded-by-allowed-lateness
+Ad click aggregation accepts late events only within allowed_lateness seconds past the window end.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-consistency-models.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] rate-limiter-implements-four-algorithms
+The rate limiter implements TokenBucketLimiter, FixedWindowCounterLimiter, SlidingWindowLogLimiter, and SlidingWindowCounterLimiter, all subclassing RateLimiter with allow_request(client_id, current_time).
+- Source: /home/forge/workspace/entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] rate-limiter-token-bucket-refill-caps-at-bucket-size
+Token bucket refill uses min(bucket_size, tokens + elapsed * refill_rate), capping the token count at bucket_size.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] sliding-window-log-prunes-with-deque
+SlidingWindowLogLimiter prunes old request timestamps from a deque to bound memory.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-retry-backoff-formula-base-delay-times-2-attempt
+Payment retry logic sleeps for self._base_delay * (2 ** attempt) between attempts.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-presence-contacts-must-be-populated-externally
+The chat system initializes server.contacts as an empty dict and presence notifications only fire if contacts are populated externally.
+- Source: /home/forge/workspace/entries/2026/06/05/topic-plan-to-implementation-fidelity.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] snowflake-custom-epoch-2024
+SnowflakeGenerator uses DEFAULT_EPOCH_MS set to 2024-01-01T00:00:00Z to maximize the 41-bit timestamp range.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] crockford-base32-omits-ambiguous-chars
+CROCKFORD_ALPHABET omits the visually ambiguous characters I, L, O, and U.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] uuid-generator-wraps-uuid4-nonsortable
+UUIDGenerator wraps uuid.uuid4() to produce non-sortable 128-bit string IDs with no coordination.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] snowflake-bit-layout-41-5-5-12
+SnowflakeGenerator packs a 64-bit ID from a 41-bit timestamp delta, 5-bit datacenter ID, 5-bit worker ID, and 12-bit sequence.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] flake-id-128-bit-hex-layout
+FlakeIDGenerator produces 128-bit IDs as 32-character hex strings using a 64-bit timestamp, 48-bit worker ID, and 16-bit sequence.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ulid-26-char-48-bit-timestamp-80-bit-random
+ULIDGenerator produces 26-character Crockford Base32 strings using a 48-bit millisecond timestamp and 80-bit random component.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] idgenerator-coordinator-round-robin
+IDGeneratorCoordinator dispatches generate() calls round-robin across a list of IDGenerator instances.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] ticket-server-step-offset-interleaves-servers
+TicketServerGenerator uses step and offset so multiple ticket servers can interleave values, e.g., server A produces 1,3,5 and server B produces 2,4,6.
+- Source: /home/forge/workspace/entries/2026/06/05/unique-id-generator-unique_id_generator.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-shortener-run-tests-entry-content-empty
+The provided entry for url-shortener/run_tests.py contains no implementation content; it states the file content is empty and read access is needed.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-run_tests.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-shortener-no-dedup-counter
+The counter strategy does not deduplicate: shortening the same long URL twice produces two different short codes.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-url_shortener.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] base62-encode-decode-bijective-positive-integers
+Base62 encode/decode is bijective for positive integers: every positive integer maps to a unique base62 string and back.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-url_shortener.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-shortener-custom-alias-constraints
+Custom aliases must be 4-16 alphanumeric characters, and duplicate aliases raise ValueError.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-url_shortener.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-shortener-redirect-returns-none-missing-expired
+redirect returns None for both missing and expired short codes, with no exception and no distinction between the two cases.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-url_shortener.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-shortener-url-validation-http-https-dotted-domain
+URL validation accepts only http and https schemes and requires the domain to contain a dot, rejecting localhost and bare hostnames.
+- Source: /home/forge/workspace/entries/2026/06/05/url-shortener-url_shortener.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-normalizer-canonicalization-rules
+URLNormalizer.normalize lowercases scheme and host, strips default ports 80/443, removes trailing slashes, sorts query parameters, and drops fragments.
+- Source: /home/forge/workspace/entries/2026/06/05/web-crawler-web_crawler.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] bloom-filter-uses-optimal-sizing-and-md5-double-hashing
+BloomFilter sizes its bit array with m = -n*ln(p)/(ln2)^2 and hash count k = (m/n)*ln2, then derives k positions via double hashing from a single MD5 digest split into two 64-bit halves.
+- Source: /home/forge/workspace/entries/2026/06/05/web-crawler-web_crawler.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] simhash-uses-64-bit-sign-vector
+SimHash.compute tokenizes text, hashes each token, and accumulates a 64-dimensional sign vector, setting each positive dimension to 1 in the 64-bit fingerprint.
+- Source: /home/forge/workspace/entries/2026/06/05/web-crawler-web_crawler.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] url-frontier-politeness-defers-throttled-hosts
+URLFrontier.get_next skips URLs whose host was accessed too recently and defers them back into the heap to enforce per-host politeness.
+- Source: /home/forge/workspace/entries/2026/06/05/web-crawler-web_crawler.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] robots-parser-extracts-crawl-delay
+RobotsParser extracts crawl-delay directives from robots.txt.
+- Source: /home/forge/workspace/entries/2026/06/05/web-crawler-web_crawler.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] payment-process-lock-wraps-external-processor-call
+In payment_system.py, process_payment holds self._lock across the external processor call _call_processor_with_retry, serializing all other payments behind a potentially slow network call.
+- Source: /home/forge/workspace/entries/2026/06/06/acceptable-findings-pedagogical-scope.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] message-queue-exactly-once-checkpoint-in-memory-only
+The distributed message queue's exactly_once mode tracks seen message IDs in an in-memory set with no durable checkpoint, so a consumer crash between poll and commit can re-process messages after restart.
+- Source: /home/forge/workspace/entries/2026/06/06/acceptable-findings-pedagogical-scope.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] click-aggregator-dedup-registry-is-in-memory
+The click aggregator's dedup registry is an in-memory dict mapping (event_id, ad_id) to timestamps, pruned on watermark advance and lost entirely on process restart.
+- Source: /home/forge/workspace/entries/2026/06/06/acceptable-findings-pedagogical-scope.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] seven-rules-audit-left-three-infrastructural-gaps-unfixed
+The seven-rules audit left three real issues unfixed at pedagogical scope: broad payment lock scope, non-durable exactly_once checkpointing, and non-durable click-aggregator dedup.
+- Source: /home/forge/workspace/entries/2026/06/06/acceptable-findings-pedagogical-scope.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] notification-system-batches-by-group-key
+notification-system send() checks for group_key, holds notifications in _pending_groups, and flushes them when the group window expires.
+- Source: /home/forge/workspace/entries/2026/06/06/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] notification-flush-collapses-group-to-summary-with-count
+notification-system _flush_group collapses multiple grouped notifications into one summary with a count.
+- Source: /home/forge/workspace/entries/2026/06/06/daily-summary.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] code-expert-scan-explore-produced-31-entry-files
+Scanning 25 SDI modules in /Users/ben/git/sdi-implementations with code-expert scan and code-expert explore produced 31 entry files explaining every non-test Python file.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] code-expert-propose-beliefs-extracted-199-premises
+code-expert propose-beliefs extracted 199 premise beliefs from the 31 entry files.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] reasons-derive-exhaust-produced-160-derived-beliefs-at-depth-9
+After 12 rounds, reasons derive --exhaust produced 160 derived beliefs at depths up to 9.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] reasons-list-gated-identified-15-blocker-premises-gating-21-beliefs
+reasons list-gated identified 15 premises appearing as unless clauses on derived beliefs and gating 21 derived beliefs.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] thirteen-code-fixes-applied-in-belief-driven-review
+The belief-driven code review applied 13 code fixes after identifying 15 blocker premises.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] second-derivation-produced-118-derived-beliefs-at-depth-11
+After blocker removal, reasons derive --exhaust --sample produced 118 new derived beliefs at depth up to 11.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] reasons-review-beliefs-flagged-24-overgeneralizations
+reasons review-beliefs flagged 24 overgeneralizations that reasons research softened.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] final-belief-count-477-420-in-57-out
+The final belief count was 477 beliefs, with 420 IN and 57 OUT.
+- Source: /home/forge/workspace/entries/2026/06/06/methodology-belief-driven-code-review.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-four-methods-increment-lamport-clock
+The chat server increments lamport_clock and per-conversation next_sequence in send_message, send_group_message, add_member, and remove_member.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] chat-clock-lock-scope-excludes-message-construction-and-delivery
+The chat _clock_lock wraps only lamport_clock and next_sequence increments, not message construction or delivery.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-update-location-mutates-locations-grid-and-user-cell
+nearby-friends update_location mutates _locations, _grid, and _user_cell in sequence.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] nearby-friends-lock-excludes-haversine-and-notification-callbacks
+The nearby-friends _lock serializes structural mutations and candidate snapshot but not haversine distance computation or notification callbacks.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] news-feed-rebuild-cache-skips-celebrity-posts-when-hybrid
+news-feed rebuild_cache skips posts from followees whose follower count exceeds celebrity_threshold when the strategy is HYBRID.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
+
+### [ACCEPT] s3-integrity-check-raises-valueerror-on-etag-mismatch
+The S3 _verify_integrity method raises ValueError when a version's recomputed ETag does not match its stored ETag.
+- Source: /home/forge/workspace/entries/2026/06/06/seven-rules-audit-fixes.md
+- Source URL: none
+- Model: openai:rits/deepseek-ai/DeepSeek-V4.1-Flash-1017
 

@@ -1,0 +1,23 @@
+{
+  "pipeline": "diary-update",
+  "started_at": "2026-11-11T15:20:05+00:00",
+  "updated_at": "2026-11-11T15:20:05+00:00",
+  "status": "completed",
+  "steps": [
+    {
+      "name": "propose-beliefs",
+      "status": "completed",
+      "started_at": "2026-11-11T15:20:05+00:00",
+      "completed_at": "2026-11-11T15:20:05+00:00",
+      "detail": "proposed from 37 entries"
+    },
+    {
+      "name": "accept-beliefs",
+      "status": "completed",
+      "started_at": "2026-11-11T15:20:05+00:00",
+      "completed_at": "2026-11-11T15:20:05+00:00",
+      "detail": "accepted proposals"
+    }
+  ],
+  "completed_at": "2026-11-11T15:20:05+00:00"
+}
